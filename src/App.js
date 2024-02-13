@@ -4,6 +4,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { Header } from './components/Header';
 import { CareerPage } from './pages/Career';
 import { LocalesPage } from './pages/Locales';
+import { PromoPage } from './pages/Promo';
 
 function App() {
   return (
@@ -15,7 +16,7 @@ function App() {
             <Route path="/" element={<div />} />
             <Route path="/locales" element={<LocalesPage />} />
             <Route path="/career" element={<CareerPage />} />
-            <Route path="/promo" element={<div />} />
+            <Route path="/promo" element={<PromoPage />} />
           </Routes>
         </main>
       </BrowserRouter>
