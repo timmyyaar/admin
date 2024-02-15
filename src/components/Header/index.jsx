@@ -5,6 +5,7 @@ export const Header = () => {
   const navigation = [
     { to: '/locales', title: 'Locales' },
     { to: '/career', title: 'Career' },
+    { to: '/gift', title: 'Gifts' },
     { to: '/promo', title: 'Promo Codes' },
   ];
 

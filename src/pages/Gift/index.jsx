@@ -30,7 +30,7 @@ export const GiftPage = () => {
       setLoading(false);
     });
   }, [forceUpdate]);
- // fEmail, fPhone, comment, sEmail, sName
+
   return (
     <div className="career-page">
       <Louder visible={loading} />
