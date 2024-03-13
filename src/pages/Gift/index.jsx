@@ -45,8 +45,6 @@ export const GiftPage = () => {
               <p className="card-text">Phone: {el.fEmail}</p>
               <p className="card-text">Email: {el.fPhone}</p>
               <p className="card-text">About: {el.comment}</p>
-              <p className="card-text">Phone: {el.sEmail}</p>
-              <p className="card-text">Email: {el.sName}</p>
             </div>
           </div>
         ))}
