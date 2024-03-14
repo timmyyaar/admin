@@ -7,6 +7,7 @@ export const Header = () => {
     { to: '/career', title: 'Career' },
     { to: '/gift', title: 'Gifts' },
     { to: '/promo', title: 'Promo Codes' },
+    { to: '/order', title: 'Orders' },
   ];
 
   return (

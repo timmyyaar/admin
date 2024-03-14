@@ -6,6 +6,7 @@ import { GiftPage } from './pages/Gift';
 import { CareerPage } from './pages/Career';
 import { LocalesPage } from './pages/Locales';
 import { PromoPage } from './pages/Promo';
+import { OrderPage } from './pages/Order';
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
             <Route path="/career" element={<CareerPage />} />
             <Route path="/gift" element={<GiftPage />} />
             <Route path="/promo" element={<PromoPage />} />
+            <Route path="/order" element={<OrderPage />} />
           </Routes>
         </main>
       </BrowserRouter>
