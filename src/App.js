@@ -1,12 +1,13 @@
-import React from 'react';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import React from "react";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 
-import { Header } from './components/Header';
-import { GiftPage } from './pages/Gift';
-import { CareerPage } from './pages/Career';
-import { LocalesPage } from './pages/Locales';
-import { PromoPage } from './pages/Promo';
-import { OrderPage } from './pages/Order';
+import { Header } from "./components/Header";
+import { GiftPage } from "./pages/Gift";
+import { CareerPage } from "./pages/Career";
+import { LocalesPage } from "./pages/Locales";
+import { PromoPage } from "./pages/Promo";
+import { OrderPage } from "./pages/Order";
+import { ReviewsPage } from "./pages/Reviews";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
             <Route path="/gift" element={<GiftPage />} />
             <Route path="/promo" element={<PromoPage />} />
             <Route path="/order" element={<OrderPage />} />
+            <Route path="/reviews" element={<ReviewsPage />} />
           </Routes>
         </main>
       </BrowserRouter>
