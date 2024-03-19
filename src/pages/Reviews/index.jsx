@@ -104,6 +104,7 @@ export const ReviewsPage = () => {
           <div className="card mb-3" key={review.id}>
             <div className="card-header d-flex align-items-center">
               <h5 className="card-title mb-0 d-flex justify-content-start align-items-center">
+                ️#️⃣️ {review.id}
                 <div className="_ml-5">
                   {Array.from({ length: 5 }).map((_, ratingIndex) => (
                     <StarIcon
