@@ -22,6 +22,7 @@ function App() {
             <Route path="/gift" element={<GiftPage />} />
             <Route path="/promo" element={<PromoPage />} />
             <Route path="/order" element={<OrderPage />} />
+            <Route path="/subscription" element={<OrderPage subscription />} />
             <Route path="/reviews" element={<ReviewsPage />} />
           </Routes>
         </main>

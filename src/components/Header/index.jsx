@@ -8,6 +8,7 @@ export const Header = () => {
     { to: "/gift", title: "Gifts" },
     { to: "/promo", title: "Promo Codes" },
     { to: "/order", title: "Orders" },
+    { to: "/subscription", title: "Subscription" },
     { to: "/reviews", title: "Reviews" },
   ];
 
