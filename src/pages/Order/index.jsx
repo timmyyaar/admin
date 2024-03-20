@@ -51,7 +51,7 @@ export const OrderPage = ({ subscription = false }) => {
                   <p className="card-text _flex _flex-col">🦄 {el.name}</p>
                   <p className="card-text _flex _flex-col">📲 {el.number}</p>
                   <p className="card-text _flex _flex-col">📩 {el.email}</p>
-                  <p className="card-text _flex _flex-col">📆⏰ {el.date}</p>
+                  <p className="card-text _flex _flex-col">📆 {el.date}</p>
                   <p className="card-text _flex _flex-col">📍 {el.address}</p>
                   <p className="card-text">💾 - {el.personaldata ? '✅' : '❌'}</p>
                   {el.requestpreviouscleaner ? '🧹предыдущий клинер' : null}
