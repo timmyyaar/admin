@@ -4,7 +4,7 @@ import { Louder } from '../../components/Louder';
 
 import { getOrders, deleteOrder } from './actions';
 
-export const OrderPage = () => {
+export const OrderPage = ({ subscription = false }) => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(false);
   const [forceUpdate, setForceUpdate] = useState(false);
@@ -27,10 +27,13 @@ export const OrderPage = () => {
   useEffect(() => {
     setLoading(true);
     getOrders().then((data) => {
-      setOrders(data.order);
+      setOrders(data.order.filter(el => {
+        if (subscription) return el.title === 'Subscription';
+        else return el.title !== 'Subscription';
+      }));
       setLoading(false);
     });
-  }, [forceUpdate]);
+  }, [subscription, forceUpdate]);
 
   return (
     <div className="order-page">
@@ -43,23 +46,29 @@ export const OrderPage = () => {
               <button type="button" className="btn btn-danger" onClick={() => onDeleteOrder(el.id)}>x</button>
             </div>
             <div className="card-body">
-              <div className='_flex _justify-between'>
+              <div>
                 <div>
-                  <p className="card-text">📅️ {el.date}</p>
-                  <p className="card-text">📍 {el.address}</p>
+                  <p className="card-text _flex _flex-col">🦄 {el.name}</p>
+                  <p className="card-text _flex _flex-col">📲 {el.number}</p>
+                  <p className="card-text _flex _flex-col">📩 {el.email}</p>
+                  <p className="card-text _flex _flex-col">📆⏰ {el.date}</p>
+                  <p className="card-text _flex _flex-col">📍 {el.address}</p>
+                  <p className="card-text">💾 - {el.personaldata ? '✅' : '❌'}</p>
+                  {el.requestpreviouscleaner ? '🧹предыдущий клинер' : null}
                   <p className="card-text">🔖 {el.price} zl {el.promo ? `(${el.promo})` : null}</p>
-                  <p className="card-text">💸 {el.onlinePayment ? 'Online' : 'Cash'}</p>
+                  <p className="card-text">💸 {el.onlinepayment ? 'Online' : 'Cash'}</p>
                   <p className="card-text">⏳ {el.estimate}</p>
+                  <br />
                 </div>
                 <div>
                   <p className="card-text">{el.title}:</p>
                   <p className="card-text">{el.counter}</p>
-                  <p className="card-text">{el.subService}</p>
-                  {el.secTitle ? (
+                  <p className="card-text">{el.subservice}</p>
+                  {el.sectitle ? (
                     <div>
-                      <p className="card-text">{el.secTitle}:</p>
-                      <p className="card-text">{el.secCounter}</p>
-                      <p className="card-text">{el.secSubService}</p>
+                      <p className="card-text">{el.sectitle}:</p>
+                      <p className="card-text">{el.seccounter}</p>
+                      <p className="card-text">{el.secsubservice}</p>
                     </div>
                   ) : null}
                 </div>
