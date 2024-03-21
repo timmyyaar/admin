@@ -40,7 +40,7 @@ export const OrderPage = ({ subscription = false }) => {
       <Louder visible={loading} />
       <div className="_mt-8">
         {orders.map(el => (
-          <div className="card" key={el.id}>
+          <div className="card _mb-3" key={el.id}>
             <div className="card-header d-flex justify-content-between align-items-center">
               <h5 className="card-title mb-0">#️⃣️ {el.id}</h5>
               <button type="button" className="btn btn-danger" onClick={() => onDeleteOrder(el.id)}>x</button>
