@@ -36,7 +36,7 @@ export const GiftPage = () => {
       <Louder visible={loading} />
       <div className="_mt-8">
         {career.map((el, i) => (
-          <div className="card" key={el.id}>
+          <div className="card _mb-3" key={el.id}>
             <div className="card-header d-flex justify-content-between align-items-center">
               <h5 className="card-title mb-0">{'Gift ' + (i + 1)}</h5>
               <button type="button" className="btn btn-danger" onClick={() => onDeleteCareer(el.id)}>x</button>
