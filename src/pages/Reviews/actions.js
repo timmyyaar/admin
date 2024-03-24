@@ -9,6 +9,7 @@ export async function requestAddReview(body) {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),
+    credentials: "include",
   });
 
   return await response.json();
@@ -21,6 +22,7 @@ export async function requestUpdateReview(id, body) {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),
+      credentials: "include",
     }
   );
 
@@ -33,6 +35,7 @@ export async function requestDeleteReview(id) {
     {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
+      credentials: "include",
     }
   );
 

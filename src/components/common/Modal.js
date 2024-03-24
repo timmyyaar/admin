@@ -8,6 +8,8 @@ function Modal({
   actionButtonText,
   onActionButtonClick,
   errorMessage,
+  isLoading,
+  isActionButtonDanger,
 }) {
   return (
     <>
@@ -20,7 +22,9 @@ function Modal({
               Cancel
             </button>
             <button
-              className="btn btn-primary"
+              className={`d-flex align-items-center btn ${
+                isActionButtonDanger ? "btn-danger" : "btn-primary"
+              } ${isLoading ? "loading" : ""}`}
               disabled={isActionButtonDisabled}
               onClick={onActionButtonClick}
             >

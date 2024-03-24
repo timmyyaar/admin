@@ -9,6 +9,7 @@ export async function addLocale(localeObj) {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(localeObj),
+    credentials: "include",
   });
 
   const data = await response.json();
@@ -20,6 +21,7 @@ export async function updateLocale(localeObj) {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(localeObj),
+    credentials: "include",
   });
 
   const data = await response.json();
@@ -31,6 +33,7 @@ export async function deleteLocale(localeObj) {
     method: 'DELETE',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(localeObj),
+    credentials: "include",
   });
 
   const data = await response.json();
