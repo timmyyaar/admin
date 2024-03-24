@@ -47,3 +47,7 @@ code {
   border: 2px solid hsla(0, 0%, 100%, 0.33333);
   border-left-color: white;
 }
+
+.min-width-max-content {
+  min-width: max-content;
+}

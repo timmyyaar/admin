@@ -38,6 +38,25 @@ export async function assignOrder(id, cleanerId) {
   return parsedResponse;
 }
 
+export async function changeOrderStatus(id, status) {
+  const response = await fetch(
+    process.env.REACT_APP_API_URL + `/api/order/${id}/update-status/${status}`,
+    {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+    }
+  );
+
+  const parsedResponse = await response.json();
+
+  if (!response.ok) {
+    throw new Error("Unknown error, please try again!");
+  }
+
+  return parsedResponse;
+}
+
 export const fetchUsers = async () => {
   const response = await fetch(process.env.REACT_APP_API_URL + `/api/users`, {
     credentials: "include",
