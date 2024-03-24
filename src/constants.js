@@ -4,6 +4,7 @@ export const EMAIL_REGEX =
 export const ROLES = {
   ADMIN: "admin",
   CLEANER: "cleaner",
+  CLEANER_DRY: "cleaner_dry",
   CLIENT: "client",
 };
 
