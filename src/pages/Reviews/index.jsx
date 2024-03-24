@@ -11,6 +11,27 @@ import {
 } from "./actions";
 import ReviewModal from "./ReviewModal";
 
+export async function login(body) {
+  const response = await fetch(process.env.REACT_APP_API_URL + `/api/login`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+    credentials: 'include',
+  });
+
+  return await response.json();
+}
+
+export async function signUp(body) {
+  const response = await fetch(process.env.REACT_APP_API_URL + `/api/sign-up`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  });
+
+  return await response.json();
+}
+
 export const ReviewsPage = () => {
   const [reviews, setReviews] = useState([]);
   const [isReviewsLoading, setIsReviewsLoading] = useState(false);
@@ -83,8 +104,22 @@ export const ReviewsPage = () => {
     setEditingReview(null);
   };
 
+  const onSignUp = async () => {
+    await signUp({ email: "romkaboikov@gmail.com", password: "12345678" });
+  };
+
+  const onLogin = async () => {
+    await login({ email: "romkaboikov@gmail.com", password: "12345678" });
+  };
+
   return (
     <div>
+      <button className="btn btn-primary" onClick={onSignUp}>
+        Add me
+      </button>
+      <button className="btn btn-primary" onClick={onLogin}>
+        Login
+      </button>
       <button
         className="btn btn-primary"
         onClick={() => setShowAddReview(true)}
