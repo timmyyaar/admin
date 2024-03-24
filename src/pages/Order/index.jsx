@@ -1,21 +1,36 @@
 import React, { useEffect, useState } from "react";
 
+import "./index.css";
+
 import { Louder } from "../../components/Louder";
 
-import { getOrders, deleteOrder, assignOrder, fetchUsers } from "./actions";
+import {
+  getOrders,
+  deleteOrder,
+  assignOrder,
+  fetchUsers,
+  changeOrderStatus,
+} from "./actions";
 import { getUserId, isAdmin } from "../../utils";
-import { ROLES } from "../../constants";
+import { ORDER_STATUS, ROLES } from "../../constants";
+import Filters from "./Filters";
+import AdminControls from "./AdminControls";
+import AssignOnMe from "./AssignOnMe";
+import CleanerControls from "./CleanerControls";
+
+export const ORDER_STATUS_OPTIONS = Object.values(ORDER_STATUS);
 
 export const OrderPage = ({ subscription = false }) => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(false);
   const [forceUpdate, setForceUpdate] = useState(false);
-  const [isAssignLoading, setIsAssignOrderLoading] = useState(false);
-  const [assignError, setAssignError] = useState("");
+  const [isAssignLoading, setIsAssignOrderLoading] = useState([]);
+  const [assignError, setAssignError] = useState([]);
   const [cleaners, setCleaners] = useState([]);
   const [isUsersLoading, setIsUsersLoading] = useState(false);
-  const [showOnlyMyOrders, setShowOnlyMyOrders] = useState(false);
-  const [assigneeFilter, setAssigneeFilter] = useState(null);
+  const [assigneeFilter, setAssigneeFilter] = useState("All");
+  const [isStatusLoading, setIsStatusLoading] = useState([]);
+  const [statusFilter, setStatusFilter] = useState("All");
 
   const toggleForceUpdate = () => setForceUpdate((fU) => !fU);
 
@@ -70,7 +85,8 @@ export const OrderPage = ({ subscription = false }) => {
 
   const onAssignOrder = async (id, cleanerId) => {
     try {
-      setIsAssignOrderLoading(true);
+      setAssignError([]);
+      setIsAssignOrderLoading((prevLoading) => [...prevLoading, id]);
 
       const assignedOrder = await assignOrder(id, cleanerId);
 
@@ -80,161 +96,174 @@ export const OrderPage = ({ subscription = false }) => {
         )
       );
     } catch (error) {
-      setAssignError(error.message);
+      setAssignError((prevErrors) => [
+        ...prevErrors,
+        { id, message: error.message },
+      ]);
     } finally {
-      setIsAssignOrderLoading(false);
+      setIsAssignOrderLoading((prevLoading) =>
+        prevLoading.filter((item) => item !== id)
+      );
+    }
+  };
+
+  const onChangeOrderStatus = async (id, status) => {
+    try {
+      setIsStatusLoading((prevIsStatusLoading) => [...prevIsStatusLoading, id]);
+
+      const updatedOrder = await changeOrderStatus(id, status);
+
+      setOrders((prevOrders) =>
+        prevOrders.map((prevOrder) =>
+          prevOrder.id === updatedOrder.id ? updatedOrder : prevOrder
+        )
+      );
+    } finally {
+      setIsStatusLoading((prevIsStatusLoading) =>
+        prevIsStatusLoading.filter((item) => item !== id)
+      );
     }
   };
 
   const filteredOrders = isAdmin()
-    ? orders.filter(
-        ({ cleaner_id }) => !+assigneeFilter || cleaner_id === +assigneeFilter
-      )
-    : showOnlyMyOrders
-    ? orders.filter(({ cleaner_id }) => cleaner_id === getUserId())
-    : orders.filter(
-        ({ cleaner_id }) => !cleaner_id || cleaner_id === getUserId()
-      );
+    ? orders
+        .filter(({ cleaner_id }) => {
+          if (assigneeFilter === "All") {
+            return true;
+          }
+
+          if (assigneeFilter === "Not assigned") {
+            return !cleaner_id;
+          }
+
+          return cleaner_id === +assigneeFilter;
+        })
+        .filter(({ status, cleaner_id }) => {
+          if (statusFilter === "All") {
+            return true;
+          }
+
+          return status === statusFilter;
+        })
+    : orders.filter(({ status, cleaner_id }) => {
+        if (statusFilter === "All") {
+          return !cleaner_id
+            ? status === ORDER_STATUS.APPROVED.value
+            : cleaner_id === getUserId();
+        }
+
+        if (statusFilter === ORDER_STATUS.APPROVED.value) {
+          return !cleaner_id && status === ORDER_STATUS.APPROVED.value;
+        }
+
+        if (statusFilter === "all-my-orders") {
+          return cleaner_id === getUserId();
+        }
+
+        if (statusFilter === "my-not-started-orders") {
+          return (
+            cleaner_id === getUserId() && status === ORDER_STATUS.APPROVED.value
+          );
+        }
+
+        return cleaner_id === getUserId() && status === statusFilter;
+      });
 
   return (
     <div className="order-page">
       <Louder visible={loading || isUsersLoading} />
-      {!isAdmin() && (
-        <div className="form-check _mt-2">
-          <input
-            className="form-check-input _cursor-pointer"
-            type="checkbox"
-            checked={showOnlyMyOrders}
-            id="my-orders-checkbox"
-            onChange={() => setShowOnlyMyOrders(!showOnlyMyOrders)}
-          />
-          <label
-            className="form-check-label _cursor-pointer"
-            htmlFor="my-orders-checkbox"
-          >
-            Show only my orders
-          </label>
-        </div>
-      )}
-      {isAdmin() && (
-        <div className="_w-1/3 d-flex align-items-center _mt-2 text-nowrap">
-          Assignee filter:
-          <select
-            value={assigneeFilter}
-            className="form-select _ml-2"
-            onChange={({ target: { value } }) => setAssigneeFilter(value)}
-          >
-            <option value={0} selected={!assigneeFilter}>
-              All
-            </option>
-            {cleaners.map((cleaner) => (
-              <option
-                selected={assigneeFilter === cleaner.id}
-                value={cleaner.id}
-              >
-                {cleaner.email}
-              </option>
-            ))}
-          </select>
-        </div>
-      )}
+      <Filters
+        statusFilter={statusFilter}
+        setStatusFilter={setStatusFilter}
+        assigneeFilter={assigneeFilter}
+        setAssigneeFilter={setAssigneeFilter}
+        cleaners={cleaners}
+      />
       <div className="_mt-8">
-        {filteredOrders.map((el) => (
-          <div className="card _mb-3" key={el.id}>
-            <div className="card-header d-flex justify-content-between align-items-center">
-              <h5 className="card-title mb-0">#️⃣️ {el.id}</h5>
-              {isAdmin() ? (
-                <div className="_w-1/3 d-flex align-items-center">
-                  Assignee:
-                  <select
-                    disabled={isAssignLoading}
-                    value={el.cleaner_id}
-                    className="form-select _ml-2"
-                    onChange={({ target: { value } }) =>
-                      onAssignOrder(el.id, value)
-                    }
-                  >
-                    <option value={0} selected={!el.cleaner_id}>
-                      N/A
-                    </option>
-                    {cleaners.map((cleaner) => (
-                      <option
-                        selected={cleaner.id === el.cleaner_id}
-                        value={cleaner.id}
-                      >
-                        {cleaner.email}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              ) : (
-                !el.cleaner_id && (
-                  <div className="d-flex align-items-center">
-                    {assignError && (
-                      <span className="text-danger _mr-2">{assignError}</span>
-                    )}
+        {filteredOrders.length > 0
+          ? filteredOrders.map((el) => (
+              <div className="card _mb-3" key={el.id}>
+                <div className="card-header _gap-4 d-flex justify-content-between align-items-center order-header">
+                  <h5 className="card-title mb-0 min-width-max-content _mr-2">
+                    #️⃣️ {el.id}
+                  </h5>
+                  {isAdmin() && (
+                    <AdminControls
+                      order={el}
+                      isAssignLoading={isAssignLoading}
+                      isStatusLoading={isStatusLoading}
+                      onAssignOrder={onAssignOrder}
+                      cleaners={cleaners}
+                      onChangeOrderStatus={onChangeOrderStatus}
+                    />
+                  )}
+                  {!isAdmin() && !el.cleaner_id && (
+                    <AssignOnMe
+                      order={el}
+                      assignError={assignError}
+                      isAssignLoading={isAssignLoading}
+                      onAssignOrder={onAssignOrder}
+                    />
+                  )}
+                  {el.cleaner_id === getUserId() && (
+                    <CleanerControls
+                      order={el}
+                      isStatusLoading={isStatusLoading}
+                      onChangeOrderStatus={onChangeOrderStatus}
+                    />
+                  )}
+                  {isAdmin() && (
                     <button
-                      className={`btn btn-primary ${
-                        isAssignLoading ? "loading" : ""
-                      }`}
-                      onClick={() => onAssignOrder(el.id, getUserId())}
-                      disabled={isAssignLoading}
+                      type="button"
+                      className="btn btn-danger _ml-2"
+                      onClick={() => onDeleteOrder(el.id)}
                     >
-                      Assign this order on me
+                      Delete
                     </button>
-                  </div>
-                )
-              )}
-              {el.cleaner_id === getUserId() && (
-                <span className="text-success _font-semibold">My order</span>
-              )}
-              {isAdmin() && (
-                <button
-                  type="button"
-                  className="btn btn-danger"
-                  onClick={() => onDeleteOrder(el.id)}
-                >
-                  x
-                </button>
-              )}
-            </div>
-            <div className="card-body">
-              <div>
-                <div>
-                  <p className="card-text _flex _flex-col">🦄 {el.name}</p>
-                  <p className="card-text _flex _flex-col">📲 {el.number}</p>
-                  <p className="card-text _flex _flex-col">📩 {el.email}</p>
-                  <p className="card-text _flex _flex-col">📆 {el.date}</p>
-                  <p className="card-text _flex _flex-col">📍 {el.address}</p>
-                  <p className="card-text">
-                    💾 - {el.personaldata ? "✅" : "❌"}
-                  </p>
-                  {el.requestpreviouscleaner ? "🧹предыдущий клинер" : null}
-                  <p className="card-text">
-                    🔖 {el.price} zl {el.promo ? `(${el.promo})` : null}
-                  </p>
-                  <p className="card-text">
-                    💸 {el.onlinepayment ? "Online" : "Cash"}
-                  </p>
-                  <p className="card-text">⏳ {el.estimate}</p>
-                  <br />
+                  )}
                 </div>
-                <div>
-                  <p className="card-text">{el.title}:</p>
-                  <p className="card-text">{el.counter}</p>
-                  <p className="card-text">{el.subservice}</p>
-                  {el.sectitle ? (
+                <div className="card-body">
+                  <div>
                     <div>
-                      <p className="card-text">{el.sectitle}:</p>
-                      <p className="card-text">{el.seccounter}</p>
-                      <p className="card-text">{el.secsubservice}</p>
+                      <p className="card-text _flex _flex-col">🦄 {el.name}</p>
+                      <p className="card-text _flex _flex-col">
+                        📲 {el.number}
+                      </p>
+                      <p className="card-text _flex _flex-col">📩 {el.email}</p>
+                      <p className="card-text _flex _flex-col">📆 {el.date}</p>
+                      <p className="card-text _flex _flex-col">
+                        📍 {el.address}
+                      </p>
+                      <p className="card-text">
+                        💾 - {el.personaldata ? "✅" : "❌"}
+                      </p>
+                      {el.requestpreviouscleaner ? "🧹предыдущий клинер" : null}
+                      <p className="card-text">
+                        🔖 {el.price} zl {el.promo ? `(${el.promo})` : null}
+                      </p>
+                      <p className="card-text">
+                        💸 {el.onlinepayment ? "Online" : "Cash"}
+                      </p>
+                      <p className="card-text">⏳ {el.estimate}</p>
+                      <br />
                     </div>
-                  ) : null}
+                    <div>
+                      <p className="card-text">{el.title}:</p>
+                      <p className="card-text">{el.counter}</p>
+                      <p className="card-text">{el.subservice}</p>
+                      {el.sectitle ? (
+                        <div>
+                          <p className="card-text">{el.sectitle}:</p>
+                          <p className="card-text">{el.seccounter}</p>
+                          <p className="card-text">{el.secsubservice}</p>
+                        </div>
+                      ) : null}
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
-        ))}
+            ))
+          : !loading && <div className="text-warning">No orders found...</div>}
       </div>
     </div>
   );

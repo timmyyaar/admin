@@ -7,6 +7,13 @@ export const ROLES = {
   CLIENT: "client",
 };
 
-export const USER_DATA_LOCAL_STORAGE_KEY = 'userData'
+export const ORDER_STATUS = {
+  CREATED: { value: "created", label: "Created" },
+  APPROVED: { value: "approved", label: "Approved" },
+  IN_PROGRESS: { value: "in-progress", label: "In progress" },
+  DONE: { value: "done", label: "Done" },
+};
 
-export const AUTH_TOKEN_COOKIE_KEY = 'authToken'
+export const USER_DATA_LOCAL_STORAGE_KEY = "userData";
+
+export const AUTH_TOKEN_COOKIE_KEY = "authToken";

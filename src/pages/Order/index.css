@@ -1,0 +1,25 @@
+@media screen and (max-width: 950px) {
+  .assignee-select {
+    width: 100%;
+  }
+
+  .filters-wrapper {
+    flex-direction: column;
+  }
+
+  .order-header {
+    flex-direction: column;
+  }
+
+  .admin-controls {
+    flex-direction: column;
+  }
+
+  .status-select {
+    margin-left: 1.75rem;
+  }
+
+  .status-filter-select {
+    margin-left: 1rem;
+  }
+}
