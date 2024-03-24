@@ -12,27 +12,27 @@ export const logOut = () => {
 
 export const getUserId = () => {
   const localStorageUserData = localStorage.getItem(
-      USER_DATA_LOCAL_STORAGE_KEY
+    USER_DATA_LOCAL_STORAGE_KEY
   );
 
   if (!localStorageUserData) {
     return false;
   }
 
-  return JSON.parse(localStorageUserData).id
-}
+  return JSON.parse(localStorageUserData).id;
+};
 
 export const getUserEmail = () => {
   const localStorageUserData = localStorage.getItem(
-      USER_DATA_LOCAL_STORAGE_KEY
+    USER_DATA_LOCAL_STORAGE_KEY
   );
 
   if (!localStorageUserData) {
     return false;
   }
 
-  return JSON.parse(localStorageUserData).email
-}
+  return JSON.parse(localStorageUserData).email;
+};
 
 export const isAdmin = () => {
   const localStorageUserData = localStorage.getItem(
@@ -44,4 +44,28 @@ export const isAdmin = () => {
   }
 
   return JSON.parse(localStorageUserData).role === ROLES.ADMIN;
+};
+
+export const isCleaner = () => {
+  const localStorageUserData = localStorage.getItem(
+    USER_DATA_LOCAL_STORAGE_KEY
+  );
+
+  if (!localStorageUserData) {
+    return false;
+  }
+
+  return JSON.parse(localStorageUserData).role === ROLES.CLEANER;
+};
+
+export const isDryCleaner = () => {
+  const localStorageUserData = localStorage.getItem(
+    USER_DATA_LOCAL_STORAGE_KEY
+  );
+
+  if (!localStorageUserData) {
+    return false;
+  }
+
+  return JSON.parse(localStorageUserData).role === ROLES.CLEANER_DRY;
 };

@@ -11,7 +11,7 @@ import {
   fetchUsers,
   changeOrderStatus,
 } from "./actions";
-import { getUserId, isAdmin } from "../../utils";
+import { getUserId, isAdmin, isCleaner, isDryCleaner } from "../../utils";
 import { ORDER_STATUS, ROLES } from "../../constants";
 import Filters from "./Filters";
 import AdminControls from "./AdminControls";
@@ -67,8 +67,8 @@ export const OrderPage = ({ subscription = false }) => {
 
       const usersResponse = await fetchUsers();
 
-      const cleanersResponse = usersResponse.filter(
-        ({ role }) => role === ROLES.CLEANER
+      const cleanersResponse = usersResponse.filter(({ role }) =>
+        [ROLES.CLEANER, ROLES.CLEANER_DRY].includes(role)
       );
 
       setCleaners(cleanersResponse);
@@ -145,29 +145,42 @@ export const OrderPage = ({ subscription = false }) => {
 
           return status === statusFilter;
         })
-    : orders.filter(({ status, cleaner_id }) => {
-        if (statusFilter === "All") {
-          return !cleaner_id
-            ? status === ORDER_STATUS.APPROVED.value
-            : cleaner_id === getUserId();
-        }
+    : orders
+        .filter(({ title }) => {
+          if (isDryCleaner()) {
+            return ["Dry cleaning", "Ozonation"].includes(title);
+          }
 
-        if (statusFilter === ORDER_STATUS.APPROVED.value) {
-          return !cleaner_id && status === ORDER_STATUS.APPROVED.value;
-        }
+          if (isCleaner()) {
+            return title !== "Dry cleaning" && title !== "Ozonation";
+          }
 
-        if (statusFilter === "all-my-orders") {
-          return cleaner_id === getUserId();
-        }
+          return false;
+        })
+        .filter(({ status, cleaner_id }) => {
+          if (statusFilter === "All") {
+            return !cleaner_id
+              ? status === ORDER_STATUS.APPROVED.value
+              : cleaner_id === getUserId();
+          }
 
-        if (statusFilter === "my-not-started-orders") {
-          return (
-            cleaner_id === getUserId() && status === ORDER_STATUS.APPROVED.value
-          );
-        }
+          if (statusFilter === ORDER_STATUS.APPROVED.value) {
+            return !cleaner_id && status === ORDER_STATUS.APPROVED.value;
+          }
 
-        return cleaner_id === getUserId() && status === statusFilter;
-      });
+          if (statusFilter === "all-my-orders") {
+            return cleaner_id === getUserId();
+          }
+
+          if (statusFilter === "my-not-started-orders") {
+            return (
+              cleaner_id === getUserId() &&
+              status === ORDER_STATUS.APPROVED.value
+            );
+          }
+
+          return cleaner_id === getUserId() && status === statusFilter;
+        });
 
   return (
     <div className="order-page">
@@ -239,7 +252,10 @@ export const OrderPage = ({ subscription = false }) => {
                       </p>
                       {el.requestpreviouscleaner ? "🧹предыдущий клинер" : null}
                       <p className="card-text">
-                        🔖 {el.price} zl {el.promo ? `(${el.promo})` : null}
+                        🔖 Price: {el.price} zl
+                        {el.promo ? ` (${el.promo})` : null}
+                        {el.price !== el.total_service_price &&
+                          `, Total price: ${el.total_service_price} zl`}
                       </p>
                       <p className="card-text">
                         💸 {el.onlinepayment ? "Online" : "Cash"}
