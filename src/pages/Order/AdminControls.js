@@ -1,4 +1,4 @@
-import { ORDER_STATUS } from "../../constants";
+import { ORDER_STATUS, ROLES } from "../../constants";
 import React from "react";
 import { ORDER_STATUS_OPTIONS } from "./index";
 
@@ -10,6 +10,12 @@ const AdminControls = ({
   cleaners,
   onChangeOrderStatus,
 }) => {
+  const cleanersOptions = cleaners.filter(({ role }) =>
+    ["Dry cleaning", "Ozonation"].includes(order.title)
+      ? role === ROLES.CLEANER_DRY
+      : role === ROLES.CLEANER
+  );
+
   return (
     <div className="d-flex admin-controls _gap-4 _w-full">
       <div className="_w-full d-flex align-items-center">
@@ -23,7 +29,7 @@ const AdminControls = ({
           <option value={0} selected={!order.cleaner_id}>
             N/A
           </option>
-          {cleaners.map((cleaner) => (
+          {cleanersOptions.map((cleaner) => (
             <option
               selected={cleaner.id === order.cleaner_id}
               value={cleaner.id}
