@@ -20,6 +20,31 @@ import CleanerControls from "./CleanerControls";
 
 export const ORDER_STATUS_OPTIONS = Object.values(ORDER_STATUS);
 
+const getTimeRemaining = (endTime) => {
+  const endTimeDay = endTime.slice(0, 2);
+  const endTimeMonth = endTime.slice(3, 5);
+  const endTimeYear = endTime.slice(6, 10);
+  const endTimeHours = endTime.slice(11, 13);
+  const endTimeMinutes = endTime.slice(14, 16);
+
+  const total =
+    Date.parse(
+      `${endTimeYear}-${endTimeMonth}-${endTimeDay} ${endTimeHours}:${endTimeMinutes}`
+    ) - Date.parse(new Date());
+  const seconds = Math.floor((total / 1000) % 60);
+  const minutes = Math.floor((total / 1000 / 60) % 60);
+  const hours = Math.floor((total / (1000 * 60 * 60)) % 24);
+  const days = Math.floor(total / (1000 * 60 * 60 * 24));
+
+  return {
+    total: Math.floor((total / 1000) % 60),
+    days,
+    hours,
+    minutes,
+    seconds,
+  };
+};
+
 export const OrderPage = ({ subscription = false }) => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -238,27 +263,49 @@ export const OrderPage = ({ subscription = false }) => {
                 <div className="card-body">
                   <div>
                     <div>
-                      <p className="card-text _flex _flex-col">🦄 {el.name}</p>
-                      <p className="card-text _flex _flex-col">
-                        📲 {el.number}
-                      </p>
-                      <p className="card-text _flex _flex-col">📩 {el.email}</p>
+                      {(isAdmin() ||
+                        (el.cleaner_id === getUserId() &&
+                          getTimeRemaining(el.date).days < 1)) && (
+                        <>
+                          <p className="card-text _flex _flex-col">
+                            🦄 {el.name}
+                          </p>
+                          <p className="card-text _flex _flex-col">
+                            📲 {el.number}
+                          </p>
+                        </>
+                      )}
+                      {isAdmin() && (
+                        <p className="card-text _flex _flex-col">
+                          📩 {el.email}
+                        </p>
+                      )}
                       <p className="card-text _flex _flex-col">📆 {el.date}</p>
                       <p className="card-text _flex _flex-col">
                         📍 {el.address}
                       </p>
+                      {el.requestpreviouscleaner ? (
+                        <p className="card-text">🧹 Previous cleaner</p>
+                      ) : null}
                       <p className="card-text">
-                        💾 - {el.personaldata ? "✅" : "❌"}
+                        💵 Price: {el.price_original} zl
+                        {el.price_original !==
+                          el.total_service_price_original &&
+                          `, Total price: ${el.total_service_price_original} zl`}
                       </p>
-                      {el.requestpreviouscleaner ? "🧹предыдущий клинер" : null}
+                      {el.price !== el.price_original && (
+                        <p className="card-text">
+                          💸 Price with discount: {el.price} zl
+                          {el.promo ? ` (${el.promo})` : null}
+                          {el.price !== el.total_service_price &&
+                            `, Total price with discount: ${el.total_service_price} zl`}
+                        </p>
+                      )}
                       <p className="card-text">
-                        🔖 Price: {el.price} zl
-                        {el.promo ? ` (${el.promo})` : null}
-                        {el.price !== el.total_service_price &&
-                          `, Total price: ${el.total_service_price} zl`}
+                        💰 Your reward: {el.price_original / 2} zl
                       </p>
                       <p className="card-text">
-                        💸 {el.onlinepayment ? "Online" : "Cash"}
+                        {el.onlinepayment ? "💳 Online" : "💲 Cash"}
                       </p>
                       <p className="card-text">⏳ {el.estimate}</p>
                       <br />
