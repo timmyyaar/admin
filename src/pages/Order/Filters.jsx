@@ -12,10 +12,6 @@ const CLEANER_STATUS_FILTER_OPTIONS = [
 
 const ADMIN_STATUS_FILTER_OPTIONS = Object.values(ORDER_STATUS);
 
-const statusFilterOptions = isAdmin()
-  ? ADMIN_STATUS_FILTER_OPTIONS
-  : CLEANER_STATUS_FILTER_OPTIONS;
-
 const Filters = ({
   statusFilter,
   setStatusFilter,
@@ -23,6 +19,10 @@ const Filters = ({
   setAssigneeFilter,
   cleaners,
 }) => {
+  const statusFilterOptions = isAdmin()
+    ? ADMIN_STATUS_FILTER_OPTIONS
+    : CLEANER_STATUS_FILTER_OPTIONS;
+
   return (
     <div className="d-flex filters-wrapper _gap-4 _mt-2">
       <div className="_w-2/4 d-flex align-items-center text-nowrap assignee-select">
