@@ -100,7 +100,7 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
         </div>
         <div className="w-100 mb-3">
           <label className="mb-2">Address:</label>
-          <input
+          <textarea
             className="form-control"
             value={address}
             onChange={({ target: { value } }) => setAddress(value)}
@@ -177,7 +177,7 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
         </div>
         <div className="w-100 mb-3">
           <label className="mb-2">Counter:</label>
-          <input
+          <textarea
             className="form-control"
             value={counter}
             onChange={({ target: { value } }) => setCounter(value)}
@@ -185,7 +185,7 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
         </div>
         <div className="w-100 mb-3">
           <label className="mb-2">Services:</label>
-          <input
+          <textarea
             className="form-control"
             value={subService}
             onChange={({ target: { value } }) => setSubService(value)}
