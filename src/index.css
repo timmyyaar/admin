@@ -69,3 +69,15 @@ code {
     display: none;
   }
 }
+
+.icon-button {
+  height: 40px;
+  width: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-button.loading:after {
+  margin: 0;
+}
