@@ -2,6 +2,8 @@ import { useState } from "react";
 import { login } from "./action";
 import { USER_DATA_LOCAL_STORAGE_KEY } from "../../constants";
 
+import "./Login.css";
+
 const Login = ({ setIsLoggedIn }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -30,7 +32,7 @@ const Login = ({ setIsLoggedIn }) => {
   };
 
   return (
-    <div className="centered d-flex flex-column align-items-center justify-content-center">
+    <div className="centered d-flex flex-column align-items-center justify-content-center login-wrapper">
       <h2 className="mb-4">Login</h2>
       <div className="mb-3 d-flex flex-column align-items-center w-100">
         <label className="mb-2">Email:</label>
@@ -60,7 +62,7 @@ const Login = ({ setIsLoggedIn }) => {
       </div>
       {loginError && <div className="mt-2 text-danger">{loginError}</div>}
       <button
-        className={`btn btn-primary mt-3 d-flex align-items-center ${
+        className={`btn btn-primary mt-3 d-flex align-items-center login-button ${
           isLoginLoading ? "loading" : ""
         }`}
         disabled={!email || !password || isLoginLoading}
