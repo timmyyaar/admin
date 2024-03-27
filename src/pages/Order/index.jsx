@@ -5,13 +5,12 @@ import "./index.css";
 import { Louder } from "../../components/Louder";
 
 import {
-  getOrders,
-  deleteOrder,
-  assignOrder,
-  fetchUsers,
-  changeOrderStatus,
-} from "./actions";
-import { getUserId, isAdmin, isCleaner, isDryCleaner } from "../../utils";
+  getUserId,
+  isAdmin,
+  isCleaner,
+  isDryCleaner,
+  request,
+} from "../../utils";
 import { ORDER_STATUS, ROLES } from "../../constants";
 import Filters from "./Filters";
 import AdminControls from "./AdminControls";
@@ -48,7 +47,7 @@ const getTimeRemaining = (endTime) => {
 export const OrderPage = ({ subscription = false }) => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [forceUpdate, setForceUpdate] = useState(false);
+  const [deletingOrderIds, setDeletingOrderIds] = useState([]);
   const [isAssignLoading, setIsAssignOrderLoading] = useState([]);
   const [assignError, setAssignError] = useState([]);
   const [cleaners, setCleaners] = useState([]);
@@ -57,40 +56,51 @@ export const OrderPage = ({ subscription = false }) => {
   const [isStatusLoading, setIsStatusLoading] = useState([]);
   const [statusFilter, setStatusFilter] = useState("All");
 
-  const toggleForceUpdate = () => setForceUpdate((fU) => !fU);
-
-  const onDeleteOrder = (id) => {
+  const onDeleteOrder = async (id) => {
     const confirmed = window.confirm(
       "Are you sure you want to delete the order permanently?"
     );
 
     if (confirmed) {
+      try {
+        setDeletingOrderIds((prev) => [...prev, id]);
+
+        await request({ url: `order/${id}`, method: "DELETE" });
+
+        setOrders((prev) => prev.filter((order) => order.id !== id));
+      } finally {
+        setDeletingOrderIds((prev) => prev.filter((order) => order.id !== id));
+      }
+    }
+  };
+
+  const getOrders = async () => {
+    try {
       setLoading(true);
-      deleteOrder({ id }).then(() => {
-        setLoading(false);
-        toggleForceUpdate();
-      });
+
+      const ordersResponse = await request({ url: "order" });
+
+      setOrders(
+        ordersResponse.filter(({ title }) =>
+          subscription ? title === "Subscription" : title !== "Subscription"
+        )
+      );
+    } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
-    setLoading(true);
-    getOrders().then((data) => {
-      setOrders(
-        data.order.filter((el) => {
-          if (subscription) return el.title === "Subscription";
-          else return el.title !== "Subscription";
-        })
-      );
-      setLoading(false);
-    });
-  }, [subscription, forceUpdate]);
+    getOrders();
+
+    // eslint-disable-next-line
+  }, [subscription]);
 
   const getUsers = async () => {
     try {
       setIsUsersLoading(true);
 
-      const usersResponse = await fetchUsers();
+      const usersResponse = await request({ url: "users" });
 
       const cleanersResponse = usersResponse.filter(({ role }) =>
         [ROLES.CLEANER, ROLES.CLEANER_DRY].includes(role)
@@ -113,7 +123,10 @@ export const OrderPage = ({ subscription = false }) => {
       setAssignError([]);
       setIsAssignOrderLoading((prevLoading) => [...prevLoading, id]);
 
-      const assignedOrder = await assignOrder(id, cleanerId);
+      const assignedOrder = await request({
+        url: `order/${id}/${cleanerId}`,
+        method: "PATCH",
+      });
 
       setOrders((prevOrders) =>
         prevOrders.map((prevOrder) =>
@@ -121,10 +134,12 @@ export const OrderPage = ({ subscription = false }) => {
         )
       );
     } catch (error) {
-      setAssignError((prevErrors) => [
-        ...prevErrors,
-        { id, message: error.message },
-      ]);
+      if (error.code === 422) {
+        setAssignError((prevErrors) => [
+          ...prevErrors,
+          { id, message: error.message },
+        ]);
+      }
     } finally {
       setIsAssignOrderLoading((prevLoading) =>
         prevLoading.filter((item) => item !== id)
@@ -136,7 +151,10 @@ export const OrderPage = ({ subscription = false }) => {
     try {
       setIsStatusLoading((prevIsStatusLoading) => [...prevIsStatusLoading, id]);
 
-      const updatedOrder = await changeOrderStatus(id, status);
+      const updatedOrder = await request({
+        url: `order/${id}/update-status/${status}`,
+        method: "PATCH",
+      });
 
       setOrders((prevOrders) =>
         prevOrders.map((prevOrder) =>
@@ -253,8 +271,11 @@ export const OrderPage = ({ subscription = false }) => {
                   {isAdmin() && (
                     <button
                       type="button"
-                      className="btn btn-danger _ml-2"
+                      className={`btn btn-danger d-flex align-items-center justify-content-center _ml-2 ${
+                        deletingOrderIds.includes(el.id) ? "loading" : ""
+                      }`}
                       onClick={() => onDeleteOrder(el.id)}
+                      disabled={deletingOrderIds.includes(el.id)}
                     >
                       Delete
                     </button>

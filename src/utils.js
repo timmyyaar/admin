@@ -93,7 +93,11 @@ export const request = async ({
     } else if (response.status === 500) {
       throw new Error("Server error!");
     } else {
-      throw new Error(parsedResponse.message);
+      // eslint-disable-next-line
+      throw {
+        code: response.status,
+        message: parsedResponse.message,
+      };
     }
   }
 
