@@ -1,5 +1,5 @@
 @media screen and (max-width: 950px) {
-  .assignee-select {
+  .select-wrapper {
     width: 100%;
   }
 
@@ -20,6 +20,15 @@
   }
 
   .status-filter-select {
-    margin-left: 1rem;
+    margin-left: 1.1rem;
   }
+
+  .order-type-select {
+    margin-left: 1.9rem;
+  }
+}
+
+.edit-order-button {
+  top: 0;
+  right: 0;
 }

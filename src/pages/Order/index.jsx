@@ -16,15 +16,19 @@ import Filters from "./Filters";
 import AdminControls from "./AdminControls";
 import AssignOnMe from "./AssignOnMe";
 import CleanerControls from "./CleanerControls";
+import EditOrderModal from "./EditOrderModal";
 
 export const ORDER_STATUS_OPTIONS = Object.values(ORDER_STATUS);
 
 const getTimeRemaining = (endTime) => {
-  const endTimeDay = endTime.slice(0, 2);
-  const endTimeMonth = endTime.slice(3, 5);
-  const endTimeYear = endTime.slice(6, 10);
-  const endTimeHours = endTime.slice(11, 13);
-  const endTimeMinutes = endTime.slice(14, 16);
+  const dateString = endTime.match(/([^\s]+)/)[0];
+  const timeString = endTime.slice(-5);
+
+  const endTimeDay = dateString.match(/.+?(?=\/)/)[0];
+  const endTimeMonth = dateString.slice(-7, -5);
+  const endTimeYear = dateString.slice(-4);
+  const endTimeHours = timeString.slice(-5, -3);
+  const endTimeMinutes = timeString.slice(-2);
 
   const total =
     Date.parse(
@@ -36,7 +40,7 @@ const getTimeRemaining = (endTime) => {
   const days = Math.floor(total / (1000 * 60 * 60 * 24));
 
   return {
-    total: Math.floor((total / 1000) % 60),
+    total,
     days,
     hours,
     minutes,
@@ -55,6 +59,8 @@ export const OrderPage = ({ subscription = false }) => {
   const [assigneeFilter, setAssigneeFilter] = useState("All");
   const [isStatusLoading, setIsStatusLoading] = useState([]);
   const [statusFilter, setStatusFilter] = useState("All");
+  const [orderTypeFilter, setOrderTypeFilter] = useState("All");
+  const [isEditModalOpened, setIsEditModalOpened] = useState(null);
 
   const onDeleteOrder = async (id) => {
     const confirmed = window.confirm(
@@ -170,6 +176,13 @@ export const OrderPage = ({ subscription = false }) => {
 
   const filteredOrders = isAdmin()
     ? orders
+        .filter(({ title }) => {
+          if (orderTypeFilter === "All") {
+            return true;
+          }
+
+          return title === orderTypeFilter;
+        })
         .filter(({ cleaner_id }) => {
           if (assigneeFilter === "All") {
             return true;
@@ -200,15 +213,21 @@ export const OrderPage = ({ subscription = false }) => {
 
           return false;
         })
-        .filter(({ status, cleaner_id }) => {
+        .filter(({ id, status, cleaner_id, date }) => {
+          const leftTimeToOrder = getTimeRemaining(date).total;
+
           if (statusFilter === "All") {
             return !cleaner_id
-              ? status === ORDER_STATUS.APPROVED.value
+              ? status === ORDER_STATUS.APPROVED.value && leftTimeToOrder > 0
               : cleaner_id === getUserId();
           }
 
           if (statusFilter === ORDER_STATUS.APPROVED.value) {
-            return !cleaner_id && status === ORDER_STATUS.APPROVED.value;
+            return (
+              !cleaner_id &&
+              status === ORDER_STATUS.APPROVED.value &&
+              leftTimeToOrder > 0
+            );
           }
 
           if (statusFilter === "all-my-orders") {
@@ -234,6 +253,8 @@ export const OrderPage = ({ subscription = false }) => {
         assigneeFilter={assigneeFilter}
         setAssigneeFilter={setAssigneeFilter}
         cleaners={cleaners}
+        orderTypeFilter={orderTypeFilter}
+        setOrderTypeFilter={setOrderTypeFilter}
       />
       <div className="_mt-8">
         {filteredOrders.length > 0
@@ -282,7 +303,7 @@ export const OrderPage = ({ subscription = false }) => {
                   )}
                 </div>
                 <div className="card-body">
-                  <div>
+                  <div className="position-relative">
                     <div>
                       {(isAdmin() ||
                         (el.cleaner_id === getUserId() &&
@@ -323,7 +344,7 @@ export const OrderPage = ({ subscription = false }) => {
                         </p>
                       )}
                       <p className="card-text">
-                        💰 Your reward: {el.price_original / 2} zl
+                        💰 Your reward: {el.price / 2} zl
                       </p>
                       <p className="card-text">
                         {el.onlinepayment ? "💳 Online" : "💲 Cash"}
@@ -343,6 +364,23 @@ export const OrderPage = ({ subscription = false }) => {
                         </div>
                       ) : null}
                     </div>
+                    {isAdmin() && (
+                      <>
+                        <button
+                          className="btn btn-primary position-absolute edit-order-button"
+                          onClick={() => setIsEditModalOpened(el.id)}
+                        >
+                          Edit
+                        </button>
+                        {isEditModalOpened === el.id && (
+                          <EditOrderModal
+                            order={el}
+                            onClose={() => setIsEditModalOpened(null)}
+                            setOrders={setOrders}
+                          />
+                        )}
+                      </>
+                    )}
                   </div>
                 </div>
               </div>
