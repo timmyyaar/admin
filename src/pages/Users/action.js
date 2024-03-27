@@ -1,6 +1,7 @@
 export async function fetchUsers() {
   const response = await fetch(process.env.REACT_APP_API_URL + `/api/users`, {
     credentials: "include",
+    headers: { "Content-Type": "application/json" },
   });
 
   const parsedResponse = await response.json();
