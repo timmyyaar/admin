@@ -1,7 +1,7 @@
 import Modal from "../../components/common/Modal";
 import { useState } from "react";
 import { EMAIL_REGEX, ROLES } from "../../constants";
-import { createUser } from "./action";
+import { request } from "../../utils";
 
 const ROLES_OPTIONS = Object.values(ROLES);
 
@@ -19,12 +19,18 @@ const AddUserModal = ({ onClose, setUsers }) => {
       setIsCreateLoading(true);
       setCreateError(null);
 
-      const newUser = await createUser({ email, password, role });
+      const newUser = await request({
+        url: "users",
+        method: "POST",
+        body: { email, password, role },
+      });
 
       setUsers((users) => [...users, newUser]);
       onClose();
     } catch (error) {
-      setCreateError(error.message);
+      if (error.code === 422) {
+        setCreateError(error.message);
+      }
     } finally {
       setIsCreateLoading(false);
     }

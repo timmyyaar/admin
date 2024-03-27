@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { deleteUser } from "./action";
 import Modal from "../../components/common/Modal";
+import { request } from "../../utils";
 
 const DeleteUserModal = ({ id, email, role, onClose, setUsers }) => {
   const [isDeleteLoading, setIsDeleteLoading] = useState(false);
@@ -10,7 +10,7 @@ const DeleteUserModal = ({ id, email, role, onClose, setUsers }) => {
     try {
       setIsDeleteLoading(true);
 
-      await deleteUser(id);
+      await request({ url: `users/${id}`, method: "DELETE" });
 
       setUsers((users) => users.filter((user) => user.id !== id));
       onClose();

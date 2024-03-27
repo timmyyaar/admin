@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { changeUserPassword } from "./action";
 import Modal from "../../components/common/Modal";
+import {request} from "../../utils";
 
 const ChangePasswordModal = ({ id, onClose, setUsers }) => {
   const [newPassword, setNewPassword] = useState("");
@@ -10,8 +10,10 @@ const ChangePasswordModal = ({ id, onClose, setUsers }) => {
     try {
       setIsChangePasswordLoading(true);
 
-      const updatedUser = await changeUserPassword(id, {
-        password: newPassword,
+      const updatedUser = await request({
+        url: `users/${id}/change-password`,
+        method: "PATCH",
+        body: { password: newPassword },
       });
 
       setUsers((users) =>
