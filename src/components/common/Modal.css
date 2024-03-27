@@ -8,6 +8,12 @@
   transform: translate(-50%, -50%);
 }
 
+@media screen and (max-width: 950px) {
+  .custom-modal {
+    width: 90vw;
+  }
+}
+
 .custom-modal-body {
   max-height: 80vh;
   overflow: auto;
