@@ -268,7 +268,7 @@ export const OrderPage = ({ subscription = false }) => {
                           getTimeRemaining(el.date).days < 1)) && (
                         <>
                           <p className="card-text _flex _flex-col">
-                            🦄 {el.name}
+                            👤 {el.name}
                           </p>
                           <p className="card-text _flex _flex-col">
                             📲 {el.number}

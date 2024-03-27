@@ -4,6 +4,7 @@ import {
   ROLES,
   USER_DATA_LOCAL_STORAGE_KEY,
 } from "./constants";
+import EventEmitter from "./eventEmitter";
 
 export const logOut = () => {
   localStorage.removeItem(USER_DATA_LOCAL_STORAGE_KEY);
@@ -68,4 +69,33 @@ export const isDryCleaner = () => {
   }
 
   return JSON.parse(localStorageUserData).role === ROLES.CLEANER_DRY;
+};
+
+export const request = async ({
+  url,
+  method = "GET",
+  includeCredentials = true,
+  headers = {},
+  body,
+}) => {
+  const response = await fetch(`${process.env.REACT_APP_API_URL}/api/${url}`, {
+    method,
+    headers: { "Content-Type": "application/json", ...headers },
+    ...(includeCredentials && { credentials: "include" }),
+    ...(body && { body: JSON.stringify(body) }),
+  });
+
+  const parsedResponse = await response.json();
+
+  if (!response.ok) {
+    if (response.status === 401) {
+      EventEmitter.emit("logOut");
+    } else if (response.status === 500) {
+      throw new Error("Server error!");
+    } else {
+      throw new Error(parsedResponse.message);
+    }
+  }
+
+  return parsedResponse;
 };

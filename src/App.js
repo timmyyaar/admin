@@ -13,6 +13,7 @@ import Login from "./pages/Login";
 import { USER_DATA_LOCAL_STORAGE_KEY } from "./constants";
 import { isAdmin, logOut } from "./utils";
 import Users from "./pages/Users";
+import EventEmitter from "./eventEmitter";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -32,6 +33,16 @@ function App() {
       setIsLoggedIn(true);
     }
   }, [localStorageUserData]);
+
+  useEffect(() => {
+    EventEmitter.on("logOut", () => {
+      onLogOut();
+    });
+
+    return () => {
+      EventEmitter.off("logOut");
+    };
+  }, []);
 
   return (
     <AppContext.Provider value={{ onLogOut }}>
