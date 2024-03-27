@@ -15,6 +15,12 @@ export const ORDER_STATUS = {
   DONE: { value: "done", label: "Done" },
 };
 
+export const ORDER_TYPE = {
+  REGULAR: "Regular",
+  DRY: "Dry cleaning",
+  OZONATION: "Ozonation",
+};
+
 export const USER_DATA_LOCAL_STORAGE_KEY = "userData";
 
 export const AUTH_TOKEN_COOKIE_KEY = "authToken";

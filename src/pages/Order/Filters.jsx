@@ -1,6 +1,6 @@
 import { isAdmin } from "../../utils";
 import React from "react";
-import { ORDER_STATUS } from "../../constants";
+import { ORDER_STATUS, ORDER_TYPE } from "../../constants";
 
 const CLEANER_STATUS_FILTER_OPTIONS = [
   { value: ORDER_STATUS.APPROVED.value, label: "Available orders" },
@@ -12,12 +12,16 @@ const CLEANER_STATUS_FILTER_OPTIONS = [
 
 const ADMIN_STATUS_FILTER_OPTIONS = Object.values(ORDER_STATUS);
 
+const ORDER_TYPE_OPTIONS = Object.values(ORDER_TYPE);
+
 const Filters = ({
   statusFilter,
   setStatusFilter,
   assigneeFilter,
   setAssigneeFilter,
   cleaners,
+  orderTypeFilter,
+  setOrderTypeFilter,
 }) => {
   const statusFilterOptions = isAdmin()
     ? ADMIN_STATUS_FILTER_OPTIONS
@@ -25,7 +29,7 @@ const Filters = ({
 
   return (
     <div className="d-flex filters-wrapper _gap-4 _mt-2">
-      <div className="_w-2/4 d-flex align-items-center text-nowrap assignee-select">
+      <div className="_w-2/4 d-flex align-items-center text-nowrap select-wrapper">
         <label className="_mr-3">Status filter:</label>
         <select
           value={statusFilter}
@@ -43,32 +47,54 @@ const Filters = ({
         </select>
       </div>
       {isAdmin() && (
-        <div className="_w-2/4 d-flex align-items-center text-nowrap assignee-select">
-          Assignee filter:
-          <select
-            value={assigneeFilter}
-            className="form-select _ml-2"
-            onChange={({ target: { value } }) => setAssigneeFilter(value)}
-          >
-            <option value="All" selected={assigneeFilter === "All"}>
-              All
-            </option>
-            <option
-              value="Not assigned"
-              selected={assigneeFilter === "Not assigned"}
+        <>
+          <div className="_w-2/4 d-flex align-items-center text-nowrap select-wrapper">
+            Assignee filter:
+            <select
+              value={assigneeFilter}
+              className="form-select _ml-2"
+              onChange={({ target: { value } }) => setAssigneeFilter(value)}
             >
-              Not assigned
-            </option>
-            {cleaners.map((cleaner) => (
-              <option
-                selected={assigneeFilter === cleaner.id}
-                value={cleaner.id}
-              >
-                {cleaner.email}
+              <option value="All" selected={assigneeFilter === "All"}>
+                All
               </option>
-            ))}
-          </select>
-        </div>
+              <option
+                value="Not assigned"
+                selected={assigneeFilter === "Not assigned"}
+              >
+                Not assigned
+              </option>
+              {cleaners.map((cleaner) => (
+                <option
+                  selected={assigneeFilter === cleaner.id}
+                  value={cleaner.id}
+                >
+                  {cleaner.email}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="_w-2/4 d-flex align-items-center text-nowrap select-wrapper">
+            Order type:
+            <select
+              value={orderTypeFilter}
+              className="form-select _ml-2 order-type-select"
+              onChange={({ target: { value } }) => setOrderTypeFilter(value)}
+            >
+              <option value="All" selected={orderTypeFilter === "All"}>
+                All
+              </option>
+              {ORDER_TYPE_OPTIONS.map((orderType) => (
+                <option
+                  selected={orderTypeFilter === orderType}
+                  value={orderType}
+                >
+                  {orderType}
+                </option>
+              ))}
+            </select>
+          </div>
+        </>
       )}
     </div>
   );

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "./Modal.css";
 
 function Modal({
@@ -11,10 +11,18 @@ function Modal({
   isLoading,
   isActionButtonDanger,
 }) {
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, []);
+
   return (
     <>
       <div className="custom-modal bg-body border d-flex flex-column">
-        <div className="p-3">{children}</div>
+        <div className="p-3 custom-modal-body">{children}</div>
         <div className="border-top p-3 _mt-auto d-flex align-items-center">
           {errorMessage && <span className="text-danger">{errorMessage}</span>}
           <div className="d-flex justify-content-end _ml-auto">
