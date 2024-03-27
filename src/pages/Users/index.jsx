@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { fetchUsers } from "./action";
 import AddUserModal from "./AddUserModal";
-import { getUserEmail } from "../../utils";
+import { getUserEmail, request } from "../../utils";
 import { Louder } from "../../components/Louder";
 import ChangeRoleModal from "./ChangeRoleModal";
 import ChangePasswordModal from "./ChangePasswordModal";
@@ -19,7 +18,7 @@ const Users = () => {
     try {
       setIsUsersLoading(true);
 
-      const usersResponse = await fetchUsers();
+      const usersResponse = await request({ url: "users" });
 
       setUsers(usersResponse);
     } finally {

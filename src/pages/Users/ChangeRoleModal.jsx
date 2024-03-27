@@ -1,25 +1,33 @@
 import { useState } from "react";
 import { ROLES } from "../../constants";
-import { updateUserRole } from "./action";
 import Modal from "../../components/common/Modal";
+import { request } from "../../utils";
 
 const ROLES_OPTIONS = Object.values(ROLES);
 
 const ChangeRoleModal = ({ id, currentRole, onClose, setUsers }) => {
   const [newRole, setNewRole] = useState(currentRole);
   const [isUpdateRoleLoading, setIsUpdateRoleLoading] = useState(false);
+  const [roleError, setRoleError] = useState(false);
 
   const onUpdateRole = async () => {
     try {
       setIsUpdateRoleLoading(true);
 
-      const updatedUser = await updateUserRole(id, { role: newRole });
+      const updatedUser = await request({
+        url: `users/${id}/update-role`,
+        method: "PATCH",
+        body: { role: newRole },
+      });
 
       setUsers((users) =>
         users.map((user) => (user.id === updatedUser.id ? updatedUser : user))
       );
       onClose();
     } catch (error) {
+      if (error.code === 422) {
+        setRoleError(true);
+      }
     } finally {
       setIsUpdateRoleLoading(false);
     }
@@ -34,7 +42,7 @@ const ChangeRoleModal = ({ id, currentRole, onClose, setUsers }) => {
       actionButtonText="Update"
     >
       <div className="w-100">
-        <label className="mb-2">New role:</label>
+        <label className="_mb-2">New role:</label>
         <select
           className="form-select"
           onChange={({ target: { value } }) => setNewRole(value)}
@@ -45,6 +53,9 @@ const ChangeRoleModal = ({ id, currentRole, onClose, setUsers }) => {
             </option>
           ))}
         </select>
+        {roleError && (
+          <div className="_mt-2 text-danger">User already have this role!</div>
+        )}
       </div>
     </Modal>
   );
