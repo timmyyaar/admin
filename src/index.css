@@ -81,3 +81,7 @@ code {
 .icon-button.loading:after {
   margin: 0;
 }
+
+.whitespace-nowrap {
+  white-space: nowrap;
+}

@@ -1,5 +1,6 @@
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import "./Modal.css";
+import { LocaleContext } from "../../contexts";
 
 function Modal({
   children,
@@ -11,6 +12,8 @@ function Modal({
   isLoading,
   isActionButtonDanger,
 }) {
+  const { t } = useContext(LocaleContext);
+
   useEffect(() => {
     document.body.style.overflow = "hidden";
 
@@ -27,7 +30,7 @@ function Modal({
           {errorMessage && <span className="text-danger">{errorMessage}</span>}
           <div className="d-flex justify-content-end _ml-auto">
             <button className="btn btn-secondary _mr-3" onClick={onClose}>
-              Cancel
+              {t("admin_cancel")}
             </button>
             <button
               className={`d-flex align-items-center btn ${
@@ -36,7 +39,7 @@ function Modal({
               disabled={isActionButtonDisabled}
               onClick={onActionButtonClick}
             >
-              {actionButtonText || "Add"}
+              {actionButtonText || t("admin_add")}
             </button>
           </div>
         </div>

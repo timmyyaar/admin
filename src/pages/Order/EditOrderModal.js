@@ -1,11 +1,14 @@
 import Modal from "../../components/common/Modal";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { EMAIL_REGEX, ORDER_TYPE } from "../../constants";
 import { request } from "../../utils";
+import { LocaleContext } from "../../contexts";
 
 const ORDER_TYPE_OPTIONS = Object.values(ORDER_TYPE);
 
 const EditOrderModal = ({ onClose, order, setOrders }) => {
+  const { t } = useContext(LocaleContext);
+
   const [name, setName] = useState(order.name);
   const [number, setNumber] = useState(order.number);
   const [email, setEmail] = useState(order.email);
@@ -68,14 +71,14 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
   return (
     <Modal
       onClose={onClose}
-      actionButtonText="Update order"
+      actionButtonText={t("admin_order_edit_update_order")}
       onActionButtonClick={onUpdateOrder}
       isActionButtonDisabled={!isEmailValid || isUpdateLoading}
       isLoading={isUpdateLoading}
     >
       <div>
         <div className="w-100 mb-3">
-          <label className="mb-2">Name:</label>
+          <label className="mb-2">{t("admin_order_edit_name")}:</label>
           <input
             className="form-control"
             value={name}
@@ -83,7 +86,7 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
           />
         </div>
         <div className="w-100 mb-3">
-          <label className="mb-2">Number:</label>
+          <label className="mb-2">{t("admin_order_edit_phone")}:</label>
           <input
             className="form-control"
             value={number}
@@ -99,7 +102,7 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
           />
         </div>
         <div className="w-100 mb-3">
-          <label className="mb-2">Address:</label>
+          <label className="mb-2">{t("admin_order_edit_address")}:</label>
           <textarea
             className="form-control"
             value={address}
@@ -107,7 +110,7 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
           />
         </div>
         <div className="w-100 mb-3">
-          <label className="mb-2">Date:</label>
+          <label className="mb-2">{t("admin_order_edit_date")}:</label>
           <input
             className="form-control"
             value={date}
@@ -115,15 +118,9 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
           />
         </div>
         <div className="w-100 mb-3">
-          <label className="mb-2">Number:</label>
-          <input
-            className="form-control"
-            value={number}
-            onChange={({ target: { value } }) => setNumber(value)}
-          />
-        </div>
-        <div className="w-100 mb-3">
-          <label className="mb-2">Price:</label>
+          <label className="mb-2">
+            {t("admin_order_price_with_discount")}:
+          </label>
           <input
             className="form-control"
             value={price}
@@ -131,7 +128,7 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
           />
         </div>
         <div className="w-100 mb-3">
-          <label className="mb-2">Original price:</label>
+          <label className="mb-2">{t("admin_order_price")}:</label>
           <input
             className="form-control"
             value={priceOriginal}
@@ -139,7 +136,9 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
           />
         </div>
         <div className="w-100 mb-3">
-          <label className="mb-2">Total price:</label>
+          <label className="mb-2">
+            {t("admin_order_total_price_with_discount")}:
+          </label>
           <input
             className="form-control"
             value={totalPrice}
@@ -147,7 +146,7 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
           />
         </div>
         <div className="w-100 mb-3">
-          <label className="mb-2">Total price original:</label>
+          <label className="mb-2">{t("admin_order_total_price")}:</label>
           <input
             className="form-control"
             value={totalPriceOriginal}
@@ -155,7 +154,7 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
           />
         </div>
         <div className="w-100 mb-3">
-          <label className="mb-2">Estimate:</label>
+          <label className="mb-2">{t("admin_order_edit_estimate")}:</label>
           <input
             className="form-control"
             value={estimate}
@@ -163,20 +162,24 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
           />
         </div>
         <div className="w-100 mb-3">
-          <label className="mb-2">Title:</label>
+          <label className="mb-2">{t("admin_order_edit_title")}:</label>
           <select
             className="form-select"
             onChange={({ target: { value } }) => setTitle(value)}
           >
             {ORDER_TYPE_OPTIONS.map((option) => (
               <option selected={option === title} value={option}>
-                {option}
+                {t(
+                  `admin_order_type_${option
+                    .toLowerCase()
+                    .replaceAll(" ", "_")}_option`
+                )}
               </option>
             ))}
           </select>
         </div>
         <div className="w-100 mb-3">
-          <label className="mb-2">Counter:</label>
+          <label className="mb-2">{t("admin_order_edit_counter")}:</label>
           <textarea
             className="form-control"
             value={counter}
@@ -184,7 +187,7 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
           />
         </div>
         <div className="w-100 mb-3">
-          <label className="mb-2">Services:</label>
+          <label className="mb-2">{t("admin_order_edit_services")}:</label>
           <textarea
             className="form-control"
             value={subService}
@@ -200,7 +203,7 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
             onClick={() => setOnlinePayment(!onlinePayment)}
           />
           <label htmlFor="online-payment" className="ms-2 _cursor-pointer">
-            Online payment
+            {t("admin_order_edit_online_payment")}
           </label>
         </div>
         {updateError && <div className="mt-3 text-danger">{updateError}</div>}

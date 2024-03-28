@@ -1,6 +1,7 @@
 import { isAdmin } from "../../utils";
-import React from "react";
+import React, { useContext } from "react";
 import { ORDER_STATUS, ORDER_TYPE } from "../../constants";
+import { LocaleContext } from "../../contexts";
 
 const CLEANER_STATUS_FILTER_OPTIONS = [
   { value: ORDER_STATUS.APPROVED.value, label: "Available orders" },
@@ -23,6 +24,8 @@ const Filters = ({
   orderTypeFilter,
   setOrderTypeFilter,
 }) => {
+  const { t } = useContext(LocaleContext);
+
   const statusFilterOptions = isAdmin()
     ? ADMIN_STATUS_FILTER_OPTIONS
     : CLEANER_STATUS_FILTER_OPTIONS;
@@ -30,18 +33,18 @@ const Filters = ({
   return (
     <div className="d-flex filters-wrapper _gap-4 _mt-2">
       <div className="_w-2/4 d-flex align-items-center text-nowrap select-wrapper">
-        <label className="_mr-3">Status filter:</label>
+        <label className="_mr-3">{t("admin_order_status_filter_title")}:</label>
         <select
           value={statusFilter}
           className="form-select status-filter-select"
           onChange={({ target: { value } }) => setStatusFilter(value)}
         >
           <option value={"All"} selected={statusFilter === "All"}>
-            All
+            {t("admin_all_option")}
           </option>
           {statusFilterOptions.map(({ value, label }) => (
             <option selected={statusFilter === value} value={value}>
-              {label}
+              {t(`admin_order_${label.toLowerCase().replaceAll(" ", "_")}_option`)}
             </option>
           ))}
         </select>
@@ -49,20 +52,20 @@ const Filters = ({
       {isAdmin() && (
         <>
           <div className="_w-2/4 d-flex align-items-center text-nowrap select-wrapper">
-            Assignee filter:
+            {t("admin_assignee_filter_title")}:
             <select
               value={assigneeFilter}
               className="form-select _ml-2"
               onChange={({ target: { value } }) => setAssigneeFilter(value)}
             >
               <option value="All" selected={assigneeFilter === "All"}>
-                All
+                {t("admin_all_option")}
               </option>
               <option
                 value="Not assigned"
                 selected={assigneeFilter === "Not assigned"}
               >
-                Not assigned
+                {t("admin_not_assigned_option")}
               </option>
               {cleaners.map((cleaner) => (
                 <option
@@ -75,21 +78,25 @@ const Filters = ({
             </select>
           </div>
           <div className="_w-2/4 d-flex align-items-center text-nowrap select-wrapper">
-            Order type:
+            {t("admin_order_type_filter_title")}:
             <select
               value={orderTypeFilter}
               className="form-select _ml-2 order-type-select"
               onChange={({ target: { value } }) => setOrderTypeFilter(value)}
             >
               <option value="All" selected={orderTypeFilter === "All"}>
-                All
+                {t("admin_all_option")}
               </option>
               {ORDER_TYPE_OPTIONS.map((orderType) => (
                 <option
                   selected={orderTypeFilter === orderType}
                   value={orderType}
                 >
-                  {orderType}
+                  {t(
+                    `admin_order_type_${orderType
+                      .toLowerCase()
+                      .replaceAll(" ", "_")}_option`
+                  )}
                 </option>
               ))}
             </select>
