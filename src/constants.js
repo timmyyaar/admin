@@ -24,3 +24,5 @@ export const ORDER_TYPE = {
 export const USER_DATA_LOCAL_STORAGE_KEY = "userData";
 
 export const AUTH_TOKEN_COOKIE_KEY = "authToken";
+
+export const BRACKETS_REGEX = /\([^()]*\)/;
