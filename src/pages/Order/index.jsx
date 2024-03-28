@@ -11,7 +11,7 @@ import {
   isDryCleaner,
   request,
 } from "../../utils";
-import { ORDER_STATUS, ROLES } from "../../constants";
+import { BRACKETS_REGEX, ORDER_STATUS, ROLES } from "../../constants";
 import Filters from "./Filters";
 import AdminControls from "./AdminControls";
 import AssignOnMe from "./AssignOnMe";
@@ -64,6 +64,22 @@ export const OrderPage = ({ subscription = false }) => {
   const [isEditModalOpened, setIsEditModalOpened] = useState(null);
 
   const { t } = useContext(LocaleContext);
+
+  const getTranslatedServices = (services) => {
+    let transformedServicesString = services;
+
+    services
+      .split(BRACKETS_REGEX)
+      .map((service) => service.trim())
+      .forEach((service) => {
+        transformedServicesString = transformedServicesString.replace(
+          service,
+          t(service)
+        );
+      });
+
+    return transformedServicesString;
+  };
 
   const onDeleteOrder = async (id, email) => {
     const confirmed = window.confirm(
@@ -381,8 +397,12 @@ export const OrderPage = ({ subscription = false }) => {
                     </div>
                     <div>
                       <p className="card-text">{el.title}:</p>
-                      <p className="card-text">{el.counter}</p>
-                      <p className="card-text">{el.subservice}</p>
+                      <p className="card-text">
+                        {getTranslatedServices(el.counter)}
+                      </p>
+                      <p className="card-text">
+                        {getTranslatedServices(el.subservice)}
+                      </p>
                       {el.sectitle ? (
                         <div>
                           <p className="card-text">{el.sectitle}:</p>
