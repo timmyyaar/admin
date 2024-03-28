@@ -1,8 +1,10 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import { isAdmin } from "../../utils";
 
 import "./index.css";
+import { LocaleContext } from "../../contexts";
+import LocaleSelect from "../LocaleSelect/LocaleSelect";
 
 const CLEANER_NAVIGATION = [{ to: "/order", title: "Orders" }];
 
@@ -16,7 +18,8 @@ const ADMIN_NAVIGATION = [
   { to: "/users", title: "Users" },
 ];
 
-export const Header = ({ onLogOut }) => {
+export const Header = ({ onLogOut, locale, setLocale }) => {
+  const { t } = useContext(LocaleContext);
   const [showMenu, setShowMenu] = useState(false);
 
   const navigation = isAdmin()
@@ -30,7 +33,7 @@ export const Header = ({ onLogOut }) => {
           className="btn btn-primary"
           onClick={() => setShowMenu(!showMenu)}
         >
-          Menu
+          {t("admin_menu")}
         </button>
         {showMenu && (
           <div className="w-100 h-100 position-fixed _left-0 _top-0 _z-10 mobile-navigation">
@@ -49,10 +52,12 @@ export const Header = ({ onLogOut }) => {
               >
                 <Link
                   to={nav.to}
-                  className="nav-link"
+                  className="nav-link whitespace-nowrap"
                   onClick={() => setShowMenu(false)}
                 >
-                  {nav.title}
+                  {t(
+                    `admin_${nav.title.toLowerCase().replace(" ", "_")}_header`
+                  )}
                 </Link>
               </div>
             ))}
@@ -65,8 +70,12 @@ export const Header = ({ onLogOut }) => {
             {navigation.map((nav) => (
               <Fragment key={nav.to + nav.title}>
                 <div className="nav-item">
-                  <Link to={nav.to} className="nav-link">
-                    {nav.title}
+                  <Link to={nav.to} className="nav-link whitespace-nowrap">
+                    {t(
+                      `admin_${nav.title
+                        .toLowerCase()
+                        .replace(" ", "_")}_header`
+                    )}
                   </Link>
                 </div>
               </Fragment>
@@ -74,9 +83,12 @@ export const Header = ({ onLogOut }) => {
           </div>
         </nav>
       </div>
-      <button className="ml-auto btn btn-danger text-nowrap" onClick={onLogOut}>
-        Log Out
-      </button>
+      <div className="ml-auto d-flex">
+        <LocaleSelect locale={locale} setLocale={setLocale} />
+        <button className="btn btn-danger text-nowrap _ml-3" onClick={onLogOut}>
+          {t("admin_log_out_button")}
+        </button>
+      </div>
     </header>
   );
 };

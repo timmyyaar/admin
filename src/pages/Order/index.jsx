@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 
 import "./index.css";
 
@@ -17,6 +17,7 @@ import AdminControls from "./AdminControls";
 import AssignOnMe from "./AssignOnMe";
 import CleanerControls from "./CleanerControls";
 import EditOrderModal from "./EditOrderModal";
+import { LocaleContext } from "../../contexts";
 
 export const ORDER_STATUS_OPTIONS = Object.values(ORDER_STATUS);
 
@@ -62,9 +63,11 @@ export const OrderPage = ({ subscription = false }) => {
   const [orderTypeFilter, setOrderTypeFilter] = useState("All");
   const [isEditModalOpened, setIsEditModalOpened] = useState(null);
 
-  const onDeleteOrder = async (id) => {
+  const { t } = useContext(LocaleContext);
+
+  const onDeleteOrder = async (id, email) => {
     const confirmed = window.confirm(
-      "Are you sure you want to delete the order permanently?"
+      `${t("admin_order_delete_confirmation")} - ${id} (${email})?`
     );
 
     if (confirmed) {
@@ -295,10 +298,10 @@ export const OrderPage = ({ subscription = false }) => {
                       className={`btn btn-danger d-flex align-items-center justify-content-center _ml-2 ${
                         deletingOrderIds.includes(el.id) ? "loading" : ""
                       }`}
-                      onClick={() => onDeleteOrder(el.id)}
+                      onClick={() => onDeleteOrder(el.id, el.email)}
                       disabled={deletingOrderIds.includes(el.id)}
                     >
-                      Delete
+                      {t("admin_delete")}
                     </button>
                   )}
                 </div>
@@ -324,30 +327,54 @@ export const OrderPage = ({ subscription = false }) => {
                       )}
                       <p className="card-text _flex _flex-col">📆 {el.date}</p>
                       <p className="card-text _flex _flex-col">
-                        📍 {el.address}
+                        📍{" "}
+                        {el.address
+                          .replace("Street", t("admin_order_street"))
+                          .replace("House", t("admin_order_house"))
+                          .replace(
+                            "Private house",
+                            t("admin_order_private_house")
+                          )
+                          .replace("Apartment", t("admin_order_apartment"))
+                          .replace("Postcode", t("admin_order_postcode"))
+                          .replace("Entrance", t("admin_order_entrance"))
+                          .replace("Door phone", t("admin_order_door_phone"))
+                          .replace(
+                            "Additional information",
+                            t("admin_order_additional_information")
+                          )}
                       </p>
                       {el.requestpreviouscleaner ? (
-                        <p className="card-text">🧹 Previous cleaner</p>
+                        <p className="card-text">
+                          🧹 {t("admin_order_previous_cleaner")}
+                        </p>
                       ) : null}
                       <p className="card-text">
-                        💵 Price: {el.price_original} zl
+                        💵 {t("admin_order_price")}: {el.price_original} zl
                         {el.price_original !==
                           el.total_service_price_original &&
-                          `, Total price: ${el.total_service_price_original} zl`}
+                          `, ${t("admin_order_total_price")}: ${
+                            el.total_service_price_original
+                          } zl`}
                       </p>
                       {el.price !== el.price_original && (
                         <p className="card-text">
-                          💸 Price with discount: {el.price} zl
+                          💸 {t("admin_order_price_with_discount")}: {el.price}{" "}
+                          zl
                           {el.promo ? ` (${el.promo})` : null}
                           {el.price !== el.total_service_price &&
-                            `, Total price with discount: ${el.total_service_price} zl`}
+                            `, ${t("admin_order_total_price_with_discount")}: ${
+                              el.total_service_price
+                            } zl`}
                         </p>
                       )}
                       <p className="card-text">
-                        💰 Your reward: {el.price / 2} zl
+                        💰 {t("admin_order_your_reward")}: {el.price / 2} zl
                       </p>
                       <p className="card-text">
-                        {el.onlinepayment ? "💳 Online" : "💲 Cash"}
+                        {el.onlinepayment
+                          ? `💳 ${t("admin_order_online")}`
+                          : `💲 ${t("admin_order_cash")}`}
                       </p>
                       <p className="card-text">⏳ {el.estimate}</p>
                       <br />
@@ -370,7 +397,7 @@ export const OrderPage = ({ subscription = false }) => {
                           className="btn btn-primary position-absolute edit-order-button"
                           onClick={() => setIsEditModalOpened(el.id)}
                         >
-                          Edit
+                          {t("admin_edit")}
                         </button>
                         {isEditModalOpened === el.id && (
                           <EditOrderModal
@@ -385,7 +412,11 @@ export const OrderPage = ({ subscription = false }) => {
                 </div>
               </div>
             ))
-          : !loading && <div className="text-warning">No orders found...</div>}
+          : !loading && (
+              <div className="text-warning">
+                {t("admin_no_orders_found")}...
+              </div>
+            )}
       </div>
     </div>
   );

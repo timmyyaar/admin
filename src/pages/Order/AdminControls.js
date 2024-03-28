@@ -1,6 +1,7 @@
 import { ORDER_STATUS, ROLES } from "../../constants";
-import React from "react";
+import React, { useContext } from "react";
 import { ORDER_STATUS_OPTIONS } from "./index";
+import { LocaleContext } from "../../contexts";
 
 const AdminControls = ({
   order,
@@ -10,6 +11,8 @@ const AdminControls = ({
   cleaners,
   onChangeOrderStatus,
 }) => {
+  const { t } = useContext(LocaleContext);
+
   const cleanersOptions = cleaners.filter(({ role }) =>
     ["Dry cleaning", "Ozonation"].includes(order.title)
       ? role === ROLES.CLEANER_DRY
@@ -19,7 +22,7 @@ const AdminControls = ({
   return (
     <div className="d-flex admin-controls _gap-4 _w-full">
       <div className="_w-full d-flex align-items-center">
-        Assignee:
+        {t("admin_assignee")}:
         <select
           disabled={isAssignLoading.includes(order.id)}
           value={order.cleaner_id}
@@ -40,7 +43,7 @@ const AdminControls = ({
         </select>
       </div>
       <div className="_w-full d-flex align-items-center">
-        Status:
+        {t("admin_status")}:
         <select
           disabled={
             isStatusLoading.includes(order.id) ||
@@ -56,7 +59,9 @@ const AdminControls = ({
             order.cleaner_id ? value !== ORDER_STATUS.CREATED.value : true
           ).map(({ value, label }) => (
             <option selected={value === order.status} value={value}>
-              {label}
+              {t(
+                `admin_order_${label.toLowerCase().replaceAll(" ", "_")}_option`
+              )}
             </option>
           ))}
         </select>
