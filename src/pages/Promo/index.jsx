@@ -122,7 +122,7 @@ export const PromoPage = () => {
       <hr />
       <div className="_grid _grid-cols-2 _gap-4 ">
         {promo.map((el, i) => (
-          <div key={JSON.stringify(el) + i + el.id}>
+          <div key={el.id}>
             <div className="card">
               <div className="card-header d-flex justify-content-between align-items-center">
                 <h5 className="card-title mb-0">{el.code}</h5>

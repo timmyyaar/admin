@@ -26,3 +26,5 @@ export const USER_DATA_LOCAL_STORAGE_KEY = "userData";
 export const AUTH_TOKEN_COOKIE_KEY = "authToken";
 
 export const BRACKETS_REGEX = /\([^()]*\)/;
+
+export const NEGATIVE_POSITIVE_NUMBERS_EMPTY_REGEX = /^-?(\s*|[0-9\b])+$/
