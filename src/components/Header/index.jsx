@@ -16,6 +16,7 @@ const ADMIN_NAVIGATION = [
   { to: "/subscription", title: "Subscription" },
   { to: "/reviews", title: "Reviews" },
   { to: "/users", title: "Users" },
+  { to: "/discounts", title: "Discounts" },
 ];
 
 export const Header = ({ onLogOut, locale, setLocale }) => {

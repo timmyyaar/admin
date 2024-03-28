@@ -15,6 +15,7 @@ import { isAdmin, logOut, request } from "./utils";
 import Users from "./pages/Users";
 import EventEmitter from "./eventEmitter";
 import { useLocales } from "./hooks/useLocales";
+import Discounts from "./pages/Dicsounts";
 
 const LOCALE_LOCAL_STORAGE_KEY = "locale";
 
@@ -99,6 +100,7 @@ function App() {
                       />
                       <Route path="/reviews" element={<ReviewsPage />} />
                       <Route path="/users" element={<Users />} />
+                      <Route path="/discounts" element={<Discounts />} />
                     </>
                   )}
                 </Routes>
