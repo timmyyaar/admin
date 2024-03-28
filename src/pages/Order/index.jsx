@@ -396,7 +396,7 @@ export const OrderPage = ({ subscription = false }) => {
                       <br />
                     </div>
                     <div>
-                      <p className="card-text">{el.title}:</p>
+                      <p className="card-text">{t(el.title)}:</p>
                       <p className="card-text">
                         {getTranslatedServices(el.counter)}
                       </p>
