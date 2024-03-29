@@ -75,7 +75,7 @@ function AddOrEditDiscountModal({ onClose, setDiscounts, editingDiscount }) {
       errorMessage={createError}
     >
       <h5 className="mb-4">Add new discount</h5>
-      <div className="w-100 mb-3 d-flex align-items-center">
+      <div className="_inline-grid _gap-4 _w-full edit-discount-wrapper align-items-center">
         <label className="_mr-2">Date:</label>
         <DatePicker
           selected={date}
@@ -83,8 +83,6 @@ function AddOrEditDiscountModal({ onClose, setDiscounts, editingDiscount }) {
           dateFormat="d/MM/yyyy"
           minDate={new Date()}
         />
-      </div>
-      <div className="w-100 mb-3 d-flex align-items-center">
         <label className="_mr-2">Value:</label>
         <input
           className="form-control"

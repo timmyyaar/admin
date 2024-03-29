@@ -343,7 +343,7 @@ export const OrderPage = ({ subscription = false }) => {
                       </p>
                       {el.transportation_price > 0 && (
                         <p className="width-max-content p-2 mt-2 font-weight-semi-bold transportation-badge">
-                          {t("summary_transportation_title")}
+                          {t("summary_transportation_title")} ({el.city})
                           <span> +{el.transportation_price} zl</span>
                         </p>
                       )}

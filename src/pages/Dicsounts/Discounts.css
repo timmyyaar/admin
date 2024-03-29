@@ -9,3 +9,7 @@
     grid-template-columns: repeat(1, minmax(0, 1fr));
   }
 }
+
+.edit-discount-wrapper {
+  grid-template-columns: min-content auto;
+}
