@@ -86,3 +86,27 @@ code {
 .whitespace-nowrap {
   white-space: nowrap;
 }
+
+.font-weight-semi-bold {
+  font-weight: 600;
+}
+
+.border-rounded {
+  border-radius: 1rem;
+}
+
+.height-max-content {
+  height: max-content;
+}
+
+.w-70 {
+  width: 70%;
+}
+
+.w-30 {
+  width: 30%;
+}
+
+.width-max-content {
+  width: max-content;
+}

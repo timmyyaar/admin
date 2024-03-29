@@ -16,8 +16,10 @@ import Filters from "./Filters";
 import AdminControls from "./AdminControls";
 import AssignOnMe from "./AssignOnMe";
 import CleanerControls from "./CleanerControls";
-import EditOrderModal from "./EditOrderModal";
 import { LocaleContext } from "../../contexts";
+import Price from "./Price";
+import AdminButtons from "./AdminButtons";
+import NewClientMessage from "./NewClientMessage";
 
 export const ORDER_STATUS_OPTIONS = Object.values(ORDER_STATUS);
 
@@ -52,7 +54,6 @@ const getTimeRemaining = (endTime) => {
 export const OrderPage = ({ subscription = false }) => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [deletingOrderIds, setDeletingOrderIds] = useState([]);
   const [isAssignLoading, setIsAssignOrderLoading] = useState([]);
   const [assignError, setAssignError] = useState([]);
   const [cleaners, setCleaners] = useState([]);
@@ -61,7 +62,6 @@ export const OrderPage = ({ subscription = false }) => {
   const [isStatusLoading, setIsStatusLoading] = useState([]);
   const [statusFilter, setStatusFilter] = useState("All");
   const [orderTypeFilter, setOrderTypeFilter] = useState("All");
-  const [isEditModalOpened, setIsEditModalOpened] = useState(null);
 
   const { t } = useContext(LocaleContext);
 
@@ -79,24 +79,6 @@ export const OrderPage = ({ subscription = false }) => {
       });
 
     return transformedServicesString;
-  };
-
-  const onDeleteOrder = async (id, email) => {
-    const confirmed = window.confirm(
-      `${t("admin_order_delete_confirmation")} - ${id} (${email})?`
-    );
-
-    if (confirmed) {
-      try {
-        setDeletingOrderIds((prev) => [...prev, id]);
-
-        await request({ url: `order/${id}`, method: "DELETE" });
-
-        setOrders((prev) => prev.filter((order) => order.id !== id));
-      } finally {
-        setDeletingOrderIds((prev) => prev.filter((order) => order.id !== id));
-      }
-    }
   };
 
   const getOrders = async () => {
@@ -280,8 +262,13 @@ export const OrderPage = ({ subscription = false }) => {
           ? filteredOrders.map((el) => (
               <div className="card _mb-3" key={el.id}>
                 <div className="card-header _gap-4 d-flex justify-content-between align-items-center order-header">
-                  <h5 className="card-title mb-0 min-width-max-content _mr-2">
-                    #️⃣️ {el.id}
+                  <h5 className="card-title mb-0 min-width-max-content _mr-2 d-flex align-items-center justify-content-between order-title">
+                    <div>#️⃣️ {el.id}</div>
+                    {isAdmin() && (
+                      <div className="mobile-only">
+                        <AdminButtons t={t} setOrders={setOrders} order={el} />
+                      </div>
+                    )}
                   </h5>
                   {isAdmin() && (
                     <AdminControls
@@ -309,40 +296,38 @@ export const OrderPage = ({ subscription = false }) => {
                     />
                   )}
                   {isAdmin() && (
-                    <button
-                      type="button"
-                      className={`btn btn-danger d-flex align-items-center justify-content-center _ml-2 ${
-                        deletingOrderIds.includes(el.id) ? "loading" : ""
-                      }`}
-                      onClick={() => onDeleteOrder(el.id, el.email)}
-                      disabled={deletingOrderIds.includes(el.id)}
-                    >
-                      {t("admin_delete")}
-                    </button>
+                    <div className="mobile-none">
+                      <AdminButtons t={t} setOrders={setOrders} order={el} />
+                    </div>
                   )}
                 </div>
-                <div className="card-body">
-                  <div className="position-relative">
+                <div className="card-body d-flex position-relative order-wrapper">
+                  <div
+                    className={`position-relative ${
+                      el.is_new_client ? "order-container" : "w-100"
+                    }`}
+                  >
                     <div>
+                      {el.is_new_client && (
+                        <div className="mb-3 mobile-only">
+                          <NewClientMessage t={t} />
+                        </div>
+                      )}
                       {(isAdmin() ||
                         (el.cleaner_id === getUserId() &&
                           getTimeRemaining(el.date).days < 1)) && (
                         <>
-                          <p className="card-text _flex _flex-col">
-                            👤 {el.name}
-                          </p>
-                          <p className="card-text _flex _flex-col">
-                            📲 {el.number}
-                          </p>
+                          <p>👤 {el.name}</p>
+                          <p>📲 {el.number}</p>
                         </>
                       )}
-                      {isAdmin() && (
-                        <p className="card-text _flex _flex-col">
-                          📩 {el.email}
-                        </p>
-                      )}
-                      <p className="card-text _flex _flex-col">📆 {el.date}</p>
-                      <p className="card-text _flex _flex-col">
+                      {isAdmin() && <p>📩 {el.email}</p>}
+                      <p>📆 {el.date}</p>
+                      <p
+                        className={`${
+                          el.transportation_price > 0 ? "mb-0" : "mb-3"
+                        }`}
+                      >
                         📍{" "}
                         {el.address
                           .replace("Street", t("admin_order_street"))
@@ -354,45 +339,45 @@ export const OrderPage = ({ subscription = false }) => {
                           .replace("Apartment", t("admin_order_apartment"))
                           .replace("Postcode", t("admin_order_postcode"))
                           .replace("Entrance", t("admin_order_entrance"))
-                          .replace("Door phone", t("admin_order_door_phone"))
-                          .replace(
-                            "Additional information",
-                            t("admin_order_additional_information")
-                          )}
+                          .replace("Door phone", t("admin_order_door_phone"))}
                       </p>
+                      {el.transportation_price > 0 && (
+                        <p className="width-max-content p-2 mt-2 font-weight-semi-bold transportation-badge">
+                          {t("summary_transportation_title")}
+                          <span> +{el.transportation_price} zl</span>
+                        </p>
+                      )}
                       {el.requestpreviouscleaner ? (
                         <p className="card-text">
                           🧹 {t("admin_order_previous_cleaner")}
                         </p>
                       ) : null}
-                      <p className="card-text">
-                        💵 {t("admin_order_price")}: {el.price_original} zl
-                        {el.price_original !==
-                          el.total_service_price_original &&
-                          `, ${t("admin_order_total_price")}: ${
-                            el.total_service_price_original
-                          } zl`}
-                      </p>
-                      {el.price !== el.price_original && (
-                        <p className="card-text">
-                          💸 {t("admin_order_price_with_discount")}: {el.price}{" "}
-                          zl
-                          {el.promo ? ` (${el.promo})` : null}
-                          {el.price !== el.total_service_price &&
-                            `, ${t("admin_order_total_price_with_discount")}: ${
-                              el.total_service_price
-                            } zl`}
-                        </p>
-                      )}
+                      <Price t={t} {...el} />
                       <p className="card-text">
                         💰 {t("admin_order_your_reward")}: {el.price / 2} zl
                       </p>
-                      <p className="card-text">
+                      <p className="card-text font-weight-semi-bold">
+                        <span className="_mr-1">
+                          {el.onlinepayment ? "💳" : "💲"}
+                        </span>
+                        <span className="_mr-1">
+                          {t("admin_order_payment")}:
+                        </span>
                         {el.onlinepayment
-                          ? `💳 ${t("admin_order_online")}`
-                          : `💲 ${t("admin_order_cash")}`}
+                          ? `${t("admin_order_online")}`
+                          : `${t("admin_order_cash")}`}
                       </p>
-                      <p className="card-text">⏳ {el.estimate}</p>
+                      <p className="card-text font-weight-semi-bold">
+                        ⏳ {t("admin_order_estimate")}: {el.estimate}
+                      </p>
+                      <p className="card-text _ml-2 font-weight-semi-bold">
+                        <span className="_mr-1">🔌</span>
+                        {el.subservice.includes(
+                          "Vacuum_cleaner_sub_service_summery "
+                        )
+                          ? t("admin_order_need_vacuum_cleaner")
+                          : t("admin_order_have_vacuum_cleaner")}
+                      </p>
                       <br />
                     </div>
                     <div>
@@ -403,32 +388,21 @@ export const OrderPage = ({ subscription = false }) => {
                       <p className="card-text">
                         {getTranslatedServices(el.subservice)}
                       </p>
-                      {el.sectitle ? (
-                        <div>
-                          <p className="card-text">{el.sectitle}:</p>
-                          <p className="card-text">{el.seccounter}</p>
-                          <p className="card-text">{el.secsubservice}</p>
-                        </div>
-                      ) : null}
+                      {el.additional_information && (
+                        <p className="card-text font-weight-semi-bold">
+                          💬 {t("admin_order_additional_information")}:
+                          <span className="_ml-1">
+                            {el.additional_information}
+                          </span>
+                        </p>
+                      )}
                     </div>
-                    {isAdmin() && (
-                      <>
-                        <button
-                          className="btn btn-primary position-absolute edit-order-button"
-                          onClick={() => setIsEditModalOpened(el.id)}
-                        >
-                          {t("admin_edit")}
-                        </button>
-                        {isEditModalOpened === el.id && (
-                          <EditOrderModal
-                            order={el}
-                            onClose={() => setIsEditModalOpened(null)}
-                            setOrders={setOrders}
-                          />
-                        )}
-                      </>
-                    )}
                   </div>
+                  {el.is_new_client && (
+                    <div className="mobile-none">
+                      <NewClientMessage t={t} />
+                    </div>
+                  )}
                 </div>
               </div>
             ))

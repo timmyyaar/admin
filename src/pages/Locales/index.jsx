@@ -1,4 +1,5 @@
 import React, { Fragment, useEffect, useState } from "react";
+import './Locales.css'
 
 import { Louder } from "../../components/Louder";
 

@@ -33,10 +33,7 @@ const AdminControls = ({
             N/A
           </option>
           {cleanersOptions.map((cleaner) => (
-            <option
-              selected={cleaner.id === order.cleaner_id}
-              value={cleaner.id}
-            >
+            <option value={cleaner.id} key={cleaner.id}>
               {cleaner.email}
             </option>
           ))}
@@ -58,7 +55,7 @@ const AdminControls = ({
           {ORDER_STATUS_OPTIONS.filter(({ value }) =>
             order.cleaner_id ? value !== ORDER_STATUS.CREATED.value : true
           ).map(({ value, label }) => (
-            <option selected={value === order.status} value={value}>
+            <option value={value} key={value}>
               {t(
                 `admin_order_${label.toLowerCase().replaceAll(" ", "_")}_option`
               )}
