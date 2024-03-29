@@ -14,6 +14,12 @@ const getDateObjectFromString = (string) => {
   return new Date(`${year}-${month}-${day}`);
 };
 
+const getTwoDigitsMonth = (date) => {
+  const dateMonth = date.getMonth() + 1;
+
+  return dateMonth >= 10 ? dateMonth : `0${dateMonth}`;
+};
+
 function AddOrEditDiscountModal({ onClose, setDiscounts, editingDiscount }) {
   const [date, setDate] = useState(
     editingDiscount ? getDateObjectFromString(editingDiscount.date) : new Date()
@@ -38,9 +44,9 @@ function AddOrEditDiscountModal({ onClose, setDiscounts, editingDiscount }) {
         url: `discounts${editingDiscount ? `/${editingDiscount.id}` : ""}`,
         method: editingDiscount ? "PUT" : "POST",
         body: {
-          date: `${date.getDate()}/${
-            date.getMonth() + 1
-          }/${date.getFullYear()}`,
+          date: `${date.getDate()}/${getTwoDigitsMonth(
+            date
+          )}/${date.getFullYear()}`,
           value: +value,
         },
       });

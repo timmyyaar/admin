@@ -43,7 +43,7 @@ const Filters = ({
             {t("admin_all_option")}
           </option>
           {statusFilterOptions.map(({ value, label }) => (
-            <option selected={statusFilter === value} value={value}>
+            <option key={value} value={value}>
               {t(`admin_order_${label.toLowerCase().replaceAll(" ", "_")}_option`)}
             </option>
           ))}
@@ -69,8 +69,8 @@ const Filters = ({
               </option>
               {cleaners.map((cleaner) => (
                 <option
-                  selected={assigneeFilter === cleaner.id}
                   value={cleaner.id}
+                  key={cleaner.id}
                 >
                   {cleaner.email}
                 </option>
@@ -89,8 +89,8 @@ const Filters = ({
               </option>
               {ORDER_TYPE_OPTIONS.map((orderType) => (
                 <option
-                  selected={orderTypeFilter === orderType}
                   value={orderType}
+                  key={orderType}
                 >
                   {t(
                     `admin_order_type_${orderType

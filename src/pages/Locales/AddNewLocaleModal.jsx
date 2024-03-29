@@ -44,41 +44,33 @@ function AddNewLocaleModal({ onClose, setLocales }) {
       onActionButtonClick={createLocale}
       errorMessage={createError}
     >
-      <h5 className="mb-4">Add new locale</h5>
-      <div className="w-100 mb-3 d-flex align-items-center">
-        <label className="_mr-2">Key:</label>
+      <h5 className="mb-4 text-center">Add new locale</h5>
+      <div className="_inline-grid _gap-4 _w-full edit-locales-wrapper align-items-center">
+        <label>Key:</label>
         <input
           className="form-control"
           value={key}
           onChange={({ target: { value } }) => setKey(value)}
         />
-      </div>
-      <div className="w-100 mb-3 d-flex align-items-center">
-        <label className="_mr-2">English:</label>
+        <label>English:</label>
         <textarea
           className="form-control"
           value={english}
           onChange={({ target: { value } }) => setEnglish(value)}
         />
-      </div>
-      <div className="w-100 mb-3 d-flex align-items-center">
-        <label className="_mr-2">Polish:</label>
+        <label>Polish:</label>
         <textarea
           className="form-control"
           value={polish}
           onChange={({ target: { value } }) => setPolish(value)}
         />
-      </div>
-      <div className="w-100 mb-3 d-flex align-items-center">
-        <label className="_mr-2">Russian:</label>
+        <label>Russian:</label>
         <textarea
           className="form-control"
           value={russian}
           onChange={({ target: { value } }) => setRussian(value)}
         />
-      </div>
-      <div className="w-100 mb-3 d-flex align-items-center">
-        <label className="_mr-2">Ukrainian:</label>
+        <label>Ukrainian:</label>
         <textarea
           className="form-control"
           value={ukrainian}

@@ -71,6 +71,8 @@ export const isDryCleaner = () => {
   return JSON.parse(localStorageUserData).role === ROLES.CLEANER_DRY;
 };
 
+export const getFloatOneDigit = number => Number(number.toFixed(1))
+
 export const request = async ({
   url,
   method = "GET",

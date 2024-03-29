@@ -1,7 +1,7 @@
 import Modal from "../../components/common/Modal";
 import React, { useContext, useState } from "react";
 import { EMAIL_REGEX, ORDER_TYPE } from "../../constants";
-import { request } from "../../utils";
+import { getFloatOneDigit, request } from "../../utils";
 import { LocaleContext } from "../../contexts";
 
 const ORDER_TYPE_OPTIONS = Object.values(ORDER_TYPE);
@@ -68,6 +68,13 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
     }
   };
 
+  const totalPriceDifference = getFloatOneDigit(
+    order.total_service_price - order.price
+  );
+  const totalPriceOriginalDifference = getFloatOneDigit(
+    order.total_service_price_original - order.price_original
+  );
+
   return (
     <Modal
       onClose={onClose}
@@ -124,7 +131,15 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
           <input
             className="form-control"
             value={price}
-            onChange={({ target: { value } }) => setPrice(value)}
+            onChange={({ target: { value } }) => {
+              if (order.price === order.total_service_price) {
+                setTotalPrice(value);
+              } else {
+                setTotalPrice(getFloatOneDigit(totalPriceDifference + +value));
+              }
+
+              setPrice(value);
+            }}
           />
         </div>
         <div className="w-100 mb-3">
@@ -132,26 +147,28 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
           <input
             className="form-control"
             value={priceOriginal}
-            onChange={({ target: { value } }) => setPriceOriginal(value)}
+            onChange={({ target: { value } }) => {
+              if (order.price_original === order.total_service_price_original) {
+                setTotalPriceOriginal(value);
+              } else {
+                setTotalPriceOriginal(
+                  getFloatOneDigit(totalPriceOriginalDifference + +value)
+                );
+              }
+
+              setPriceOriginal(value);
+            }}
           />
         </div>
         <div className="w-100 mb-3">
           <label className="mb-2">
             {t("admin_order_total_price_with_discount")}:
           </label>
-          <input
-            className="form-control"
-            value={totalPrice}
-            onChange={({ target: { value } }) => setTotalPrice(value)}
-          />
+          <input className="form-control" value={totalPrice} disabled />
         </div>
         <div className="w-100 mb-3">
           <label className="mb-2">{t("admin_order_total_price")}:</label>
-          <input
-            className="form-control"
-            value={totalPriceOriginal}
-            onChange={({ target: { value } }) => setTotalPriceOriginal(value)}
-          />
+          <input className="form-control" value={totalPriceOriginal} disabled />
         </div>
         <div className="w-100 mb-3">
           <label className="mb-2">{t("admin_order_edit_estimate")}:</label>

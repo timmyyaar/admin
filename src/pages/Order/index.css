@@ -1,3 +1,7 @@
+.order-container {
+  width: 75%;
+}
+
 @media screen and (max-width: 950px) {
   .select-wrapper {
     width: 100%;
@@ -26,9 +30,25 @@
   .order-type-select {
     margin-left: 1.9rem;
   }
+
+  .order-wrapper {
+    flex-direction: column;
+  }
+
+  .order-container {
+    width: 100%;
+  }
+
+  .order-additional-block {
+    width: 100%;
+  }
+
+  .order-title {
+    width: 100%;
+  }
 }
 
-.edit-order-button {
-  top: 0;
-  right: 0;
+.transportation-badge {
+  border: 1px solid #495057;
+  border-radius: 1rem;
 }
