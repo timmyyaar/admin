@@ -24,7 +24,7 @@ function AddOrEditDiscountModal({ onClose, setDiscounts, editingDiscount }) {
   const [isCreateLoading, setIsCreateLoading] = useState(false);
   const [createError, setCreateError] = useState("");
 
-  const isAddDiscountEnabled = date && value;
+  const isAddDiscountEnabled = date && value && value < 100 && value > -100;
 
   const createOrEditDiscount = async () => {
     if (!isAddDiscountEnabled) {
