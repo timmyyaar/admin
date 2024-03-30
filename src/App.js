@@ -84,7 +84,7 @@ function App() {
                 locale={locale}
                 setLocale={onLocaleChange}
               />
-              <main className="container">
+              <main className="container app-container">
                 <Routes>
                   <Route path="/" element={<div />} />
                   <Route path="/order" element={<OrderPage />} />

@@ -1,24 +1,19 @@
 import React, { Fragment, useEffect, useState } from "react";
-import './Locales.css'
+import "./Locales.css";
 
 import { Louder } from "../../components/Louder";
-
-import { getLocales } from "./actions";
-import { InputsForm } from "./InputsForm";
-import AddNewLocaleModal from "./AddNewLocaleModal";
+import AddOrEditLocaleModal from "./AddOrEditLocaleModal";
+import LocalesList from "./LocalesList";
+import {request} from "../../utils";
 
 export const LocalesPage = () => {
   const availableLocales = ["en", "pl", "ru", "uk"];
   const [locale, setLocale] = useState(() => availableLocales[0]);
   const [filter, setFilter] = useState("");
   const [locales, setLocales] = useState([]);
-  const [newLocales, setNewLocales] = useState([]);
-  const [forceUpdate, setForceUpdate] = useState(false);
   const [loading, setLoading] = useState(false);
   const [isAddNewLocaleModalOpened, setIsAddNewLocaleModalOpened] =
     useState(false);
-
-  const toggleForceUpdate = () => setForceUpdate((fU) => !fU);
 
   const getFilteredLocalesBySelectedLocale = () => {
     return locales.filter((localeFromLocales) => {
@@ -34,14 +29,21 @@ export const LocalesPage = () => {
     });
   };
 
+  const getLocales = async() => {
+    try {
+      setLoading(true)
+
+      const localesResponse = await request({url: 'locales'})
+
+      setLocales(localesResponse.locales)
+    } finally {
+      setLoading(false)
+    }
+  }
+
   useEffect(() => {
-    setLoading(true);
-    setNewLocales((nL) => nL.filter((loc) => loc.key || loc.value));
-    getLocales().then((locales) => {
-      setLocales(locales);
-      setLoading(false);
-    });
-  }, [forceUpdate]);
+    getLocales()
+  }, [])
 
   return (
     <div className="locales-page">
@@ -76,13 +78,13 @@ export const LocalesPage = () => {
           Add locale
         </button>
         {isAddNewLocaleModalOpened && (
-          <AddNewLocaleModal
+          <AddOrEditLocaleModal
             onClose={() => setIsAddNewLocaleModalOpened(false)}
             setLocales={setLocales}
           />
         )}
       </div>
-      <div className="_mt-8">
+      <div className="_mt-8 h-100 d-flex flex-column">
         <input
           type="text"
           className="form-control _mb-8"
@@ -90,26 +92,12 @@ export const LocalesPage = () => {
           value={filter}
           onChange={(e) => setFilter(e.target.value)}
         />
-        {getFilteredLocalesBySelectedLocale().map((loc, i) => (
-          <Fragment key={loc.key + loc.value + i}>
-            <InputsForm
-              locale={loc}
-              setLoading={setLoading}
-              setUpdate={toggleForceUpdate}
-            />
-          </Fragment>
-        ))}
+        <LocalesList
+          locales={getFilteredLocalesBySelectedLocale()}
+          allLocales={locales}
+          setLocales={setLocales}
+        />
       </div>
-      {newLocales.length ? <hr /> : null}
-      {newLocales.map((loc, i) => (
-        <Fragment key={loc.key + loc.value + "new" + i}>
-          <InputsForm
-            locale={loc}
-            setLoading={setLoading}
-            setUpdate={toggleForceUpdate}
-          />
-        </Fragment>
-      ))}
     </div>
   );
 };
