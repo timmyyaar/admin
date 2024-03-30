@@ -20,6 +20,7 @@ import { LocaleContext } from "../../contexts";
 import Price from "./Price";
 import AdminButtons from "./AdminButtons";
 import NewClientMessage from "./NewClientMessage";
+import NumberOfCleaners from "./NumberOfCleaners/NumberOfCleaners";
 
 export const ORDER_STATUS_OPTIONS = Object.values(ORDER_STATUS);
 
@@ -57,7 +58,7 @@ export const OrderPage = ({ subscription = false }) => {
   const [isAssignLoading, setIsAssignOrderLoading] = useState([]);
   const [assignError, setAssignError] = useState([]);
   const [cleaners, setCleaners] = useState([]);
-  const [isUsersLoading, setIsUsersLoading] = useState(false);
+  const [isUsersLoading, setIsUsersLoading] = useState(true);
   const [assigneeFilter, setAssigneeFilter] = useState("All");
   const [isStatusLoading, setIsStatusLoading] = useState([]);
   const [statusFilter, setStatusFilter] = useState("All");
@@ -122,6 +123,8 @@ export const OrderPage = ({ subscription = false }) => {
   useEffect(() => {
     if (isAdmin()) {
       getUsers();
+    } else {
+      setIsUsersLoading(false);
     }
   }, []);
 
@@ -131,7 +134,8 @@ export const OrderPage = ({ subscription = false }) => {
       setIsAssignOrderLoading((prevLoading) => [...prevLoading, id]);
 
       const assignedOrder = await request({
-        url: `order/${id}/${cleanerId}`,
+        url: `order/${id}/assign`,
+        body: { cleanerId },
         method: "PATCH",
       });
 
@@ -184,18 +188,18 @@ export const OrderPage = ({ subscription = false }) => {
 
           return title === orderTypeFilter;
         })
-        .filter(({ cleaner_id }) => {
+        .filter(({ cleaner_id, cleaners_count }) => {
           if (assigneeFilter === "All") {
             return true;
           }
 
           if (assigneeFilter === "Not assigned") {
-            return !cleaner_id;
+            return !cleaner_id || cleaner_id.length < cleaners_count;
           }
 
-          return cleaner_id === +assigneeFilter;
+          return cleaner_id.includes(+assigneeFilter);
         })
-        .filter(({ status, cleaner_id }) => {
+        .filter(({ status }) => {
           if (statusFilter === "All") {
             return true;
           }
@@ -214,35 +218,40 @@ export const OrderPage = ({ subscription = false }) => {
 
           return false;
         })
-        .filter(({ id, status, cleaner_id, date }) => {
+        .filter(({ id, status, cleaner_id, cleaners_count, date }) => {
           const leftTimeToOrder = getTimeRemaining(date).total;
 
           if (statusFilter === "All") {
-            return !cleaner_id
+            if (cleaner_id.length < cleaners_count) {
+              console.log(
+                status === ORDER_STATUS.APPROVED.value && leftTimeToOrder > 0
+              );
+            }
+            return cleaner_id.length < cleaners_count
               ? status === ORDER_STATUS.APPROVED.value && leftTimeToOrder > 0
-              : cleaner_id === getUserId();
+              : cleaner_id.includes(getUserId());
           }
 
           if (statusFilter === ORDER_STATUS.APPROVED.value) {
             return (
-              !cleaner_id &&
+              cleaner_id.length < cleaners_count &&
               status === ORDER_STATUS.APPROVED.value &&
               leftTimeToOrder > 0
             );
           }
 
           if (statusFilter === "all-my-orders") {
-            return cleaner_id === getUserId();
+            return cleaner_id.includes(getUserId());
           }
 
           if (statusFilter === "my-not-started-orders") {
             return (
-              cleaner_id === getUserId() &&
+              cleaner_id.includes(getUserId()) &&
               status === ORDER_STATUS.APPROVED.value
             );
           }
 
-          return cleaner_id === getUserId() && status === statusFilter;
+          return cleaner_id.includes(getUserId()) && status === statusFilter;
         });
 
   return (
@@ -261,7 +270,11 @@ export const OrderPage = ({ subscription = false }) => {
         {filteredOrders.length > 0
           ? filteredOrders.map((el) => (
               <div className="card _mb-3" key={el.id}>
-                <div className="card-header _gap-4 d-flex justify-content-between align-items-center order-header">
+                <div
+                  className={`card-header _gap-4 d-flex justify-content-between align-items-center ${
+                    isAdmin() ? "order-header" : ""
+                  }`}
+                >
                   <h5 className="card-title mb-0 min-width-max-content _mr-2 d-flex align-items-center justify-content-between order-title">
                     <div>#️⃣️ {el.id}</div>
                     {isAdmin() && (
@@ -270,7 +283,7 @@ export const OrderPage = ({ subscription = false }) => {
                       </div>
                     )}
                   </h5>
-                  {isAdmin() && (
+                  {isAdmin() && !isUsersLoading && (
                     <AdminControls
                       order={el}
                       isAssignLoading={isAssignLoading}
@@ -280,21 +293,12 @@ export const OrderPage = ({ subscription = false }) => {
                       onChangeOrderStatus={onChangeOrderStatus}
                     />
                   )}
-                  {!isAdmin() && !el.cleaner_id && (
-                    <AssignOnMe
-                      order={el}
-                      assignError={assignError}
-                      isAssignLoading={isAssignLoading}
-                      onAssignOrder={onAssignOrder}
-                    />
-                  )}
-                  {el.cleaner_id === getUserId() && (
-                    <CleanerControls
-                      order={el}
-                      isStatusLoading={isStatusLoading}
-                      onChangeOrderStatus={onChangeOrderStatus}
-                    />
-                  )}
+                  <CleanerControls
+                    order={el}
+                    isStatusLoading={isStatusLoading}
+                    onChangeOrderStatus={onChangeOrderStatus}
+                    setOrders={setOrders}
+                  />
                   {isAdmin() && (
                     <div className="mobile-none">
                       <AdminButtons t={t} setOrders={setOrders} order={el} />
@@ -314,7 +318,7 @@ export const OrderPage = ({ subscription = false }) => {
                         </div>
                       )}
                       {(isAdmin() ||
-                        (el.cleaner_id === getUserId() &&
+                        (el.cleaner_id.includes(getUserId()) &&
                           getTimeRemaining(el.date).days < 1)) && (
                         <>
                           <p>👤 {el.name}</p>
@@ -396,6 +400,7 @@ export const OrderPage = ({ subscription = false }) => {
                           </span>
                         </p>
                       )}
+                      <NumberOfCleaners t={t} {...el} />
                     </div>
                   </div>
                   {el.is_new_client && (
