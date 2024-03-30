@@ -1,6 +1,7 @@
 import React, { useContext, useEffect } from "react";
 import "./Modal.css";
 import { LocaleContext } from "../../contexts";
+import { createPortal } from "react-dom";
 
 function Modal({
   children,
@@ -22,7 +23,7 @@ function Modal({
     };
   }, []);
 
-  return (
+  return createPortal(
     <>
       <div className="custom-modal bg-body border d-flex flex-column">
         <div className="p-3 custom-modal-body">{children}</div>
@@ -45,7 +46,8 @@ function Modal({
         </div>
       </div>
       <div className="modal-backdrop show" />
-    </>
+    </>,
+    document.body
   );
 }
 

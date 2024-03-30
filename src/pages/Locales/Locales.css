@@ -1,3 +1,9 @@
+.locales-page {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
 .edit-locales-wrapper {
   grid-template-columns: min-content auto;
 }

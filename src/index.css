@@ -17,6 +17,20 @@ code {
     monospace;
 }
 
+.App {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.app-container {
+  flex-grow: 1;
+}
+
+.flex-1 {
+  flex: 1
+}
+
 .centered {
   min-height: 50vh;
   min-width: 50vw;
