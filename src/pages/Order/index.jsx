@@ -374,14 +374,16 @@ export const OrderPage = ({ subscription = false }) => {
                       <p className="card-text font-weight-semi-bold">
                         ⏳ {t("admin_order_estimate")}: {el.estimate}
                       </p>
-                      <p className="card-text _ml-2 font-weight-semi-bold">
-                        <span className="_mr-1">🔌</span>
-                        {el.subservice.includes(
-                          "Vacuum_cleaner_sub_service_summery "
-                        )
-                          ? t("admin_order_need_vacuum_cleaner")
-                          : t("admin_order_have_vacuum_cleaner")}
-                      </p>
+                      {el.title === "Regular" && (
+                        <p className="card-text _ml-2 font-weight-semi-bold">
+                          <span className="_mr-1">🔌</span>
+                          {el.subservice.includes(
+                            "Vacuum_cleaner_sub_service_summery "
+                          )
+                            ? t("admin_order_need_vacuum_cleaner")
+                            : t("admin_order_have_vacuum_cleaner")}
+                        </p>
+                      )}
                       <br />
                     </div>
                     <div>
