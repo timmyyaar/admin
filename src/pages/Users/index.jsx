@@ -5,6 +5,8 @@ import { Louder } from "../../components/Louder";
 import ChangeRoleModal from "./ChangeRoleModal";
 import ChangePasswordModal from "./ChangePasswordModal";
 import DeleteUserModal from "./DeleteUserModal";
+import EditUserDetailsModal from "./EditUserDetailsModal";
+import { ROLES } from "../../constants";
 
 const Users = () => {
   const [users, setUsers] = useState([]);
@@ -13,6 +15,7 @@ const Users = () => {
   const [updatingPasswordUser, setUpdatingPasswordUser] = useState(null);
   const [updatingUserRole, setUpdatingUserRole] = useState(null);
   const [deletingUser, setDeletingUser] = useState(null);
+  const [editingUserDetails, setEditingUserDetails] = useState(null);
 
   const getUsers = async () => {
     try {
@@ -60,6 +63,13 @@ const Users = () => {
           id={updatingPasswordUser.id}
         />
       )}
+      {editingUserDetails && (
+        <EditUserDetailsModal
+          user={editingUserDetails}
+          setUsers={setUsers}
+          onClose={() => setEditingUserDetails(null)}
+        />
+      )}
       {deletingUser && (
         <DeleteUserModal
           onClose={() => setDeletingUser(null)}
@@ -74,9 +84,17 @@ const Users = () => {
               ️{user.email}
             </h5>
             <div className="_ml-auto">
+              {[ROLES.CLEANER, ROLES.CLEANER_DRY].includes(user.role) && (
+                <button
+                  className="btn btn-secondary _ml-3"
+                  onClick={() => setEditingUserDetails(user)}
+                >
+                  Update details
+                </button>
+              )}
               {getUserEmail() !== user.email && (
                 <button
-                  className="btn btn-secondary"
+                  className="btn btn-warning _ml-3"
                   onClick={() => setUpdatingPasswordUser(user)}
                 >
                   Change password
@@ -103,8 +121,19 @@ const Users = () => {
             </div>
           </div>
           <div className="card-body">
-            Role:
-            <span className="_font-bold _ml-2">{user.role}</span>
+            <p>
+              Role:
+              <span className="_font-bold _ml-2">{user.role}</span>
+            </p>
+            {[ROLES.CLEANER_DRY, ROLES.CLEANER].includes(user.role) && (
+              <>
+                <p>
+                  👩🏻‍🦯 Have vacuum cleaner:{" "}
+                  {user.have_vacuum_cleaner ? "Yes" : "No"}
+                </p>
+                <p>🚗 Have car: {user.have_car ? "Yes" : "No"}</p>
+              </>
+            )}
           </div>
         </div>
       ))}
