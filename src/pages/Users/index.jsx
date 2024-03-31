@@ -7,6 +7,8 @@ import ChangePasswordModal from "./ChangePasswordModal";
 import DeleteUserModal from "./DeleteUserModal";
 import EditUserDetailsModal from "./EditUserDetailsModal";
 import { ROLES } from "../../constants";
+import { ReactComponent as StarIcon } from "../../assets/icons/star.svg";
+import UserRatingPopover from "./UserRatingPopover/UserRatingPopover";
 
 const Users = () => {
   const [users, setUsers] = useState([]);
@@ -16,6 +18,8 @@ const Users = () => {
   const [updatingUserRole, setUpdatingUserRole] = useState(null);
   const [deletingUser, setDeletingUser] = useState(null);
   const [editingUserDetails, setEditingUserDetails] = useState(null);
+  const [editingUserRating, setEditingUserRating] = useState(null);
+  const [ratingIdsLoading, setRatingIdsLoading] = useState([]);
 
   const getUsers = async () => {
     try {
@@ -83,7 +87,34 @@ const Users = () => {
             <h5 className="card-title mb-0 d-flex justify-content-start align-items-center">
               ️{user.email}
             </h5>
-            <div className="_ml-auto">
+            <div className="_ml-auto d-flex">
+              {getUserEmail() !== user.email &&
+                [ROLES.CLEANER, ROLES.CLEANER_DRY].includes(user.role) && (
+                  <div className="position-relative">
+                    <button
+                      className={`btn btn-secondary icon-button ${
+                        ratingIdsLoading.includes(user.id) ? "loading" : ""
+                      }`}
+                      onClick={() =>
+                        setEditingUserRating(editingUserRating ? null : user)
+                      }
+                      disabled={ratingIdsLoading.includes(user.id)}
+                    >
+                      {!ratingIdsLoading.includes(user.id) && (
+                        <StarIcon className="text-warning" />
+                      )}
+                    </button>
+                    {editingUserRating?.id === user.id && (
+                      <UserRatingPopover
+                        onClose={() => setEditingUserRating(null)}
+                        id={editingUserRating.id}
+                        setUsers={setUsers}
+                        ratingIdsLoading={ratingIdsLoading}
+                        setRatingIdsLoading={setRatingIdsLoading}
+                      />
+                    )}
+                  </div>
+                )}
               {[ROLES.CLEANER, ROLES.CLEANER_DRY].includes(user.role) && (
                 <button
                   className="btn btn-secondary _ml-3"
@@ -127,6 +158,7 @@ const Users = () => {
             </p>
             {[ROLES.CLEANER_DRY, ROLES.CLEANER].includes(user.role) && (
               <>
+                <p>⭐ Rating: {user.rating}</p>
                 <p>
                   👩🏻‍🦯 Have vacuum cleaner:{" "}
                   {user.have_vacuum_cleaner ? "Yes" : "No"}

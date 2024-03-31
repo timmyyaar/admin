@@ -19,7 +19,7 @@ function LocaleSelect({ locale, setLocale }) {
   return (
     <select
       value={locale}
-      className="form-select locales-select"
+      className="form-select locales-select w-auto"
       onChange={({ target: { value } }) => setLocale(value)}
     >
       {localesOptions.map(({ value, label }) => (

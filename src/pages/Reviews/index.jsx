@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { ReactComponent as StarIcon } from "./icons/star.svg";
-import "./Reviews.css";
 
 import { Louder } from "../../components/Louder";
 
