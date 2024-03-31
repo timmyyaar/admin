@@ -1,6 +1,6 @@
-import React, { Fragment, useContext, useState } from "react";
+import React, { Fragment, useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { isAdmin } from "../../utils";
+import { isAdmin, isCleaner, isDryCleaner, request } from "../../utils";
 
 import "./index.css";
 import { LocaleContext } from "../../contexts";
@@ -22,6 +22,19 @@ const ADMIN_NAVIGATION = [
 export const Header = ({ onLogOut, locale, setLocale }) => {
   const { t } = useContext(LocaleContext);
   const [showMenu, setShowMenu] = useState(false);
+  const [myUser, setMyUser] = useState(null);
+
+  const getMyUser = async () => {
+    const myUserResponse = await request({ url: "users/my-user" });
+
+    setMyUser(myUserResponse);
+  };
+
+  useEffect(() => {
+    if (isCleaner() || isDryCleaner()) {
+      getMyUser();
+    }
+  }, []);
 
   const navigation = isAdmin()
     ? [...CLEANER_NAVIGATION, ...ADMIN_NAVIGATION]
@@ -31,7 +44,7 @@ export const Header = ({ onLogOut, locale, setLocale }) => {
     <header className="container d-flex align-items-center header-wrapper">
       <div className="mobile-only w-100">
         <button
-          className="btn btn-primary"
+          className="btn btn-primary _mr-3"
           onClick={() => setShowMenu(!showMenu)}
         >
           {t("admin_menu")}
@@ -84,9 +97,17 @@ export const Header = ({ onLogOut, locale, setLocale }) => {
           </div>
         </nav>
       </div>
-      <div className="ml-auto d-flex">
+      <div className="ml-auto d-flex align-items-center">
         <LocaleSelect locale={locale} setLocale={setLocale} />
-        <button className="btn btn-danger text-nowrap _ml-3" onClick={onLogOut}>
+        {(isCleaner() || isDryCleaner()) && myUser?.rating && (
+          <h3 className="_mb-0 min-width-max-content">
+            <span className="badge">⭐ {myUser.rating}</span>
+          </h3>
+        )}
+        <button
+          className={`btn btn-danger text-nowrap ${!myUser ? "_ml-3" : ""}`}
+          onClick={onLogOut}
+        >
           {t("admin_log_out_button")}
         </button>
       </div>

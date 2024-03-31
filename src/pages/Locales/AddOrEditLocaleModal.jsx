@@ -56,6 +56,8 @@ function AddOrEditLocaleModal({ onClose, setLocales, locales }) {
                   return { ...item, value: ukrainian };
                 }
               }
+
+              return item;
             })
       );
       onClose();

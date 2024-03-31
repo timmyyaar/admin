@@ -3,21 +3,20 @@ import React, { useContext, useEffect, useState } from "react";
 import { ORDER_STATUS_OPTIONS } from "./index";
 import { LocaleContext } from "../../contexts";
 import Select from "../../components/common/Select/Select";
+import { request } from "../../utils";
 
 const AdminControls = ({
   order,
-  isAssignLoading,
   isStatusLoading,
-  onAssignOrder,
   cleaners,
   onChangeOrderStatus,
+  setOrders,
 }) => {
   const { t } = useContext(LocaleContext);
 
-  const isMultiCleaners = order.cleaners_count > 1;
-
   const [assignedValue, setAssignedValue] = useState([]);
-  console.log(assignedValue)
+  const [assignError, setAssignError] = useState([]);
+  const [isAssignLoading, setIsAssignOrderLoading] = useState([]);
 
   useEffect(() => {
     const updatedAssignedValue = order.cleaner_id.map((id) => {
@@ -27,7 +26,39 @@ const AdminControls = ({
     });
 
     setAssignedValue(updatedAssignedValue);
+
+    //eslint-disable-next-line
   }, [JSON.stringify(cleaners), JSON.stringify(order.cleaner_id)]);
+
+  const onAssignOrder = async (id, cleanerId) => {
+    try {
+      setAssignError([]);
+      setIsAssignOrderLoading((prevLoading) => [...prevLoading, id]);
+
+      const assignedOrder = await request({
+        url: `order/${id}/assign`,
+        body: { cleanerId },
+        method: "PATCH",
+      });
+
+      setOrders((prevOrders) =>
+        prevOrders.map((prevOrder) =>
+          prevOrder.id === assignedOrder.id ? assignedOrder : prevOrder
+        )
+      );
+    } catch (error) {
+      if (error.code === 422) {
+        setAssignError((prevErrors) => [
+          ...prevErrors,
+          { id, message: error.message },
+        ]);
+      }
+    } finally {
+      setIsAssignOrderLoading((prevLoading) =>
+        prevLoading.filter((item) => item !== id)
+      );
+    }
+  };
 
   const cleanersOptions = cleaners
     .filter(({ role }) =>
@@ -83,6 +114,7 @@ const AdminControls = ({
           ))}
         </select>
       </div>
+      {assignError && <span className="text-danger _mt-3">{assignError}</span>}
     </div>
   );
 };

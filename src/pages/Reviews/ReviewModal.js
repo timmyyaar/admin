@@ -1,12 +1,11 @@
-import { ReactComponent as StarIcon } from "./icons/star.svg";
 import Modal from "../../components/common/Modal";
 import React, { useState } from "react";
 import { EMAIL_REGEX } from "../../constants";
 
 import { requestAddReview, requestUpdateReview } from "./actions";
+import Rating from "../../components/common/Rating/Rating";
 
 function ReviewModal({ onReviewModalClose, setReviews, editingReview }) {
-  const [hoverIndex, setHoverIndex] = useState(-1);
   const [rating, setRating] = useState(editingReview?.rating || 0);
   const [name, setName] = useState(editingReview?.name || "");
   const [email, setEmail] = useState(editingReview?.email || "");
@@ -56,9 +55,6 @@ function ReviewModal({ onReviewModalClose, setReviews, editingReview }) {
     }
   };
 
-  const getIsRatingActive = (ratingIndex) =>
-    hoverIndex > -1 ? ratingIndex <= hoverIndex : rating >= ratingIndex + 1;
-
   const isEmailInvalid = !EMAIL_REGEX.test(email);
   const isAddReviewButtonEnabled =
     rating && name && email && text && !isEmailInvalid && !isReviewLoading;
@@ -74,15 +70,7 @@ function ReviewModal({ onReviewModalClose, setReviews, editingReview }) {
       <>
         <div className="d-flex align-items-center _mb-3">
           <label className="_mr-3 col-2">Rating:</label>
-          {Array.from({ length: 5 }).map((_, ratingIndex) => (
-            <StarIcon
-              className="_cursor-pointer rating-star _mr-1"
-              fill={getIsRatingActive(ratingIndex) ? "#FCD53F" : "white"}
-              onMouseOver={() => setHoverIndex(ratingIndex)}
-              onMouseOut={() => setHoverIndex(-1)}
-              onClick={() => setRating(ratingIndex + 1)}
-            />
-          ))}
+          <Rating rating={rating} setRating={setRating} />
         </div>
         <div className="d-flex align-items-center _mb-3">
           <label className="_mr-3 col-2">Name:</label>

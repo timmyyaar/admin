@@ -14,7 +14,6 @@ import {
 import { BRACKETS_REGEX, ORDER_STATUS, ROLES } from "../../constants";
 import Filters from "./Filters";
 import AdminControls from "./AdminControls";
-import AssignOnMe from "./AssignOnMe";
 import CleanerControls from "./CleanerControls";
 import { LocaleContext } from "../../contexts";
 import Price from "./Price";
@@ -55,8 +54,6 @@ const getTimeRemaining = (endTime) => {
 export const OrderPage = ({ subscription = false }) => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [isAssignLoading, setIsAssignOrderLoading] = useState([]);
-  const [assignError, setAssignError] = useState([]);
   const [cleaners, setCleaners] = useState([]);
   const [isUsersLoading, setIsUsersLoading] = useState(true);
   const [assigneeFilter, setAssigneeFilter] = useState("All");
@@ -128,36 +125,6 @@ export const OrderPage = ({ subscription = false }) => {
     }
   }, []);
 
-  const onAssignOrder = async (id, cleanerId) => {
-    try {
-      setAssignError([]);
-      setIsAssignOrderLoading((prevLoading) => [...prevLoading, id]);
-
-      const assignedOrder = await request({
-        url: `order/${id}/assign`,
-        body: { cleanerId },
-        method: "PATCH",
-      });
-
-      setOrders((prevOrders) =>
-        prevOrders.map((prevOrder) =>
-          prevOrder.id === assignedOrder.id ? assignedOrder : prevOrder
-        )
-      );
-    } catch (error) {
-      if (error.code === 422) {
-        setAssignError((prevErrors) => [
-          ...prevErrors,
-          { id, message: error.message },
-        ]);
-      }
-    } finally {
-      setIsAssignOrderLoading((prevLoading) =>
-        prevLoading.filter((item) => item !== id)
-      );
-    }
-  };
-
   const onChangeOrderStatus = async (id, status) => {
     try {
       setIsStatusLoading((prevIsStatusLoading) => [...prevIsStatusLoading, id]);
@@ -222,11 +189,6 @@ export const OrderPage = ({ subscription = false }) => {
           const leftTimeToOrder = getTimeRemaining(date).total;
 
           if (statusFilter === "All") {
-            if (cleaner_id.length < cleaners_count) {
-              console.log(
-                status === ORDER_STATUS.APPROVED.value && leftTimeToOrder > 0
-              );
-            }
             return cleaner_id.length < cleaners_count
               ? status === ORDER_STATUS.APPROVED.value && leftTimeToOrder > 0
               : cleaner_id.includes(getUserId());
@@ -286,11 +248,10 @@ export const OrderPage = ({ subscription = false }) => {
                   {isAdmin() && !isUsersLoading && (
                     <AdminControls
                       order={el}
-                      isAssignLoading={isAssignLoading}
                       isStatusLoading={isStatusLoading}
-                      onAssignOrder={onAssignOrder}
                       cleaners={cleaners}
                       onChangeOrderStatus={onChangeOrderStatus}
+                      setOrders={setOrders}
                     />
                   )}
                   <CleanerControls
