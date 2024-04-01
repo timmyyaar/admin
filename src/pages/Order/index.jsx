@@ -390,6 +390,14 @@ export const OrderPage = ({ subscription = false }) => {
                           </span>
                         </p>
                       )}
+                      {el.status === ORDER_STATUS.DONE.value &&
+                        el.feedback &&
+                        el.feedback !== "-" && (
+                          <p className="card-text font-weight-semi-bold">
+                            📝 {t("feedback")}:
+                            <span className="_ml-1">{el.feedback}</span>
+                          </p>
+                        )}
                       <NumberOfCleaners t={t} {...el} />
                     </div>
                   </div>
