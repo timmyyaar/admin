@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
+import reactStringReplace from "react-string-replace";
 
 import "./index.css";
 
@@ -22,6 +23,22 @@ import NewClientMessage from "./NewClientMessage";
 import NumberOfCleaners from "./NumberOfCleaners/NumberOfCleaners";
 
 export const ORDER_STATUS_OPTIONS = Object.values(ORDER_STATUS);
+
+const getSubServiceWithBalcony = (subService) => {
+  const balconyMatch = subService.match(/Balcony_summery\s+\(\d+\)/)?.[0];
+
+  if (!balconyMatch) {
+    return subService;
+  }
+
+  const metersSquare = balconyMatch.match(/\d+/);
+  const balconyWithMetersSquare = balconyMatch.replace(
+    metersSquare,
+    `${metersSquare}m2`
+  );
+
+  return subService.replace(balconyMatch, balconyWithMetersSquare);
+};
 
 const getTimeRemaining = (endTime) => {
   const dateString = endTime.match(/([^\s]+)/)[0];
@@ -353,7 +370,17 @@ export const OrderPage = ({ subscription = false }) => {
                         {getTranslatedServices(el.counter)}
                       </p>
                       <p className="card-text">
-                        {getTranslatedServices(el.subservice)}
+                        {reactStringReplace(
+                          getTranslatedServices(
+                            getSubServiceWithBalcony(el.subservice)
+                          ),
+                          "m2",
+                          () => (
+                            <>
+                              m<sup>2</sup>
+                            </>
+                          )
+                        )}
                       </p>
                       {el.additional_information && (
                         <p className="card-text font-weight-semi-bold">
