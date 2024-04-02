@@ -9,6 +9,7 @@ function Documents() {
     "use server";
     const blob = await put("Test_name", image[0], {
       access: "public",
+      token: process.env.REACT_APP_BLOB_READ_WRITE_TOKEN,
     });
     return blob;
   }
@@ -16,6 +17,7 @@ function Documents() {
   async function allImages() {
     const blobs = await list({
       access: "public",
+      token: process.env.REACT_APP_BLOB_READ_WRITE_TOKEN,
     });
     console.log(blobs);
     const response = await blobs;
