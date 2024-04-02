@@ -14,7 +14,9 @@ const Login = ({ setIsLoggedIn, locale, setLocale }) => {
   const [isLoginLoading, setIsLoginLoading] = useState(false);
   const [loginError, setLoginError] = useState("");
 
-  const onLogin = async () => {
+  const onLogin = async (e) => {
+    e.preventDefault();
+
     try {
       setIsLoginLoading(true);
       setLoginError("");
@@ -39,45 +41,47 @@ const Login = ({ setIsLoggedIn, locale, setLocale }) => {
       <div className="locales-wrapper">
         <LocaleSelect locale={locale} setLocale={setLocale} />
       </div>
-      <div className="centered d-flex flex-column align-items-center justify-content-center login-wrapper">
-        <h2 className="mb-4">{t("admin_login_title")}</h2>
-        <div className="mb-3 d-flex flex-column align-items-center w-100">
-          <label className="mb-2">{t("admin_login_email")}:</label>
-          <input
-            className="form-control"
-            value={email}
-            onChange={({ target: { value } }) => setEmail(value)}
-          />
-        </div>
-        <div className="d-flex flex-column align-items-center w-100">
-          <label className="mb-2">{t("admin_login_password")}:</label>
-          <div className="input-group">
+      <form onSubmit={onLogin}>
+        <div className="centered d-flex flex-column align-items-center justify-content-center login-wrapper">
+          <h2 className="mb-4">{t("admin_login_title")}</h2>
+          <div className="mb-3 d-flex flex-column align-items-center w-100">
+            <label className="mb-2">{t("admin_login_email")}:</label>
             <input
-              type={showPassword ? "text" : "password"}
               className="form-control"
-              aria-label="Amount (to the nearest dollar)"
-              value={password}
-              onChange={({ target: { value } }) => setPassword(value)}
+              value={email}
+              onChange={({ target: { value } }) => setEmail(value)}
             />
-            <div
-              className="input-group-append _cursor-pointer"
-              onClick={() => setShowPassword(!showPassword)}
-            >
-              <span className="input-group-text">&#128065;</span>
+          </div>
+          <div className="d-flex flex-column align-items-center w-100">
+            <label className="mb-2">{t("admin_login_password")}:</label>
+            <div className="input-group">
+              <input
+                type={showPassword ? "text" : "password"}
+                className="form-control"
+                aria-label="Amount (to the nearest dollar)"
+                value={password}
+                onChange={({ target: { value } }) => setPassword(value)}
+              />
+              <div
+                className="input-group-append _cursor-pointer"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                <span className="input-group-text">&#128065;</span>
+              </div>
             </div>
           </div>
+          {loginError && <div className="mt-2 text-danger">{loginError}</div>}
+          <button
+            className={`btn btn-primary mt-3 d-flex align-items-center login-button ${
+              isLoginLoading ? "loading" : ""
+            }`}
+            disabled={!email || !password || isLoginLoading}
+            type="submit"
+          >
+            {t("admin_login_button")}
+          </button>
         </div>
-        {loginError && <div className="mt-2 text-danger">{loginError}</div>}
-        <button
-          className={`btn btn-primary mt-3 d-flex align-items-center login-button ${
-            isLoginLoading ? "loading" : ""
-          }`}
-          disabled={!email || !password || isLoginLoading}
-          onClick={onLogin}
-        >
-          {t("admin_login_button")}
-        </button>
-      </div>
+      </form>
     </>
   );
 };

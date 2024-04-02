@@ -2,13 +2,25 @@
   width: 75%;
 }
 
+.filters-wrapper-admin {
+  width: 100%;
+  display: inline-grid;
+  grid-template-columns: max-content 1fr max-content 1fr max-content 1fr;
+}
+
+.filters-wrapper-cleaner {
+  display: inline-grid;
+  grid-template-columns: max-content auto;
+}
+
 @media screen and (max-width: 950px) {
-  .select-wrapper {
-    width: 100%;
+  .filters-wrapper-admin {
+    display: grid;
+    grid-template-columns: max-content auto;
   }
 
-  .filters-wrapper {
-    flex-direction: column;
+  .select-wrapper {
+    width: 100%;
   }
 
   .order-header {
@@ -17,18 +29,6 @@
 
   .admin-controls {
     flex-direction: column;
-  }
-
-  .status-select {
-    margin-left: 1.75rem;
-  }
-
-  .status-filter-select {
-    margin-left: 1.1rem;
-  }
-
-  .order-type-select {
-    margin-left: 1.9rem;
   }
 
   .order-wrapper {

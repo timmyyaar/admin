@@ -31,76 +31,70 @@ const Filters = ({
     : CLEANER_STATUS_FILTER_OPTIONS;
 
   return (
-    <div className="d-flex filters-wrapper _gap-4 _mt-2">
-      <div className="_w-2/4 d-flex align-items-center text-nowrap select-wrapper">
-        <label className="_mr-3">{t("admin_order_status_filter_title")}:</label>
-        <select
-          value={statusFilter}
-          className="form-select status-filter-select"
-          onChange={({ target: { value } }) => setStatusFilter(value)}
-        >
-          <option value={"All"} selected={statusFilter === "All"}>
-            {t("admin_all_option")}
+    <div
+      className={`_items-center _gap-4 _mt-2 ${
+        isAdmin() ? "filters-wrapper-admin" : "filters-wrapper-cleaner"
+      }`}
+    >
+      <label>{t("admin_order_status_filter_title")}:</label>
+      <select
+        value={statusFilter}
+        className="form-select"
+        onChange={({ target: { value } }) => setStatusFilter(value)}
+      >
+        <option value={"All"} selected={statusFilter === "All"}>
+          {t("admin_all_option")}
+        </option>
+        {statusFilterOptions.map(({ value, label }) => (
+          <option key={value} value={value}>
+            {t(
+              `admin_order_${label.toLowerCase().replaceAll(" ", "_")}_option`
+            )}
           </option>
-          {statusFilterOptions.map(({ value, label }) => (
-            <option key={value} value={value}>
-              {t(`admin_order_${label.toLowerCase().replaceAll(" ", "_")}_option`)}
-            </option>
-          ))}
-        </select>
-      </div>
+        ))}
+      </select>
       {isAdmin() && (
         <>
-          <div className="_w-2/4 d-flex align-items-center text-nowrap select-wrapper">
-            {t("admin_assignee_filter_title")}:
-            <select
-              value={assigneeFilter}
-              className="form-select _ml-2"
-              onChange={({ target: { value } }) => setAssigneeFilter(value)}
+          <span>{t("admin_assignee_filter_title")}:</span>
+          <select
+            value={assigneeFilter}
+            className="form-select"
+            onChange={({ target: { value } }) => setAssigneeFilter(value)}
+          >
+            <option value="All" selected={assigneeFilter === "All"}>
+              {t("admin_all_option")}
+            </option>
+            <option
+              value="Not assigned"
+              selected={assigneeFilter === "Not assigned"}
             >
-              <option value="All" selected={assigneeFilter === "All"}>
-                {t("admin_all_option")}
+              {t("admin_not_assigned_option")}
+            </option>
+            {cleaners.map((cleaner) => (
+              <option value={cleaner.id} key={cleaner.id}>
+                {cleaner.email}
               </option>
-              <option
-                value="Not assigned"
-                selected={assigneeFilter === "Not assigned"}
-              >
-                {t("admin_not_assigned_option")}
+            ))}
+          </select>
+          <span>{t("admin_order_type_filter_title")}:</span>
+          <select
+            value={orderTypeFilter}
+            className="form-select"
+            onChange={({ target: { value } }) => setOrderTypeFilter(value)}
+          >
+            <option value="All" selected={orderTypeFilter === "All"}>
+              {t("admin_all_option")}
+            </option>
+            {ORDER_TYPE_OPTIONS.map((orderType) => (
+              <option value={orderType} key={orderType}>
+                {t(
+                  `admin_order_type_${orderType
+                    .toLowerCase()
+                    .replaceAll(" ", "_")}_option`
+                )}
               </option>
-              {cleaners.map((cleaner) => (
-                <option
-                  value={cleaner.id}
-                  key={cleaner.id}
-                >
-                  {cleaner.email}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div className="_w-2/4 d-flex align-items-center text-nowrap select-wrapper">
-            {t("admin_order_type_filter_title")}:
-            <select
-              value={orderTypeFilter}
-              className="form-select _ml-2 order-type-select"
-              onChange={({ target: { value } }) => setOrderTypeFilter(value)}
-            >
-              <option value="All" selected={orderTypeFilter === "All"}>
-                {t("admin_all_option")}
-              </option>
-              {ORDER_TYPE_OPTIONS.map((orderType) => (
-                <option
-                  value={orderType}
-                  key={orderType}
-                >
-                  {t(
-                    `admin_order_type_${orderType
-                      .toLowerCase()
-                      .replaceAll(" ", "_")}_option`
-                  )}
-                </option>
-              ))}
-            </select>
-          </div>
+            ))}
+          </select>
         </>
       )}
     </div>
