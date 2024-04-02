@@ -16,7 +16,6 @@ import Users from "./pages/Users";
 import EventEmitter from "./eventEmitter";
 import { useLocales } from "./hooks/useLocales";
 import Discounts from "./pages/Dicsounts";
-import Documents from "./pages/Documents";
 
 const LOCALE_LOCAL_STORAGE_KEY = "locale";
 
@@ -89,7 +88,6 @@ function App() {
                 <Routes>
                   <Route path="/" element={<div />} />
                   <Route path="/order" element={<OrderPage />} />
-                  <Route path="/documents" element={<Documents />} />
                   {isAdmin() && (
                     <>
                       <Route path="/locales" element={<LocalesPage />} />

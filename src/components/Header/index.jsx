@@ -6,10 +6,7 @@ import "./index.css";
 import { LocaleContext } from "../../contexts";
 import LocaleSelect from "../LocaleSelect/LocaleSelect";
 
-const CLEANER_NAVIGATION = [
-  { to: "/order", title: "Orders" },
-  //{ to: "/documents", title: "Documents" },
-];
+const CLEANER_NAVIGATION = [{ to: "/order", title: "Orders" }];
 
 const ADMIN_NAVIGATION = [
   { to: "/locales", title: "Locales" },
