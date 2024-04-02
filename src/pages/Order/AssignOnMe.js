@@ -36,7 +36,7 @@ const AssignOnMe = ({ order, setOrders }) => {
     <div className="d-flex align-items-center">
       {assignError && <span className="text-danger _mr-2">{assignError}</span>}
       <button
-        className={`btn btn-primary ${isAssignOnMeLoading ? "loading" : ""}`}
+        className={`btn btn-primary width-max-content ${isAssignOnMeLoading ? "loading" : ""}`}
         onClick={() => assignOnMe(order.id, getUserId())}
         disabled={isAssignOnMeLoading}
       >
