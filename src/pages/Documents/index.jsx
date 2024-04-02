@@ -1,5 +1,13 @@
-import { list, put } from "@vercel/blob";
+import { list, put, head } from "@vercel/blob";
 import { useEffect, useState } from "react";
+import blobs from "../../api/blob";
+
+export const config = {
+  runtime: "edge",
+  api: {
+    bodyParser: false,
+  },
+};
 
 function Documents() {
   const [image, setImage] = useState(null);
@@ -11,18 +19,12 @@ function Documents() {
       access: "public",
       token: process.env.REACT_APP_BLOB_READ_WRITE_TOKEN,
     });
+    console.log(blob);
     return blob;
   }
 
   async function allImages() {
-    const blobs = await list({
-      access: "public",
-      token: process.env.REACT_APP_BLOB_READ_WRITE_TOKEN,
-    });
-    console.log(blobs);
-    const response = await blobs;
-
-    console.log(response);
+    await blobs()
   }
 
   useEffect(() => {
