@@ -21,7 +21,7 @@ import Price from "./Price";
 import AdminButtons from "./AdminButtons";
 import NewClientMessage from "./NewClientMessage";
 import NumberOfCleaners from "./NumberOfCleaners/NumberOfCleaners";
-import { getTimeRemaining } from "./utils";
+import {getDate, getTimeRemaining} from "./utils";
 
 export const ORDER_STATUS_OPTIONS = Object.values(ORDER_STATUS);
 
@@ -268,6 +268,10 @@ export const OrderPage = ({ subscription = false }) => {
                           <NewClientMessage t={t} />
                         </div>
                       )}
+                      {isAdmin() && <div>
+                        <div>{getDate(el.date).providedDateString}</div>
+                        <div>{getDate(el.date).date.toString()}</div>
+                      </div>}
                       {(isAdmin() ||
                         (el.cleaner_id.includes(getUserId()) &&
                           getTimeRemaining(el.date).days < 1)) && (
