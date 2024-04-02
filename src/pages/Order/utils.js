@@ -24,18 +24,3 @@ export const getTimeRemaining = (endTime) => {
     seconds,
   };
 };
-
-export const getDate = (endTime) => {
-  const dateString = endTime.match(/([^\s]+)/)[0];
-  const timeString = endTime.slice(-5);
-
-  const endTimeDay = dateString.match(/.+?(?=\/)/)[0];
-  const endTimeMonth = dateString.slice(-7, -5);
-  const endTimeYear = dateString.slice(-4);
-  const endTimeHours = timeString.slice(-5, -3);
-  const endTimeMinutes = timeString.slice(-2);
-
-  const providedDateString = `${endTimeYear}/${endTimeMonth}/${endTimeDay} ${endTimeHours}:${endTimeMinutes}`;
-
-  return { providedDateString, date: new Date(providedDateString) };
-};
