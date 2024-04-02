@@ -8,10 +8,17 @@ export const getTimeRemaining = (endTime) => {
   const endTimeHours = timeString.slice(-5, -3);
   const endTimeMinutes = timeString.slice(-2);
 
-  const total =
-    Date.parse(
-      `${endTimeYear}-${endTimeMonth}-${endTimeDay} ${endTimeHours}:${endTimeMinutes}`
-    ) - Date.parse(new Date());
+  const currentDate = new Date();
+  const currentDay = currentDate.getDate();
+  const currentMonth = currentDate.getMonth() + 1;
+  const currentYear = currentDate.getFullYear();
+  const currentHour = currentDate.getHours();
+  const currentMinutes = currentDate.getMinutes();
+  const currentDateString = `${currentYear}-${currentMonth}-${currentDay} ${currentHour}:${currentMinutes}`;
+
+  const providedDateString = `${endTimeYear}-${endTimeMonth}-${endTimeDay} ${endTimeHours}:${endTimeMinutes}`;
+
+  const total = Date.parse(providedDateString) - Date.parse(currentDateString);
   const seconds = Math.floor((total / 1000) % 60);
   const minutes = Math.floor((total / 1000 / 60) % 60);
   const hours = Math.floor((total / (1000 * 60 * 60)) % 24);
