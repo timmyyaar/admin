@@ -141,3 +141,19 @@ code {
 .width-max-content {
   width: max-content;
 }
+
+.grid-two-columns-min-auto {
+  grid-template-columns: min-content auto;
+}
+
+.vertical-middle {
+  vertical-align: middle;
+}
+
+.visible-on-table-row-hover {
+  visibility: hidden !important;
+
+  *:hover > td & {
+    visibility: visible !important;
+  }
+}

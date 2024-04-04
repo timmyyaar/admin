@@ -1,18 +1,8 @@
 import DatePicker from "react-datepicker";
 import Modal from "../../components/common/Modal";
 import React, { useState } from "react";
-import { request } from "../../utils";
+import { getDateObjectFromString, request } from "../../utils";
 import { NEGATIVE_POSITIVE_NUMBERS_EMPTY_REGEX } from "../../constants";
-
-const getDateObjectFromString = (string) => {
-  const dateArray = string.split("/");
-
-  const day = dateArray[0];
-  const month = dateArray[1];
-  const year = dateArray[2];
-
-  return new Date(`${year}-${month}-${day}`);
-};
 
 const getTwoDigitsMonth = (date) => {
   const dateMonth = date.getMonth() + 1;

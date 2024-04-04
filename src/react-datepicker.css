@@ -18,6 +18,20 @@
   background-color: #212529 !important;
 }
 
+.react-datepicker-time__header {
+  color: #fff !important;
+}
+
+.react-datepicker__time-list-item {
+  background: #212529 !important;
+  color: #fff !important;
+}
+
+.react-datepicker__time-list-item:hover {
+  background: #fff !important;
+  color: #212529 !important;
+}
+
 .react-datepicker__current-month,
 .react-datepicker__day-name,
 .react-datepicker__day {
