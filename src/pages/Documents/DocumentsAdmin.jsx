@@ -119,8 +119,9 @@ function DocumentsAdmin({ t }) {
   return (
     <div className="pt-4">
       <div className="d-flex align-items-center mb-4">
-        <label className="_mr-3">User:</label>
+        <label className="_mr-3">{t("user")}:</label>
         <Select
+          placeholder={`${t("select_placeholder")}...`}
           options={users}
           value={selectedUser}
           onChange={(option) => setSelectedUser(option)}
@@ -141,7 +142,7 @@ function DocumentsAdmin({ t }) {
           />
         ) : (
           <div className="pdf-preview d-flex align-items-center justify-content-center font-weight-semi-bold text-danger py-2 px-3 bg-white">
-            No Umowa document!
+            {t("admin_documents_no_document")} {t("admin_documents_contract")}}
           </div>
         )}
         {Boolean(attachmentOne) ? (
@@ -158,7 +159,8 @@ function DocumentsAdmin({ t }) {
           />
         ) : (
           <div className="pdf-preview d-flex align-items-center justify-content-center font-weight-semi-bold text-danger py-2 px-3 bg-white">
-            No Załącznik 1 document!
+            {t("admin_documents_no_document")} {t("admin_documents_attachment")}{" "}
+            1}
           </div>
         )}
         {Boolean(attachmentTwo) ? (
@@ -175,7 +177,8 @@ function DocumentsAdmin({ t }) {
           />
         ) : (
           <div className="pdf-preview d-flex align-items-center justify-content-center font-weight-semi-bold text-danger py-2 px-3 bg-white">
-            No Załącznik 2 document!
+            {t("admin_documents_no_document")} {t("admin_documents_attachment")}{" "}
+            2}
           </div>
         )}
       </div>
