@@ -160,7 +160,7 @@ function DocumentsAdmin({ t }) {
         ) : (
           <div className="pdf-preview d-flex align-items-center justify-content-center font-weight-semi-bold text-danger py-2 px-3 bg-white">
             {t("admin_documents_no_document")} {t("admin_documents_attachment")}{" "}
-            1}
+            1
           </div>
         )}
         {Boolean(attachmentTwo) ? (
@@ -178,7 +178,7 @@ function DocumentsAdmin({ t }) {
         ) : (
           <div className="pdf-preview d-flex align-items-center justify-content-center font-weight-semi-bold text-danger py-2 px-3 bg-white">
             {t("admin_documents_no_document")} {t("admin_documents_attachment")}{" "}
-            2}
+            2
           </div>
         )}
       </div>
