@@ -71,7 +71,7 @@ export const isDryCleaner = () => {
   return JSON.parse(localStorageUserData).role === ROLES.CLEANER_DRY;
 };
 
-export const getFloatOneDigit = number => Number(number.toFixed(1))
+export const getFloatOneDigit = (number) => Number(number.toFixed(1));
 
 export const request = async ({
   url,
@@ -82,9 +82,14 @@ export const request = async ({
 }) => {
   const response = await fetch(`${process.env.REACT_APP_API_URL}/api/${url}`, {
     method,
-    headers: { "Content-Type": "application/json", ...headers },
+    headers:
+      body instanceof FormData
+        ? {}
+        : { "Content-Type": "application/json", ...headers },
     ...(includeCredentials && { credentials: "include" }),
-    ...(body && { body: JSON.stringify(body) }),
+    ...(body && {
+      body: body instanceof FormData ? body : JSON.stringify(body),
+    }),
   });
 
   const parsedResponse = await response.json();
