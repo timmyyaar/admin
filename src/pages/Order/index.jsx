@@ -25,6 +25,17 @@ import { getTimeRemaining } from "./utils";
 
 export const ORDER_STATUS_OPTIONS = Object.values(ORDER_STATUS);
 
+const SHOW_CORRIDOR_TITLES = [
+  "Regular",
+  "Deep",
+  "Eco cleaning",
+  "Move in/out",
+  "In a last minute",
+  "After party",
+  "While sickness",
+  "Airbnb",
+];
+
 const getSubServiceWithBalcony = (subService) => {
   const balconyMatch = subService.match(/Balcony_summery\s+\(\d+\)/)?.[0];
 
@@ -53,8 +64,14 @@ export const OrderPage = ({ subscription = false }) => {
 
   const { t } = useContext(LocaleContext);
 
-  const getTranslatedServices = (services) => {
+  const getTranslatedServices = (services, title) => {
     let transformedServicesString = services;
+
+    if (SHOW_CORRIDOR_TITLES.includes(title)) {
+      transformedServicesString = `${transformedServicesString}, ${t(
+        "Corridor"
+      )} (1)`;
+    }
 
     services
       .split(BRACKETS_REGEX)
@@ -340,7 +357,7 @@ export const OrderPage = ({ subscription = false }) => {
                     <div>
                       <p className="card-text">{t(el.title)}:</p>
                       <p className="card-text">
-                        {getTranslatedServices(el.counter)}
+                        {getTranslatedServices(el.counter, el.title)}
                       </p>
                       <p className="card-text">
                         {reactStringReplace(
