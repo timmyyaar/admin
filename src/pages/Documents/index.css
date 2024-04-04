@@ -1,0 +1,44 @@
+.documents-wrapper .pdf-text {
+  font-size: 12px;
+}
+
+.documents-wrapper .disabled {
+  opacity: 75%;
+  cursor: default;
+  pointer-events: none;
+}
+
+.documents-wrapper .pdf-preview {
+  border-radius: 8px;
+}
+
+.document {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+@media screen and (max-width: 950px) {
+  .document {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
+
+  .documents-title {
+    font-size: 14px;
+  }
+}
+
+.pdf-preview.plf-upload:hover {
+  opacity: 75%;
+  cursor: pointer;
+}
+
+.pdf-preview.plf-upload:active {
+  opacity: 75%;
+}
+
+.pdf {
+  border-radius: 8px;
+}
+
+.pdf-preview:hover .pdf {
+  opacity: 50%;
+}

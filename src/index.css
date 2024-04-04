@@ -28,7 +28,7 @@ code {
 }
 
 .flex-1 {
-  flex: 1
+  flex: 1;
 }
 
 .centered {
@@ -63,6 +63,19 @@ code {
   border-left-color: white;
 }
 
+.loading-dark:after {
+  animation: spin-clockwise 0.7s linear infinite;
+  content: " ";
+  display: inline-block;
+  vertical-align: sub;
+  width: 16px;
+  height: 16px;
+  border-radius: 100%;
+  margin-left: 0.5em;
+  border: 2px solid hsla(0, 0%, 0%, 0.33333);
+  border-left-color: black;
+}
+
 .min-width-max-content {
   min-width: max-content;
 }
@@ -94,6 +107,10 @@ code {
 }
 
 .icon-button.loading:after {
+  margin: 0;
+}
+
+.icon-button.loading-dark:after {
   margin: 0;
 }
 
