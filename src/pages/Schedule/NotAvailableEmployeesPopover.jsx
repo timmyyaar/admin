@@ -10,10 +10,10 @@ function NotAvailableEmployeesPopover({ onClose, notAvailableUsers }) {
       <div className="whitespace-nowrap">
         <h5>Not available employees:</h5>
         {notAvailableUsers.map(({ email, notAvailableHours }) => (
-          <span>
+          <div>
             <span className="_mr-1">{email}</span>
             {notAvailableHours ? `(${notAvailableHours})` : ""}
-          </span>
+          </div>
         ))}
       </div>
     </div>
