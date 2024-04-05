@@ -31,6 +31,11 @@ code {
   flex: 1;
 }
 
+.modal-backdrop {
+  height: 100% !important;
+  width: 100% !important;
+}
+
 .centered {
   min-height: 50vh;
   min-width: 50vw;
@@ -64,6 +69,32 @@ code {
 }
 
 .loading-dark:after {
+  animation: spin-clockwise 0.7s linear infinite;
+  content: " ";
+  display: inline-block;
+  vertical-align: sub;
+  width: 16px;
+  height: 16px;
+  border-radius: 100%;
+  margin-left: 0.5em;
+  border: 2px solid hsla(0, 0%, 0%, 0.33333);
+  border-left-color: black;
+}
+
+.loader {
+  animation: spin-clockwise 0.7s linear infinite;
+  content: " ";
+  display: inline-block;
+  vertical-align: sub;
+  width: 16px;
+  height: 16px;
+  border-radius: 100%;
+  margin-left: 0.5em;
+  border: 2px solid hsla(0, 0%, 100%, 0.33333);
+  border-left-color: white;
+}
+
+.loader-dark {
   animation: spin-clockwise 0.7s linear infinite;
   content: " ";
   display: inline-block;
@@ -146,6 +177,10 @@ code {
   grid-template-columns: min-content auto;
 }
 
+.grid-two-columns-max-auto {
+  grid-template-columns: max-content auto;
+}
+
 .vertical-middle {
   vertical-align: middle;
 }
@@ -154,6 +189,14 @@ code {
   visibility: hidden !important;
 
   *:hover > td & {
+    visibility: visible !important;
+  }
+}
+
+.visible-on-table-cell-hover {
+  visibility: hidden !important;
+
+  td:hover & {
     visibility: visible !important;
   }
 }

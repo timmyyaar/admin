@@ -2,7 +2,7 @@ import { ORDER_STATUS } from "../../constants";
 import React, { useContext, useState } from "react";
 import { getUserId, isAdmin, request } from "../../utils";
 import AssignOnMe from "./AssignOnMe";
-import { getTimeRemaining } from "./utils";
+import { getTimeRemaining } from "../../utils";
 import { LocaleContext } from "../../contexts";
 
 const CleanerControls = ({

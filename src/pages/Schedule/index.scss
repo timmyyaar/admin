@@ -1,0 +1,58 @@
+.schedule-wrapper {
+  .available-time {
+    background: #29cc7e;
+    cursor: pointer;
+
+    &:hover {
+      background: rgba(#29cc7e, 0.75);
+    }
+  }
+
+  .not-available-time {
+    background: #fd5656;
+    cursor: pointer;
+
+    &:hover {
+      background: rgba(#fd5656, 0.75);
+    }
+  }
+
+  .partial-available-time {
+    background: #fedc29;
+    cursor: pointer;
+
+    &:hover {
+      background: rgba(#fedc29, 0.75);
+    }
+  }
+
+  .disabled-row {
+    opacity: 50%;
+    pointer-events: none;
+  }
+
+  .schedule-table {
+    border-spacing: 2rem;
+    border-collapse: separate;
+
+    th {
+      padding: 0;
+    }
+
+    td {
+      border-radius: 1rem;
+    }
+  }
+
+  .not-available-employees-popover {
+    position: absolute;
+    padding: 1rem;
+    background-color: #212529;
+    border: 1px solid #495057;
+    border-radius: 1rem;
+    top: 120%;
+    right: 0;
+    display: flex;
+    z-index: 10;
+  }
+}
