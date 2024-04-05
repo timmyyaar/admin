@@ -22,12 +22,18 @@ function ScheduleTimeCell({
     }
   };
 
+  const onClick = () => {
+    if (!isLoading && !lessThanThreeDaysRemaining) {
+      addOrEditSchedule(periodName, !isPeriodAvailable);
+    }
+  };
+
   const defaultOptions = {
     shouldPreventDefault: true,
     delay: 500,
   };
 
-  const longPressEvent = useLongPress(onLongPress, () => {}, defaultOptions);
+  const longPressEvent = useLongPress(onLongPress, onClick, defaultOptions);
 
   const isPeriodAvailable = !existingSchedule || existingSchedule[periodName];
   const isPeriodAdditionAvailable =
@@ -54,14 +60,18 @@ function ScheduleTimeCell({
         />
       )}
       <td
-        className={`select-none ${cellClassName}`}
+        className={`select-none mobile-only-table-cell ${cellClassName}`}
         {...longPressEvent}
-        onClick={() => {
-          if (!isLoading && !lessThanThreeDaysRemaining) {
-            addOrEditSchedule(periodName, !isPeriodAvailable);
-          }
-        }}
       >
+        <div className="d-flex align-items-center whitespace-nowrap">
+          {isPeriodAdditionAvailable && (
+            <div className="_ml-auto font-weight-semi-bold text-black _pl-2">
+              {existingSchedule[`${periodName}Additional`]}
+            </div>
+          )}
+        </div>
+      </td>
+      <td className={`select-none mobile-none-table-cell ${cellClassName}`}>
         <div className="d-flex align-items-center whitespace-nowrap">
           <button
             className="btn btn-sm btn-secondary visible-on-table-cell-hover"
