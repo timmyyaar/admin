@@ -58,13 +58,13 @@ function Clients() {
         <table className="table table-dark">
           <thead>
             <tr>
-              <th className="position-sticky top-0">Name</th>
-              <th className="position-sticky top-0">Order date</th>
-              <th className="position-sticky top-0">Created</th>
-              <th className="position-sticky top-0">Address</th>
-              <th className="position-sticky top-0">Email</th>
-              <th className="position-sticky top-0">Phone</th>
-              <th className="position-sticky top-0">Instagram</th>
+              <th className="position-sticky top-0 whitespace-nowrap"><div className="d-flex">👤 Name</div></th>
+              <th className="position-sticky top-0 whitespace-nowrap">📅 Order date</th>
+              <th className="position-sticky top-0 whitespace-nowrap">✍🏼 Created</th>
+              <th className="position-sticky top-0 whitespace-nowrap">📍 Address</th>
+              <th className="position-sticky top-0 whitespace-nowrap">📧 Email</th>
+              <th className="position-sticky top-0 whitespace-nowrap">📱 Phone</th>
+              <th className="position-sticky top-0 whitespace-nowrap">📷 Instagram</th>
               <th className="position-sticky top-0" />
             </tr>
           </thead>
