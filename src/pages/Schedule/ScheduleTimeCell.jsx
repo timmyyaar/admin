@@ -33,6 +33,14 @@ function ScheduleTimeCell({
   const isPeriodAdditionAvailable =
     existingSchedule && existingSchedule[`${periodName}Additional`];
 
+  const cellClassName = isPeriodAdditionAvailable
+    ? `partial-available-time ${
+        lessThanThreeDaysRemaining ? "disabled-row" : ""
+      }`
+    : isPeriodAvailable
+    ? `available-time  ${lessThanThreeDaysRemaining ? "disabled-row" : ""}`
+    : `not-available-time  ${lessThanThreeDaysRemaining ? "disabled-row" : ""}`;
+
   return (
     <>
       {isTimeModalOpened && (
@@ -46,19 +54,7 @@ function ScheduleTimeCell({
         />
       )}
       <td
-        className={
-          isPeriodAdditionAvailable
-            ? `partial-available-time ${
-                lessThanThreeDaysRemaining ? "disabled-row" : ""
-              }`
-            : isPeriodAvailable
-            ? `available-time  ${
-                lessThanThreeDaysRemaining ? "disabled-row" : ""
-              }`
-            : `not-available-time  ${
-                lessThanThreeDaysRemaining ? "disabled-row" : ""
-              }`
-        }
+        className={`select-none ${cellClassName}`}
         {...longPressEvent}
         onClick={() => {
           if (!isLoading && !lessThanThreeDaysRemaining) {

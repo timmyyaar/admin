@@ -63,10 +63,10 @@ function ScheduleTimeModal({
       isLoading={isLoading}
       onActionButtonClick={editUnavailableTime}
     >
-      <h5 className="mb-4 text-center">
+      <h5 className="mb-4 text-center select-none">
         Select time range when you unavailable on this date
       </h5>
-      <div className="_inline-grid _gap-4 _w-full grid-two-columns-max-auto align-items-center">
+      <div className="_inline-grid _gap-4 _w-full grid-two-columns-max-auto align-items-center select-none">
         <label>Start time:</label>
         <div>
           <DatePicker
