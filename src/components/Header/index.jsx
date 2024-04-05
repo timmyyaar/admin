@@ -9,6 +9,7 @@ import LocaleSelect from "../LocaleSelect/LocaleSelect";
 const CLEANER_NAVIGATION = [
   { to: "/order", title: "Orders" },
   { to: "/documents", title: "Documents" },
+  {to: "/schedule", title: "Schedule"}
 ];
 
 const ADMIN_NAVIGATION = [

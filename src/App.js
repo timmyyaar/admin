@@ -18,6 +18,7 @@ import { useLocales } from "./hooks/useLocales";
 import Discounts from "./pages/Dicsounts";
 import Documents from "./pages/Documents";
 import Clients from "./pages/Clients";
+import Schedule from "./pages/Schedule";
 
 const LOCALE_LOCAL_STORAGE_KEY = "locale";
 
@@ -91,6 +92,7 @@ function App() {
                   <Route path="/" element={<div />} />
                   <Route path="/order" element={<OrderPage />} />
                   <Route path="/documents" element={<Documents />} />
+                  <Route path="/schedule" element={<Schedule />} />
                   {isAdmin() && (
                     <>
                       <Route path="/locales" element={<LocalesPage />} />

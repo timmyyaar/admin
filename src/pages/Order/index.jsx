@@ -6,6 +6,7 @@ import "./index.css";
 import { Louder } from "../../components/Louder";
 
 import {
+  getTimeRemaining,
   getUserId,
   isAdmin,
   isCleaner,
@@ -21,7 +22,6 @@ import Price from "./Price";
 import AdminButtons from "./AdminButtons";
 import NewClientMessage from "./NewClientMessage";
 import NumberOfCleaners from "./NumberOfCleaners/NumberOfCleaners";
-import { getTimeRemaining } from "./utils";
 
 export const ORDER_STATUS_OPTIONS = Object.values(ORDER_STATUS);
 

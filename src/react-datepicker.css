@@ -32,6 +32,11 @@
   color: #212529 !important;
 }
 
+.react-datepicker__time-list-item--disabled {
+  color: #ccc !important;
+  pointer-events: none !important;
+}
+
 .react-datepicker__current-month,
 .react-datepicker__day-name,
 .react-datepicker__day {
