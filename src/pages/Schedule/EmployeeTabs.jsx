@@ -48,7 +48,8 @@ function EmployeeTabs({
         <label className="_mr-2">Employee:</label>
         <Select
           options={employeesOptions}
-          onChange={(option) => setSelectedEmployee(option.value)}
+          isClearable
+          onChange={(option) => setSelectedEmployee(option?.value || null)}
           value={
             employeesOptions.find(({ value }) => value === selectedEmployee) ||
             ""
