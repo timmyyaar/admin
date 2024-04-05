@@ -65,7 +65,7 @@ function ScheduleTimeCell({
       >
         <div className="d-flex align-items-center whitespace-nowrap">
           {isPeriodAdditionAvailable && (
-            <div className="_ml-auto font-weight-semi-bold text-black _pl-2">
+            <div className="text-center font-weight-semi-bold text-black">
               {existingSchedule[`${periodName}Additional`]}
             </div>
           )}
