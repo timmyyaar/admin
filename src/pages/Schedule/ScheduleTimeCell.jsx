@@ -13,7 +13,7 @@ function ScheduleTimeCell({
   date,
 }) {
   const [isTimeModalOpened, setIsTimeModalOpened] = useState(false);
-  const remainingTimeTillDate = getTimeRemaining(date);
+  const remainingTimeTillDate = getTimeRemaining(`${date} 00:00`);
   const lessThanThreeDaysRemaining = remainingTimeTillDate.days < 3;
 
   const onLongPress = () => {
