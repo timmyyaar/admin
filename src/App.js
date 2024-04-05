@@ -17,6 +17,7 @@ import EventEmitter from "./eventEmitter";
 import { useLocales } from "./hooks/useLocales";
 import Discounts from "./pages/Dicsounts";
 import Documents from "./pages/Documents";
+import Clients from "./pages/Clients";
 
 const LOCALE_LOCAL_STORAGE_KEY = "locale";
 
@@ -103,6 +104,7 @@ function App() {
                       <Route path="/reviews" element={<ReviewsPage />} />
                       <Route path="/users" element={<Users />} />
                       <Route path="/discounts" element={<Discounts />} />
+                      <Route path="/clients" element={<Clients />} />
                     </>
                   )}
                 </Routes>

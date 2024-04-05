@@ -20,6 +20,7 @@ const ADMIN_NAVIGATION = [
   { to: "/reviews", title: "Reviews" },
   { to: "/users", title: "Users" },
   { to: "/discounts", title: "Discounts" },
+  { to: "/clients", title: "Clients" },
 ];
 
 export const Header = ({ onLogOut, locale, setLocale }) => {
