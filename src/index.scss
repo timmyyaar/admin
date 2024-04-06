@@ -55,6 +55,10 @@ code {
   }
 }
 
+.min-width-10-rem {
+  min-width: 10rem;
+}
+
 .loading:after {
   animation: spin-clockwise 0.7s linear infinite;
   content: " ";
@@ -213,6 +217,10 @@ code {
   visibility: hidden !important;
 
   td:hover & {
+    visibility: visible !important;
+  }
+
+  @media screen and (max-width: 950px) {
     visibility: visible !important;
   }
 }
