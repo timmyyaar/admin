@@ -1,9 +1,9 @@
-import React, {useRef, useState} from "react";
+import React, { useRef, useState } from "react";
 import ScheduleTimeModal from "./ScheduleTimeModal";
 import useLongPress from "../../hooks/useLongPress";
 import { getTimeRemaining } from "../../utils";
 
-let timeout = null
+let timeout = null;
 
 function ScheduleTimeCell({
   existingSchedule,
@@ -38,11 +38,10 @@ function ScheduleTimeCell({
   };
 
   const onTouchStart = (event) => {
-    onLongPress()
+    onLongPress();
   };
 
-  const onTouchEnd = (event) => {
-  };
+  const onTouchEnd = (event) => {};
 
   const longPressEvent = useLongPress(onLongPress, onClick, defaultOptions);
 
@@ -71,7 +70,8 @@ function ScheduleTimeCell({
         />
       )}
       <td
-        className={`select-none mobile-only-table-cell ${cellClassName}`}
+        key={date}
+        className={`select-none mobile-only-table-cell ${date} ${cellClassName}`}
         onTouchStart={onTouchStart}
         onTouchEnd={onTouchEnd}
       >
