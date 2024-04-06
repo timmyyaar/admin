@@ -50,7 +50,7 @@ export const Header = ({ onLogOut, locale, setLocale }) => {
       <div className="mobile-only w-100">
         <button
           className="btn btn-primary _mr-3"
-          onClick={() => setShowMenu(!showMenu)}
+          onTouchStart={() => setShowMenu(!showMenu)}
         >
           {t("admin_menu")}
         </button>
