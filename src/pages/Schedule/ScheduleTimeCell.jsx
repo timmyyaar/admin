@@ -17,9 +17,7 @@ function ScheduleTimeCell({
   const lessThanThreeDaysRemaining = remainingTimeTillDate.days < 3;
 
   const onLongPress = () => {
-    if (!lessThanThreeDaysRemaining) {
-      setIsTimeModalOpened(true);
-    }
+    setIsTimeModalOpened(true);
   };
 
   const onClick = () => {
@@ -40,9 +38,7 @@ function ScheduleTimeCell({
     existingSchedule && existingSchedule[`${periodName}Additional`];
 
   const cellClassName = isPeriodAdditionAvailable
-    ? `partial-available-time ${
-        lessThanThreeDaysRemaining ? "" : ""
-      }`
+    ? `partial-available-time ${lessThanThreeDaysRemaining ? "" : ""}`
     : isPeriodAvailable
     ? `available-time  ${lessThanThreeDaysRemaining ? "" : ""}`
     : `not-available-time  ${lessThanThreeDaysRemaining ? "" : ""}`;
