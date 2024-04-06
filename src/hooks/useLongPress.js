@@ -23,7 +23,6 @@ const useLongPress = (
 
   const start = useCallback(
     (event) => {
-        console.log(event.target)
       if (shouldPreventDefault && event.target) {
         event.target.addEventListener("touchend", preventDefault, {
           passive: false,
