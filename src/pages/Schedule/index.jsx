@@ -122,7 +122,7 @@ function Schedule() {
       <div className="d-flex justify-content-between align-items-center">
         <button
           className="btn btn-primary d-flex align-items-center"
-          onTouchStart={() => setPrevOrNextMonth({ isPrev: true })}
+          onClick={() => setPrevOrNextMonth({ isPrev: true })}
         >
           <PrevIcon className="_mr-2" />
           {prevMonthYearText.month} {prevMonthYearText.year}
@@ -139,7 +139,7 @@ function Schedule() {
         </button>
       </div>
       <div className="overflow-x-auto">
-        <table className="table table-dark table-borderless schedule-table select-none">
+        <table>
           <thead>
             <tr>
               <th />
