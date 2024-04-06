@@ -312,7 +312,14 @@ export const OrderPage = ({ subscription = false }) => {
                         </>
                       )}
                       {isAdmin() && <p>📩 {el.email}</p>}
-                      <p>📆 {el.date}</p>
+                      <p className="d-flex">
+                        <span className="_mr-3">📆 {el.date}</span>
+                        {el.creation_date && isAdmin() && (
+                          <span>
+                            ✍🏼 {t("admin_order_created")} {el.creation_date}
+                          </span>
+                        )}
+                      </p>
                       <p
                         className={`${
                           el.transportation_price > 0 ? "mb-0" : "mb-3"

@@ -13,6 +13,7 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
   const [number, setNumber] = useState(order.number);
   const [email, setEmail] = useState(order.email);
   const [date, setDate] = useState(order.date);
+  const [dateCreated, setDateCreated] = useState(order.creation_date);
   const [address, setAddress] = useState(order.address);
   const [price, setPrice] = useState(order.price);
   const [totalPrice, setTotalPrice] = useState(order.total_service_price);
@@ -43,6 +44,7 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
           email,
           address,
           date,
+          dateCreated,
           onlinePayment,
           price,
           estimate,
@@ -122,6 +124,14 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
             className="form-control"
             value={date}
             onChange={({ target: { value } }) => setDate(value)}
+          />
+        </div>
+        <div className="w-100 mb-3">
+          <label className="mb-2">{t("admin_order_created")}:</label>
+          <input
+            className="form-control"
+            value={dateCreated}
+            onChange={({ target: { value } }) => setDateCreated(value)}
           />
         </div>
         <div className="w-100 mb-3">
