@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import ScheduleTimeModal from "./ScheduleTimeModal";
+import useLongPress from "../../hooks/useLongPress";
 import { getTimeRemaining } from "../../utils";
 
 function ScheduleTimeCell({
@@ -16,7 +17,7 @@ function ScheduleTimeCell({
   const lessThanThreeDaysRemaining = remainingTimeTillDate.days < 3;
 
   const onLongPress = () => {
-    if (!isLoading && !lessThanThreeDaysRemaining) {
+    if (!lessThanThreeDaysRemaining) {
       setIsTimeModalOpened(true);
     }
   };
@@ -26,6 +27,13 @@ function ScheduleTimeCell({
       addOrEditSchedule(periodName, !isPeriodAvailable);
     }
   };
+
+  const defaultOptions = {
+    shouldPreventDefault: true,
+    delay: 500,
+  };
+
+  const longPressEvent = useLongPress(onLongPress, onClick, defaultOptions);
 
   const isPeriodAvailable = !existingSchedule || existingSchedule[periodName];
   const isPeriodAdditionAvailable =
@@ -39,11 +47,8 @@ function ScheduleTimeCell({
     ? `available-time  ${lessThanThreeDaysRemaining ? "disabled-row" : ""}`
     : `not-available-time  ${lessThanThreeDaysRemaining ? "disabled-row" : ""}`;
 
-  const [test, setTest] = useState(false);
-
   return (
     <>
-      {test && <div>TEST!</div>}
       {isTimeModalOpened && (
         <ScheduleTimeModal
           onClose={() => setIsTimeModalOpened(false)}
@@ -54,20 +59,10 @@ function ScheduleTimeCell({
           isLoading={isLoading}
         />
       )}
-      <td className={`mobile-only-table-cell ${cellClassName}`}>
-        <button
-          className="btn btn-primary"
-          onTouchStart={(event) => {
-            event.preventDefault();
-            setTest(true);
-          }}
-          onTouchEnd={(event) => {
-            event.preventDefault();
-            setTest(false);
-          }}
-        >
-          test
-        </button>
+      <td
+        className={`select-none mobile-only-table-cell ${cellClassName}`}
+        {...longPressEvent}
+      >
         <div className="d-flex align-items-center whitespace-nowrap">
           {isPeriodAdditionAvailable && (
             <div className="text-center font-weight-semi-bold text-black">
