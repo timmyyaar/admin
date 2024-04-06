@@ -15,19 +15,18 @@ const preventDefault = (event) => {
 const useLongPress = (
   onLongPress,
   onClick,
-  { shouldPreventDefault = true, delay = 300 } = {}
+  { shouldPreventDefault = true, delay = 300 } = {},
+  target
 ) => {
   const [longPressTriggered, setLongPressTriggered] = useState(false);
   const timeout = useRef();
-  const target = useRef();
 
   const start = useCallback(
     (event) => {
-      if (shouldPreventDefault && event.target) {
-        event.target.addEventListener("touchend", preventDefault, {
+      if (shouldPreventDefault) {
+        target.current.addEventListener("touchend", preventDefault, {
           passive: false,
         });
-        target.current = event.target;
       }
       timeout.current = setTimeout(() => {
         onLongPress(event);
