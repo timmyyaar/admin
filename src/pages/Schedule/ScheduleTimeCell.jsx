@@ -47,6 +47,7 @@ function ScheduleTimeCell({
     ? `available-time  ${lessThanThreeDaysRemaining ? "disabled-row" : ""}`
     : `not-available-time  ${lessThanThreeDaysRemaining ? "disabled-row" : ""}`;
 
+  console.log('test)')
   return (
     <>
       {isTimeModalOpened && (
