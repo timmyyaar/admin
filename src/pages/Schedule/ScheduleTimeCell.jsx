@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import ScheduleTimeModal from "./ScheduleTimeModal";
-import useLongPress from "../../hooks/useLongPress";
 import { getTimeRemaining } from "../../utils";
 
 function ScheduleTimeCell({
@@ -16,24 +15,11 @@ function ScheduleTimeCell({
   const remainingTimeTillDate = getTimeRemaining(`${date} 00:00`);
   const lessThanThreeDaysRemaining = remainingTimeTillDate.days < 3;
 
-  const onLongPress = () => {
-    if (!lessThanThreeDaysRemaining) {
-      setIsTimeModalOpened(true);
-    }
-  };
-
-  const onClick = () => {
+  const onClickTableCell = () => {
     if (!isLoading && !lessThanThreeDaysRemaining) {
       addOrEditSchedule(periodName, !isPeriodAvailable);
     }
   };
-
-  const defaultOptions = {
-    shouldPreventDefault: true,
-    delay: 500,
-  };
-
-  const longPressEvent = useLongPress(onLongPress, onClick, defaultOptions);
 
   const isPeriodAvailable = !existingSchedule || existingSchedule[periodName];
   const isPeriodAdditionAvailable =
@@ -59,19 +45,7 @@ function ScheduleTimeCell({
           isLoading={isLoading}
         />
       )}
-      <td
-        className={`select-none mobile-only-table-cell ${cellClassName}`}
-        {...longPressEvent}
-      >
-        <div className="d-flex align-items-center whitespace-nowrap">
-          {isPeriodAdditionAvailable && (
-            <div className="text-center font-weight-semi-bold text-black">
-              {existingSchedule[`${periodName}Additional`]}
-            </div>
-          )}
-        </div>
-      </td>
-      <td className={`select-none mobile-none-table-cell ${cellClassName}`}>
+      <td className={`select-none ${cellClassName}`} onClick={onClickTableCell}>
         <div className="d-flex align-items-center whitespace-nowrap">
           <button
             className="btn btn-sm btn-secondary visible-on-table-cell-hover"

@@ -143,16 +143,16 @@ function Schedule() {
           <thead>
             <tr key="header">
               <th />
-              <th className="whitespace-nowrap w-25 text-center">
+              <th className="whitespace-nowrap w-25 min-width-10-rem text-center">
                 06:00 - 10:00
               </th>
-              <th className="whitespace-nowrap w-25 text-center">
+              <th className="whitespace-nowrap w-25 min-width-10-rem text-center">
                 10:00 - 14:00
               </th>
-              <th className="whitespace-nowrap w-25 text-center">
+              <th className="whitespace-nowrap w-25 min-width-10-rem text-center">
                 14:00 - 18:00
               </th>
-              <th className="whitespace-nowrap w-25 text-center">
+              <th className="whitespace-nowrap w-25 min-width-10-rem text-center">
                 18:00 - 22:00
               </th>
             </tr>
