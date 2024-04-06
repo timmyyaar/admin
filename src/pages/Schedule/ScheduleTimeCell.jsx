@@ -1,7 +1,9 @@
-import React, { useRef, useState } from "react";
+import React, {useRef, useState} from "react";
 import ScheduleTimeModal from "./ScheduleTimeModal";
 import useLongPress from "../../hooks/useLongPress";
 import { getTimeRemaining } from "../../utils";
+
+let timeout = null
 
 function ScheduleTimeCell({
   existingSchedule,
@@ -12,10 +14,11 @@ function ScheduleTimeCell({
   maxTime,
   date,
 }) {
-  const target = useRef();
   const [isTimeModalOpened, setIsTimeModalOpened] = useState(false);
   const remainingTimeTillDate = getTimeRemaining(`${date} 00:00`);
   const lessThanThreeDaysRemaining = remainingTimeTillDate.days < 3;
+
+  const [longPressTriggered, setLongPressTriggered] = useState(false);
 
   const onLongPress = () => {
     if (!lessThanThreeDaysRemaining) {
@@ -34,12 +37,20 @@ function ScheduleTimeCell({
     delay: 500,
   };
 
-  const longPressEvent = useLongPress(
-    onLongPress,
-    onClick,
-    defaultOptions,
-    target
-  );
+  const onTouchStart = (event) => {
+    timeout = setTimeout(() => {
+      onLongPress(event);
+      setLongPressTriggered(true);
+    }, 500);
+  };
+
+  const onTouchEnd = (event) => {
+    timeout && clearTimeout(timeout);
+    !longPressTriggered && onClick(event);
+    setLongPressTriggered(false);
+  };
+
+  const longPressEvent = useLongPress(onLongPress, onClick, defaultOptions);
 
   const isPeriodAvailable = !existingSchedule || existingSchedule[periodName];
   const isPeriodAdditionAvailable =
@@ -67,8 +78,8 @@ function ScheduleTimeCell({
       )}
       <td
         className={`select-none mobile-only-table-cell ${cellClassName}`}
-        ref={target}
-        {...longPressEvent}
+        onTouchStart={onTouchStart}
+        onTouchEnd={onTouchEnd}
       >
         <div className="d-flex align-items-center whitespace-nowrap">
           {isPeriodAdditionAvailable && (
