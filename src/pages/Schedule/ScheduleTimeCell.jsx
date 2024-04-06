@@ -47,8 +47,11 @@ function ScheduleTimeCell({
     ? `available-time  ${lessThanThreeDaysRemaining ? "disabled-row" : ""}`
     : `not-available-time  ${lessThanThreeDaysRemaining ? "disabled-row" : ""}`;
 
+  const [test, setTest] = useState(false);
+
   return (
     <>
+      {test && <div>TEST!</div>}
       {isTimeModalOpened && (
         <ScheduleTimeModal
           onClose={() => setIsTimeModalOpened(false)}
@@ -61,7 +64,10 @@ function ScheduleTimeCell({
       )}
       <td
         className={`select-none mobile-only-table-cell ${cellClassName}`}
-        {...longPressEvent}
+        onTouchStart={() => {
+          setTest(true);
+        }}
+        onTouchEnd={() => setTest(false)}
       >
         <div className="d-flex align-items-center whitespace-nowrap">
           {isPeriodAdditionAvailable && (
