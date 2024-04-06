@@ -52,6 +52,24 @@ const getSubServiceWithBalcony = (subService) => {
   return subService.replace(balconyMatch, balconyWithMetersSquare);
 };
 
+const getSubServiceWithCarpet = (subService) => {
+  const carpetMatch = subService.match(
+    /Carpet\sdry\scleaning_summery\s+\(\d+\)/
+  )?.[0];
+
+  if (!carpetMatch) {
+    return subService;
+  }
+
+  const metersSquare = carpetMatch.match(/\d+/);
+  const carpetWithMetersSquare = carpetMatch.replace(
+    metersSquare,
+    `${metersSquare}m2`
+  );
+
+  return subService.replace(carpetMatch, carpetWithMetersSquare);
+};
+
 export const OrderPage = ({ subscription = false }) => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -362,7 +380,9 @@ export const OrderPage = ({ subscription = false }) => {
                       <p className="card-text">
                         {reactStringReplace(
                           getTranslatedServices(
-                            getSubServiceWithBalcony(el.subservice)
+                            getSubServiceWithCarpet(
+                              getSubServiceWithBalcony(el.subservice)
+                            )
                           ),
                           "m2",
                           () => (
