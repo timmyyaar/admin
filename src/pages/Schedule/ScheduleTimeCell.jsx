@@ -54,20 +54,21 @@ function ScheduleTimeCell({
           isLoading={isLoading}
         />
       )}
-      <td
-        className={`mobile-only-table-cell ${cellClassName}`}
-        onTouchStart={(event) => {
-          event.preventDefault();
-          setTest(true);
-        }}
-        onTouchEnd={(event) => {
-          event.preventDefault();
-          setTest(false)
-        }}
-      >
-        <div
-          className="d-flex align-items-center whitespace-nowrap"
+      <td className={`mobile-only-table-cell ${cellClassName}`}>
+        <button
+          className="btn btn-primary"
+          onTouchStart={(event) => {
+            event.preventDefault();
+            setTest(true);
+          }}
+          onTouchEnd={(event) => {
+            event.preventDefault();
+            setTest(false);
+          }}
         >
+          test
+        </button>
+        <div className="d-flex align-items-center whitespace-nowrap">
           {isPeriodAdditionAvailable && (
             <div className="text-center font-weight-semi-bold text-black">
               {existingSchedule[`${periodName}Additional`]}
