@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import ScheduleTimeModal from "./ScheduleTimeModal";
-import useLongPress from "../../hooks/useLongPress";
 import { getTimeRemaining } from "../../utils";
 
 function ScheduleTimeCell({
@@ -27,13 +26,6 @@ function ScheduleTimeCell({
       addOrEditSchedule(periodName, !isPeriodAvailable);
     }
   };
-
-  const defaultOptions = {
-    shouldPreventDefault: true,
-    delay: 500,
-  };
-
-  const longPressEvent = useLongPress(onLongPress, onClick, defaultOptions);
 
   const isPeriodAvailable = !existingSchedule || existingSchedule[periodName];
   const isPeriodAdditionAvailable =
