@@ -38,16 +38,10 @@ function ScheduleTimeCell({
   };
 
   const onTouchStart = (event) => {
-    timeout = setTimeout(() => {
-      onLongPress(event);
-      setLongPressTriggered(true);
-    }, 500);
+    onLongPress()
   };
 
   const onTouchEnd = (event) => {
-    timeout && clearTimeout(timeout);
-    !longPressTriggered && onClick(event);
-    setLongPressTriggered(false);
   };
 
   const longPressEvent = useLongPress(onLongPress, onClick, defaultOptions);
