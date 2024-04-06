@@ -2,7 +2,7 @@ import { useState } from "react";
 import { request } from "../../utils";
 import ScheduleTimeCell from "./ScheduleTimeCell";
 
-function ScheduleDayRow({ date, schedule, setSchedule, day }) {
+function ScheduleDayRow({ date, schedule, setSchedule }) {
   const existingSchedule = schedule.find((item) => item.date === date);
 
   const [isLoading, setIsLoading] = useState(false);
@@ -45,7 +45,7 @@ function ScheduleDayRow({ date, schedule, setSchedule, day }) {
   };
 
   return (
-    <tr className={isLoading ? "disabled-row" : ""} key={day}>
+    <tr className={isLoading ? "disabled-row" : ""}>
       <td className="whitespace-nowrap">{date}</td>
       <ScheduleTimeCell
         existingSchedule={existingSchedule}
