@@ -44,6 +44,7 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
           email,
           address,
           date,
+          dateCreated,
           onlinePayment,
           price,
           estimate,
