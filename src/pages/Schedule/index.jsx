@@ -119,7 +119,7 @@ function Schedule() {
           setSelectedEmployee={setSelectedEmployee}
         />
       )}
-      <div className="d-flex justify-content-between align-items-center">
+      <div className="d-flex justify-content-between align-items-center month-button">
         <button
           className="btn btn-primary d-flex align-items-center"
           onClick={() => setPrevOrNextMonth({ isPrev: true })}
@@ -127,7 +127,7 @@ function Schedule() {
           <PrevIcon className="_mr-2" />
           {prevMonthYearText.month} {prevMonthYearText.year}
         </button>
-        <h4>
+        <h4 className="month-header">
           {currentMonthYearText.month} {currentMonthYearText.year}
         </h4>
         <button
