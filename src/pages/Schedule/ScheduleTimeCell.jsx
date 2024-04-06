@@ -21,9 +21,7 @@ function ScheduleTimeCell({
   };
 
   const onClick = () => {
-    if (!isLoading && !lessThanThreeDaysRemaining) {
-      addOrEditSchedule(periodName, !isPeriodAvailable);
-    }
+    addOrEditSchedule(periodName, !isPeriodAvailable);
   };
 
   const defaultOptions = {
