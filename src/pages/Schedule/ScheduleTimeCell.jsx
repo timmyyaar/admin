@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import ScheduleTimeModal from "./ScheduleTimeModal";
 import useLongPress from "../../hooks/useLongPress";
 import { getTimeRemaining } from "../../utils";
@@ -12,16 +12,21 @@ function ScheduleTimeCell({
   maxTime,
   date,
 }) {
+  const target = useRef();
   const [isTimeModalOpened, setIsTimeModalOpened] = useState(false);
   const remainingTimeTillDate = getTimeRemaining(`${date} 00:00`);
   const lessThanThreeDaysRemaining = remainingTimeTillDate.days < 3;
 
   const onLongPress = () => {
-    setIsTimeModalOpened(true);
+    if (!lessThanThreeDaysRemaining) {
+      setIsTimeModalOpened(true);
+    }
   };
 
   const onClick = () => {
-    addOrEditSchedule(periodName, !isPeriodAvailable);
+    if (!isLoading && !lessThanThreeDaysRemaining) {
+      addOrEditSchedule(periodName, !isPeriodAvailable);
+    }
   };
 
   const defaultOptions = {
@@ -29,17 +34,24 @@ function ScheduleTimeCell({
     delay: 500,
   };
 
-  const longPressEvent = useLongPress(onLongPress, onClick, defaultOptions);
+  const longPressEvent = useLongPress(
+    onLongPress,
+    onClick,
+    defaultOptions,
+    target
+  );
 
   const isPeriodAvailable = !existingSchedule || existingSchedule[periodName];
   const isPeriodAdditionAvailable =
     existingSchedule && existingSchedule[`${periodName}Additional`];
 
   const cellClassName = isPeriodAdditionAvailable
-    ? `partial-available-time ${lessThanThreeDaysRemaining ? "" : ""}`
+    ? `partial-available-time ${
+        lessThanThreeDaysRemaining ? "disabled-row" : ""
+      }`
     : isPeriodAvailable
-    ? `available-time  ${lessThanThreeDaysRemaining ? "" : ""}`
-    : `not-available-time  ${lessThanThreeDaysRemaining ? "" : ""}`;
+    ? `available-time  ${lessThanThreeDaysRemaining ? "disabled-row" : ""}`
+    : `not-available-time  ${lessThanThreeDaysRemaining ? "disabled-row" : ""}`;
 
   return (
     <>
@@ -55,6 +67,7 @@ function ScheduleTimeCell({
       )}
       <td
         className={`select-none mobile-only-table-cell ${cellClassName}`}
+        ref={target}
         {...longPressEvent}
       >
         <div className="d-flex align-items-center whitespace-nowrap">
