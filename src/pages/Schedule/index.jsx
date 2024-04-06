@@ -139,7 +139,7 @@ function Schedule() {
         </button>
       </div>
       <div className="overflow-x-auto">
-        <table className="table-dark table-borderless schedule-table select-none">
+        <table className="table-dark table-borderless">
           <thead>
             <tr>
               <th />
