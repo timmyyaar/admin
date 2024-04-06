@@ -17,7 +17,7 @@ function ScheduleTimeCell({
   const lessThanThreeDaysRemaining = remainingTimeTillDate.days < 3;
 
   const onLongPress = () => {
-    if (!lessThanThreeDaysRemaining) {
+    if (!isLoading && !lessThanThreeDaysRemaining) {
       setIsTimeModalOpened(true);
     }
   };
