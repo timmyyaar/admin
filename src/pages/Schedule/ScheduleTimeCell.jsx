@@ -1,9 +1,9 @@
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import ScheduleTimeModal from "./ScheduleTimeModal";
 import useLongPress from "../../hooks/useLongPress";
 import { getTimeRemaining } from "../../utils";
 
-let timeout = null;
+var timer;
 
 function ScheduleTimeCell({
   existingSchedule,
@@ -17,8 +17,6 @@ function ScheduleTimeCell({
   const [isTimeModalOpened, setIsTimeModalOpened] = useState(false);
   const remainingTimeTillDate = getTimeRemaining(`${date} 00:00`);
   const lessThanThreeDaysRemaining = remainingTimeTillDate.days < 3;
-
-  const [longPressTriggered, setLongPressTriggered] = useState(false);
 
   const onLongPress = () => {
     if (!lessThanThreeDaysRemaining) {
@@ -37,12 +35,6 @@ function ScheduleTimeCell({
     delay: 500,
   };
 
-  const onTouchStart = (event) => {
-    onLongPress();
-  };
-
-  const onTouchEnd = (event) => {};
-
   const longPressEvent = useLongPress(onLongPress, onClick, defaultOptions);
 
   const isPeriodAvailable = !existingSchedule || existingSchedule[periodName];
@@ -57,6 +49,14 @@ function ScheduleTimeCell({
     ? `available-time  ${lessThanThreeDaysRemaining ? "disabled-row" : ""}`
     : `not-available-time  ${lessThanThreeDaysRemaining ? "disabled-row" : ""}`;
 
+  const touchstart = () => {
+    timer = setTimeout(onLongPress, 500);
+  };
+
+  const touchend = () => {
+    if (timer) clearTimeout(timer);
+  };
+
   return (
     <>
       {isTimeModalOpened && (
@@ -70,10 +70,10 @@ function ScheduleTimeCell({
         />
       )}
       <td
-        key={date}
-        className={`select-none mobile-only-table-cell ${date} ${cellClassName}`}
-        onTouchStart={onTouchStart}
-        onTouchEnd={onTouchEnd}
+        className={`select-none mobile-only-table-cell ${cellClassName}`}
+        onTouchStart={touchstart}
+        onTouchStartCapture={touchstart}
+        onTouchEnd={touchend}
       >
         <div className="d-flex align-items-center whitespace-nowrap">
           {isPeriodAdditionAvailable && (
