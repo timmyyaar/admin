@@ -1,10 +1,10 @@
 import ScheduleTimeCellAdmin from "./ScheduleTimeCellAdmin";
 
-function ScheduleDayRowAll({ date, schedule, users, selectedEmployee }) {
+function ScheduleDayRowAll({ date, schedule, users, selectedEmployee, day }) {
   const existingSchedules = schedule.filter((item) => item.date === date);
 
   return (
-    <tr>
+    <tr key={day}>
       <td className="whitespace-nowrap">{date}</td>
       <ScheduleTimeCellAdmin
         existingSchedules={existingSchedules}

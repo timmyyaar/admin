@@ -141,7 +141,7 @@ function Schedule() {
       <div className="overflow-x-auto">
         <table className="table table-dark table-borderless schedule-table">
           <thead>
-            <tr>
+            <tr key="header">
               <th />
               <th className="whitespace-nowrap w-25 text-center">
                 06:00 - 10:00
@@ -165,12 +165,16 @@ function Schedule() {
                   schedule={schedule}
                   users={filteredUsers}
                   selectedEmployee={selectedEmployee}
+                  key={day}
+                  day={day}
                 />
               ) : (
                 <ScheduleDayRow
                   date={getRowDate(currentMonth, index)}
                   schedule={schedule}
                   setSchedule={setSchedule}
+                  key={day}
+                  day={day}
                 />
               )
             )}
