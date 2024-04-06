@@ -44,11 +44,11 @@ const useLongPress = (
   );
 
   return {
-    //onMouseDown: (e) => start(e),
-    onTouchStart: (e) => start(e),
-    //onMouseUp: (e) => clear(e),
-    //onMouseLeave: (e) => clear(e, false),
-    onTouchEnd: (e) => clear(e),
+    onMouseDown: (e) => start(e),
+    //onTouchStart: (e) => start(e),
+    onMouseUp: (e) => clear(e),
+    onMouseLeave: (e) => clear(e, false),
+    //onTouchEnd: (e) => clear(e),
   };
 };
 
