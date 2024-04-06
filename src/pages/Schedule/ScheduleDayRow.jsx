@@ -56,33 +56,6 @@ function ScheduleDayRow({ date, schedule, setSchedule }) {
         maxTime="10:00"
         date={date}
       />
-      <ScheduleTimeCell
-        existingSchedule={existingSchedule}
-        periodName="secondPeriod"
-        isLoading={isLoading}
-        addOrEditSchedule={addOrEditSchedule}
-        minTime="10:00"
-        maxTime="14:00"
-        date={date}
-      />
-      <ScheduleTimeCell
-        existingSchedule={existingSchedule}
-        periodName="thirdPeriod"
-        isLoading={isLoading}
-        addOrEditSchedule={addOrEditSchedule}
-        minTime="14:00"
-        maxTime="18:00"
-        date={date}
-      />
-      <ScheduleTimeCell
-        existingSchedule={existingSchedule}
-        periodName="fourthPeriod"
-        isLoading={isLoading}
-        addOrEditSchedule={addOrEditSchedule}
-        minTime="18:00"
-        maxTime="22:00"
-        date={date}
-      />
     </tr>
   );
 }

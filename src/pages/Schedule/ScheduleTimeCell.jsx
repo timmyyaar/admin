@@ -3,8 +3,6 @@ import ScheduleTimeModal from "./ScheduleTimeModal";
 import useLongPress from "../../hooks/useLongPress";
 import { getTimeRemaining } from "../../utils";
 
-var timer;
-
 function ScheduleTimeCell({
   existingSchedule,
   periodName,
@@ -49,14 +47,6 @@ function ScheduleTimeCell({
     ? `available-time  ${lessThanThreeDaysRemaining ? "disabled-row" : ""}`
     : `not-available-time  ${lessThanThreeDaysRemaining ? "disabled-row" : ""}`;
 
-  const touchstart = () => {
-    timer = setTimeout(onLongPress, 500);
-  };
-
-  const touchend = () => {
-    if (timer) clearTimeout(timer);
-  };
-
   return (
     <>
       {isTimeModalOpened && (
@@ -71,9 +61,7 @@ function ScheduleTimeCell({
       )}
       <td
         className={`select-none mobile-only-table-cell ${cellClassName}`}
-        onTouchStart={touchstart}
-        onTouchStartCapture={touchstart}
-        onTouchEnd={touchend}
+        {...longPressEvent}
       >
         <div className="d-flex align-items-center whitespace-nowrap">
           {isPeriodAdditionAvailable && (
