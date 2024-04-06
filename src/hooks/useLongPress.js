@@ -21,23 +21,28 @@ const useLongPress = (
   const timeout = useRef();
   const target = useRef();
 
-  const start = useCallback(
-    (event) => {
-      if (shouldPreventDefault && event.target) {
-        event.target.addEventListener("touchend", preventDefault);
-        target.current = event.target;
-      }
-      timeout.current = setTimeout(() => {
-        onLongPress(event);
-        setLongPressTriggered(true);
-      }, delay);
-    },
-    [onLongPress, delay, shouldPreventDefault]
-  );
+  const start = (event) => {
+    timeout.current = window.setTimeout(() => {
+      onLongPress(event);
+      setLongPressTriggered(true);
+    }, delay);
+  };
+
+  const clear = (event, shouldTriggerClick = true) => {
+    timeout.current && window.clearTimeout(timeout.current);
+    shouldTriggerClick && !longPressTriggered && onClick(event);
+    setLongPressTriggered(false);
+    if (shouldPreventDefault && target.current) {
+      target.current.removeEventListener("touchend", preventDefault);
+    }
+  };
 
   return {
     onMouseDown: (e) => start(e),
     onTouchStart: (e) => start(e),
+    onMouseUp: (e) => clear(e),
+    onMouseLeave: (e) => clear(e, false),
+    onTouchEnd: (e) => clear(e),
   };
 };
 
