@@ -1,29 +1,14 @@
 .schedule-wrapper {
   .available-time {
     background: #29cc7e;
-    cursor: pointer;
-
-    &:hover {
-      background: rgba(#29cc7e, 0.75);
-    }
   }
 
   .not-available-time {
     background: #fd5656;
-    cursor: pointer;
-
-    &:hover {
-      background: rgba(#fd5656, 0.75);
-    }
   }
 
   .partial-available-time {
     background: #fedc29;
-    cursor: pointer;
-
-    &:hover {
-      background: rgba(#fedc29, 0.75);
-    }
   }
 
   .disabled-row {
