@@ -56,17 +56,17 @@ function ScheduleTimeCell({
       )}
       <td
         className={`mobile-only-table-cell ${cellClassName}`}
-        onTouchStart={() => {
+        onTouchStart={(event) => {
+          event.preventDefault();
           setTest(true);
         }}
-        onTouchEnd={() => setTest(false)}
+        onTouchEnd={(event) => {
+          event.preventDefault();
+          setTest(false)
+        }}
       >
         <div
           className="d-flex align-items-center whitespace-nowrap"
-          onTouchStart={() => {
-            setTest(true);
-          }}
-          onTouchEnd={() => setTest(false)}
         >
           {isPeriodAdditionAvailable && (
             <div className="text-center font-weight-semi-bold text-black">
