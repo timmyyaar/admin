@@ -51,6 +51,8 @@
   }
 
   .month-header {
+    margin: 0;
+
     @media screen and (max-width: 950px) {
       font-size: 14px;
       padding: 0 0.25rem;
