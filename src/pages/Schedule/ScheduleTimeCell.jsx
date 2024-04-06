@@ -71,27 +71,6 @@ function ScheduleTimeCell({
           )}
         </div>
       </td>
-      <td className={`select-none mobile-none-table-cell ${cellClassName}`}>
-        <div className="d-flex align-items-center whitespace-nowrap">
-          <button
-            className="btn btn-sm btn-secondary visible-on-table-cell-hover"
-            onClick={(event) => {
-              if (!isLoading && !lessThanThreeDaysRemaining) {
-                event.stopPropagation();
-                setIsTimeModalOpened(true);
-              }
-            }}
-            title="Set custom time"
-          >
-            🕒
-          </button>
-          {isPeriodAdditionAvailable && (
-            <div className="_ml-auto font-weight-semi-bold text-black _pl-2">
-              {existingSchedule[`${periodName}Additional`]}
-            </div>
-          )}
-        </div>
-      </td>
     </>
   );
 }
