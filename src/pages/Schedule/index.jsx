@@ -166,7 +166,6 @@ function Schedule() {
                   users={filteredUsers}
                   selectedEmployee={selectedEmployee}
                   key={day}
-                  day={day}
                 />
               ) : (
                 <ScheduleDayRow
@@ -174,7 +173,6 @@ function Schedule() {
                   schedule={schedule}
                   setSchedule={setSchedule}
                   key={day}
-                  day={day}
                 />
               )
             )}

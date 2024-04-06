@@ -41,11 +41,11 @@ function ScheduleTimeCell({
 
   const cellClassName = isPeriodAdditionAvailable
     ? `partial-available-time ${
-        lessThanThreeDaysRemaining ? "disabled-row" : ""
+        lessThanThreeDaysRemaining ? "" : ""
       }`
     : isPeriodAvailable
-    ? `available-time  ${lessThanThreeDaysRemaining ? "disabled-row" : ""}`
-    : `not-available-time  ${lessThanThreeDaysRemaining ? "disabled-row" : ""}`;
+    ? `available-time  ${lessThanThreeDaysRemaining ? "" : ""}`
+    : `not-available-time  ${lessThanThreeDaysRemaining ? "" : ""}`;
 
   return (
     <>
