@@ -24,7 +24,7 @@ const AssignOnMe = ({ order, setOrders }) => {
         )
       );
     } catch (error) {
-      if (error.code === 422) {
+      if ([422, 409].includes(error.code)) {
         setAssignError(error.message);
       }
     } finally {
@@ -34,9 +34,17 @@ const AssignOnMe = ({ order, setOrders }) => {
 
   return (
     <div className="d-flex align-items-center">
-      {assignError && <span className="text-danger _mr-2">{assignError}</span>}
+      {assignError && (
+        <small className="text-danger _mr-2">
+          {assignError.includes("vacuum")
+            ? t("admin_order_vacuum_cleaner_error")
+            : assignError}
+        </small>
+      )}
       <button
-        className={`btn btn-primary width-max-content ${isAssignOnMeLoading ? "loading" : ""}`}
+        className={`btn btn-primary width-max-content ${
+          isAssignOnMeLoading ? "loading" : ""
+        }`}
         onClick={() => assignOnMe(order.id, getUserId())}
         disabled={isAssignOnMeLoading}
       >
