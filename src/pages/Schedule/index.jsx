@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { isAdmin, request } from "../../utils";
 import ScheduleDayRow from "./ScheduleDayRow";
 
@@ -10,6 +10,7 @@ import { Louder } from "../../components/Louder";
 import ScheduleDayRowAll from "./ScheduleDayRowAll";
 import { ROLES } from "../../constants";
 import EmployeeTabs from "./EmployeeTabs";
+import { LocaleContext } from "../../contexts";
 
 const getDaysInMonth = (date) => {
   const year = date.getFullYear();
@@ -42,6 +43,7 @@ const getRowDate = (date, index) => {
 };
 
 function Schedule() {
+  const { t } = useContext(LocaleContext);
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [isScheduleLoading, setIsScheduleLoading] = useState(false);
   const [schedule, setSchedule] = useState([]);
@@ -125,16 +127,16 @@ function Schedule() {
           onClick={() => setPrevOrNextMonth({ isPrev: true })}
         >
           <PrevIcon className="_mr-2" />
-          {prevMonthYearText.month} {prevMonthYearText.year}
+          {t(prevMonthYearText.month)} {prevMonthYearText.year}
         </button>
         <h4 className="month-header">
-          {currentMonthYearText.month} {currentMonthYearText.year}
+          {t(currentMonthYearText.month)} {currentMonthYearText.year}
         </h4>
         <button
           className="btn btn-primary d-flex align-items-center"
           onClick={() => setPrevOrNextMonth()}
         >
-          {nextMonthYearText.month} {nextMonthYearText.year}
+          {t(nextMonthYearText.month)} {nextMonthYearText.year}
           <NextIcon className="_ml-2" />
         </button>
       </div>

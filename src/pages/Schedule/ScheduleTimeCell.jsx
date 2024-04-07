@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import ScheduleTimeModal from "./ScheduleTimeModal";
 import { getTimeRemaining } from "../../utils";
+import { LocaleContext } from "../../contexts";
 
 function ScheduleTimeCell({
   existingSchedule,
@@ -11,6 +12,7 @@ function ScheduleTimeCell({
   maxTime,
   date,
 }) {
+  const { t } = useContext(LocaleContext);
   const [isTimeModalOpened, setIsTimeModalOpened] = useState(false);
   const remainingTimeTillDate = getTimeRemaining(`${date} 00:00`);
   const lessThanThreeDaysRemaining = remainingTimeTillDate.days < 3;
@@ -55,7 +57,7 @@ function ScheduleTimeCell({
                 setIsTimeModalOpened(true);
               }
             }}
-            title="Set custom time"
+            title={t("admin_schedule_set_custom_time")}
           >
             🕒
           </button>

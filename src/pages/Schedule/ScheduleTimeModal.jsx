@@ -1,6 +1,7 @@
 import Modal from "../../components/common/Modal";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import DatePicker from "react-datepicker";
+import { LocaleContext } from "../../contexts";
 
 const getMinOrMaxTime = (time) => {
   const splittedTime = time.split(":");
@@ -40,6 +41,7 @@ function ScheduleTimeModal({
   periodName,
   isLoading,
 }) {
+  const { t } = useContext(LocaleContext);
   const [startTime, setStartTime] = useState(null);
   const [endTime, setEndTime] = useState(null);
 
@@ -58,16 +60,16 @@ function ScheduleTimeModal({
   return (
     <Modal
       onClose={onClose}
-      actionButtonText="Edit time"
+      actionButtonText={t("admin_schedule_edit_time")}
       isActionButtonDisabled={!isEnabled || isLoading}
       isLoading={isLoading}
       onActionButtonClick={editUnavailableTime}
     >
       <h5 className="mb-4 text-center select-none">
-        Select time range when you unavailable on this date
+        {t("admin_schedule_choose_range")}
       </h5>
       <div className="_inline-grid _gap-4 _w-full grid-two-columns-max-auto align-items-center select-none">
-        <label>Start time:</label>
+        <label>{t("admin_schedule_start_time")}:</label>
         <div>
           <DatePicker
             selected={startTime}
@@ -75,7 +77,7 @@ function ScheduleTimeModal({
             showTimeSelect
             showTimeSelectOnly
             timeIntervals={60}
-            timeCaption="Time"
+            timeCaption={t("Time")}
             dateFormat="HH:mm"
             timeFormat="HH:mm"
             minTime={getMinOrMaxTime(minTime)}
@@ -86,7 +88,7 @@ function ScheduleTimeModal({
             }
           />
         </div>
-        <label>End time:</label>
+        <label>{t("admin_schedule_end_time")}:</label>
         <div>
           <DatePicker
             selected={endTime}
@@ -94,7 +96,7 @@ function ScheduleTimeModal({
             showTimeSelect
             showTimeSelectOnly
             timeIntervals={60}
-            timeCaption="Time"
+            timeCaption={t("Time")}
             dateFormat="HH:mm"
             timeFormat="HH:mm"
             minTime={

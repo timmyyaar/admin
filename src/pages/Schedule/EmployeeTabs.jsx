@@ -1,5 +1,7 @@
 import { ROLES } from "../../constants";
 import Select from "../../components/common/Select/Select";
+import { useContext } from "react";
+import { LocaleContext } from "../../contexts";
 
 function EmployeeTabs({
   selectedRole,
@@ -8,6 +10,7 @@ function EmployeeTabs({
   setSelectedEmployee,
   users,
 }) {
+  const { t } = useContext(LocaleContext);
   const employeesOptions = users.map(({ id, email }) => ({
     value: id,
     label: email,
@@ -27,7 +30,7 @@ function EmployeeTabs({
               setSelectedEmployee(null);
             }}
           >
-            Cleaners
+            {t("Cleaners")}
           </button>
         </li>
         <li className="nav-item">
@@ -40,15 +43,16 @@ function EmployeeTabs({
               setSelectedEmployee(null);
             }}
           >
-            Dry cleaners
+            {t("Dry cleaners")}
           </button>
         </li>
       </ul>
       <div className="mb-3 d-flex align-items-center">
-        <label className="_mr-2">Employee:</label>
+        <label className="_mr-2">{t("Employee")}:</label>
         <Select
           options={employeesOptions}
           isClearable
+          placeholder={`${t("select_placeholder")}...`}
           onChange={(option) => setSelectedEmployee(option?.value || null)}
           value={
             employeesOptions.find(({ value }) => value === selectedEmployee) ||
