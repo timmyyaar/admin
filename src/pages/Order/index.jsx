@@ -326,7 +326,7 @@ export const OrderPage = ({ subscription = false }) => {
                           el.transportation_price > 0 ? "mb-0" : "mb-3"
                         }`}
                       >
-                        📍{" "}
+                        <span className="_mr-1">📍</span>
                         {el.address
                           .replace("Street", t("admin_order_street"))
                           .replace("House", t("admin_order_house"))
