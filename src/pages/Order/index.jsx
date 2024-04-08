@@ -22,6 +22,7 @@ import Price from "./Price";
 import AdminButtons from "./AdminButtons";
 import NewClientMessage from "./NewClientMessage";
 import NumberOfCleaners from "./NumberOfCleaners/NumberOfCleaners";
+import { getCleanerReward } from "./utils";
 
 export const ORDER_STATUS_OPTIONS = Object.values(ORDER_STATUS);
 
@@ -351,7 +352,8 @@ export const OrderPage = ({ subscription = false }) => {
                       ) : null}
                       <Price t={t} {...el} />
                       <p className="card-text">
-                        💰 {t("admin_order_your_reward")}: {el.price / 2} zl
+                        💰 {t("admin_order_your_reward")}:
+                        <span className="_ml-1">{getCleanerReward(el)} zl</span>
                       </p>
                       <p className="card-text font-weight-semi-bold">
                         <span className="_mr-1">
