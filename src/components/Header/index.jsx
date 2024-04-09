@@ -9,7 +9,7 @@ import LocaleSelect from "../LocaleSelect/LocaleSelect";
 const CLEANER_NAVIGATION = [
   { to: "/order", title: "Orders" },
   { to: "/documents", title: "Documents" },
-  {to: "/schedule", title: "Schedule"}
+  { to: "/schedule", title: "Schedule" },
 ];
 
 const ADMIN_NAVIGATION = [
@@ -22,6 +22,7 @@ const ADMIN_NAVIGATION = [
   { to: "/users", title: "Users" },
   { to: "/discounts", title: "Discounts" },
   { to: "/clients", title: "Clients" },
+  { to: "/blogs", title: "Blogs" },
 ];
 
 export const Header = ({ onLogOut, locale, setLocale }) => {

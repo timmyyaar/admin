@@ -19,6 +19,7 @@ import Discounts from "./pages/Dicsounts";
 import Documents from "./pages/Documents";
 import Clients from "./pages/Clients";
 import Schedule from "./pages/Schedule";
+import Blogs from "./pages/Blogs";
 
 const LOCALE_LOCAL_STORAGE_KEY = "locale";
 
@@ -107,6 +108,7 @@ function App() {
                       <Route path="/users" element={<Users />} />
                       <Route path="/discounts" element={<Discounts />} />
                       <Route path="/clients" element={<Clients />} />
+                      <Route path="/blogs" element={<Blogs />} />
                     </>
                   )}
                 </Routes>
