@@ -109,6 +109,7 @@ function Schedule() {
   const prevMonthYearText = getMonthAndYearText(currentMonth, { isPrev: true });
   const nextMonthYearText = getMonthAndYearText(currentMonth, { isNext: true });
 
+  console.log(selectedEmployee)
   return (
     <div className="schedule-wrapper _mt-3">
       <Louder visible={isScheduleLoading || isUsersLoading} />
@@ -161,7 +162,7 @@ function Schedule() {
           </thead>
           <tbody>
             {Array.from({ length: daysInMonth }).map((day, index) =>
-              isAdmin() ? (
+              isAdmin() && !selectedEmployee ? (
                 <ScheduleDayRowAll
                   date={getRowDate(currentMonth, index)}
                   schedule={schedule}
@@ -175,6 +176,7 @@ function Schedule() {
                   schedule={schedule}
                   setSchedule={setSchedule}
                   key={day}
+                  selectedEmployee={selectedEmployee}
                 />
               )
             )}
