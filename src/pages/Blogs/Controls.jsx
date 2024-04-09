@@ -8,6 +8,7 @@ function Controls({
 }) {
   return (
     <div className="d-flex flex-column align-items-end">
+      <div className="mb-3 font-weight-semi-bold">ID: {blog.id}</div>
       <button
         className="btn btn-primary width-max-content mb-3"
         onClick={() => {
