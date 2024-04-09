@@ -26,6 +26,7 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
   const [title, setTitle] = useState(order.title);
   const [counter, setCounter] = useState(order.counter);
   const [subService, setSubService] = useState(order.subservice);
+  const [note, setNote] = useState(order.note || "");
   const [isUpdateLoading, setIsUpdateLoading] = useState(false);
   const [updateError, setUpdateError] = useState("");
 
@@ -51,6 +52,7 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
           title,
           counter,
           subService,
+          note,
           total_service_price: totalPrice,
           total_service_price_original: totalPriceOriginal,
           price_original: priceOriginal,
@@ -219,6 +221,14 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
             className="form-control"
             value={subService}
             onChange={({ target: { value } }) => setSubService(value)}
+          />
+        </div>
+        <div className="w-100 mb-3">
+          <label className="mb-2">{t("admin_order_note")}:</label>
+          <textarea
+            className="form-control"
+            value={note}
+            onChange={({ target: { value } }) => setNote(value)}
           />
         </div>
         <div className="w-100 mb-3">

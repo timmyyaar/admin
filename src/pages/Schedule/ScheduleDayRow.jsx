@@ -2,7 +2,7 @@ import { useState } from "react";
 import { request } from "../../utils";
 import ScheduleTimeCell from "./ScheduleTimeCell";
 
-function ScheduleDayRow({ date, schedule, setSchedule }) {
+function ScheduleDayRow({ date, schedule, setSchedule, selectedEmployee }) {
   const existingSchedule = schedule.find((item) => item.date === date);
 
   const [isLoading, setIsLoading] = useState(false);
@@ -17,7 +17,11 @@ function ScheduleDayRow({ date, schedule, setSchedule }) {
         : { [`${fieldName}Additional`]: null };
 
       const addedOrUpdatedDay = await request({
-        url: `schedule${existingSchedule ? `/${existingSchedule.id}` : ""}`,
+        url: `schedule${
+          existingSchedule
+            ? `/${existingSchedule.id}`
+            : `${selectedEmployee ? `/${selectedEmployee}` : ""}`
+        }`,
         method: existingSchedule ? "PUT" : "POST",
         body: existingSchedule
           ? {

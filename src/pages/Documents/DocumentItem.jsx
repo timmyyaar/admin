@@ -64,6 +64,7 @@ function DocumentItem({
               className="btn btn-sm btn-outline-secondary icon-button"
               href={item.url}
               target="_blank"
+              rel="noopener noreferrer"
             >
               <span>👁️‍</span>
             </a>

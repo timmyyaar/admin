@@ -118,6 +118,9 @@ function DocumentsAdmin({ t }) {
 
   return (
     <div className="pt-4">
+      {contractError && <div className="mb-3 text-danger">{contractError}</div>}
+      {attachmentOneError && <div className="mb-3 text-danger">{attachmentOneError}</div>}
+      {attachmentTwoError && <div className="mb-3 text-danger">{attachmentTwoError}</div>}
       <div className="d-flex align-items-center mb-4">
         <label className="_mr-3">{t("user")}:</label>
         <Select

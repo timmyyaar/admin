@@ -23,6 +23,7 @@ import AdminButtons from "./AdminButtons";
 import NewClientMessage from "./NewClientMessage";
 import NumberOfCleaners from "./NumberOfCleaners/NumberOfCleaners";
 import { getCleanerReward } from "./utils";
+import Note from "./Note";
 
 export const ORDER_STATUS_OPTIONS = Object.values(ORDER_STATUS);
 
@@ -299,9 +300,12 @@ export const OrderPage = ({ subscription = false }) => {
                     }`}
                   >
                     <div>
-                      {el.is_new_client && (
+                      {(el.is_new_client || el.note) && (
                         <div className="mb-3 mobile-only">
                           <NewClientMessage t={t} />
+                          <div className={`${el.is_new_client ? "_mt-3" : ""}`}>
+                            <Note t={t} note={el.note} />
+                          </div>
                         </div>
                       )}
                       {(isAdmin() ||
@@ -420,9 +424,14 @@ export const OrderPage = ({ subscription = false }) => {
                       <NumberOfCleaners t={t} {...el} />
                     </div>
                   </div>
-                  {el.is_new_client && (
+                  {(el.is_new_client || el.note) && (
                     <div className="mobile-none">
-                      <NewClientMessage t={t} />
+                      {el.is_new_client && <NewClientMessage t={t} />}
+                      {el.note && (
+                        <div className={`${el.is_new_client ? "_mt-3" : ""}`}>
+                          <Note t={t} note={el.note} />
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
