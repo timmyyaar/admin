@@ -5,7 +5,7 @@ const mainLocales = {
   en: "English",
   ru: "Russian",
   pl: "Polish",
-  uk: "Ukrainian",
+  ua: "Ukrainian",
 };
 
 const localesOptions = Object.entries(mainLocales).map(([value, label]) => ({
