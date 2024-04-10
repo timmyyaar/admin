@@ -14,7 +14,7 @@ function AddOrEditLocaleModal({ onClose, setLocales, locales }) {
     locales ? locales.find((item) => item.locale === "ru")?.value : ""
   );
   const [ukrainian, setUkrainian] = useState(
-    locales ? locales.find((item) => item.locale === "uk")?.value : ""
+    locales ? locales.find((item) => item.locale === "ua")?.value : ""
   );
   const [isCreateOrEditLoading, setIsCreateOrEditLoading] = useState(false);
   const [createError, setCreateError] = useState("");
@@ -52,7 +52,7 @@ function AddOrEditLocaleModal({ onClose, setLocales, locales }) {
                   return { ...item, value: russian };
                 }
 
-                if (item.locale === "uk") {
+                if (item.locale === "ua") {
                   return { ...item, value: ukrainian };
                 }
               }

@@ -7,7 +7,7 @@ import LocalesList from "./LocalesList";
 import {request} from "../../utils";
 
 export const LocalesPage = () => {
-  const availableLocales = ["en", "pl", "ru", "uk"];
+  const availableLocales = ["en", "pl", "ru", "ua"];
   const [locale, setLocale] = useState(() => availableLocales[0]);
   const [filter, setFilter] = useState("");
   const [locales, setLocales] = useState([]);
