@@ -23,11 +23,17 @@ import Blogs from "./pages/Blogs";
 
 const LOCALE_LOCAL_STORAGE_KEY = "locale";
 
+const availableLocales = ["en", "pl", "ru", "ua"];
+
 function App() {
+  const selectedLocale = localStorage.getItem(LOCALE_LOCAL_STORAGE_KEY);
+
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [locales, setLocales] = useState([]);
   const [locale, setLocale] = useState(
-    localStorage.getItem(LOCALE_LOCAL_STORAGE_KEY) || "en"
+    selectedLocale && availableLocales.includes(selectedLocale)
+      ? selectedLocale
+      : "en"
   );
   const [isLocalesLoading, setIsLocalesLoading] = useState(true);
 
