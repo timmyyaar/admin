@@ -357,7 +357,9 @@ export const OrderPage = ({ subscription = false }) => {
                       <Price t={t} {...el} />
                       <p className="card-text">
                         💰 {t("admin_order_your_reward")}:
-                        <span className="_ml-1">{getCleanerReward(el)} zl</span>
+                        <span className="_ml-1">
+                          {el.reward || getCleanerReward(el)} zl
+                        </span>
                       </p>
                       <p className="card-text font-weight-semi-bold">
                         <span className="_mr-1">

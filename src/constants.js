@@ -31,3 +31,5 @@ export const BRACKETS_REGEX = /\([^()]*\)/;
 export const NEGATIVE_POSITIVE_NUMBERS_EMPTY_REGEX = /^-?(\s*|[0-9\b])+$/;
 
 export const NUMBER_EMPTY_REGEX = /^(\s*|\d+)$/;
+
+export const NUMBER_FLOAT_EMPTY_REGEX = /^(\s*|((\d+)\.?(\s*|\d+)))$/;
