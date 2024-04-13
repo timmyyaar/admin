@@ -2,7 +2,7 @@ import { ORDER_TYPE } from "../../constants";
 
 export const getCleanerReward = ({
   title,
-  price,
+  price_original,
   cleaners_count,
   estimate,
 }) => {
@@ -13,15 +13,15 @@ export const getCleanerReward = ({
   const numericEstimate = Number(`${hours}.${minutesPercentage}`);
 
   if ([ORDER_TYPE.DRY, ORDER_TYPE.OZONATION].includes(title)) {
-    return price / 2 / cleaners_count;
+    return price_original / 2 / cleaners_count;
   } else {
-    if (price <= process.env.REACT_APP_MIDDLE_ORDER_ESTIMATE) {
+    if (price_original <= process.env.REACT_APP_MIDDLE_ORDER_ESTIMATE) {
       return (
         numericEstimate * process.env.REACT_APP_DEFAULT_ORDER_PER_HOUR_PRICE
       );
     } else if (
-      price > process.env.REACT_APP_MIDDLE_ORDER_ESTIMATE &&
-      price <= process.env.REACT_APP_HIGH_ORDER_ESTIMATE
+      price_original > process.env.REACT_APP_MIDDLE_ORDER_ESTIMATE &&
+      price_original <= process.env.REACT_APP_HIGH_ORDER_ESTIMATE
     ) {
       return (
         numericEstimate * process.env.REACT_APP_MIDDLE_ORDER_PER_HOUR_PRICE

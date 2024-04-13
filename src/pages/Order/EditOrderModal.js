@@ -1,6 +1,10 @@
 import Modal from "../../components/common/Modal";
 import React, { useContext, useState } from "react";
-import { EMAIL_REGEX, ORDER_TYPE } from "../../constants";
+import {
+  EMAIL_REGEX,
+  NUMBER_FLOAT_EMPTY_REGEX,
+  ORDER_TYPE,
+} from "../../constants";
 import { getFloatOneDigit, request } from "../../utils";
 import { LocaleContext } from "../../contexts";
 
@@ -27,6 +31,7 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
   const [counter, setCounter] = useState(order.counter);
   const [subService, setSubService] = useState(order.subservice);
   const [note, setNote] = useState(order.note || "");
+  const [reward, setReward] = useState(order.reward || "");
   const [isUpdateLoading, setIsUpdateLoading] = useState(false);
   const [updateError, setUpdateError] = useState("");
 
@@ -56,6 +61,7 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
           total_service_price: totalPrice,
           total_service_price_original: totalPriceOriginal,
           price_original: priceOriginal,
+          reward: reward ? +reward : null,
         },
       });
 
@@ -229,6 +235,18 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
             className="form-control"
             value={note}
             onChange={({ target: { value } }) => setNote(value)}
+          />
+        </div>
+        <div className="w-100 mb-3">
+          <label className="mb-2">{t("admin_order_reward")}:</label>
+          <input
+            className="form-control"
+            value={reward}
+            onChange={({ target: { value } }) => {
+              if (NUMBER_FLOAT_EMPTY_REGEX.test(value)) {
+                setReward(value.trim());
+              }
+            }}
           />
         </div>
         <div className="w-100 mb-3">
