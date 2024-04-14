@@ -362,7 +362,10 @@ export const OrderPage = ({ subscription = false }) => {
                         </span>
                         {isAdmin() && Boolean(el.reward) && (
                           <span className="_ml-1">
-                            (Original reward: {getCleanerReward(el)} zl)
+                            <span className="_mr-1">
+                              ({t("admin_order_original_reward")}:
+                            </span>
+                            {getCleanerReward(el)} zl)
                           </span>
                         )}
                       </p>
