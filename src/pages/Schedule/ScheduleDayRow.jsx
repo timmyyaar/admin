@@ -3,7 +3,11 @@ import { request } from "../../utils";
 import ScheduleTimeCell from "./ScheduleTimeCell";
 
 function ScheduleDayRow({ date, schedule, setSchedule, selectedEmployee }) {
-  const existingSchedule = schedule.find((item) => item.date === date);
+  const existingSchedule = schedule.find(
+    (item) =>
+      item.date === date &&
+      (selectedEmployee ? item.employeeId === selectedEmployee : true)
+  );
 
   const [isLoading, setIsLoading] = useState(false);
 
