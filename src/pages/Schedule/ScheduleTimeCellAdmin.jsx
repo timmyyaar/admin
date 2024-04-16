@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import NotAvailableEmployeesPopover from "./NotAvailableEmployeesPopover";
+import { capitalizeFirstLetter } from "../../utils";
 
 function ScheduleTimeCellAdmin({
   existingSchedules,
@@ -22,14 +23,19 @@ function ScheduleTimeCellAdmin({
         ({ employeeId }) => employeeId === id
       );
 
+      const isOrder =
+        existingEmployeeSchedule &&
+        existingEmployeeSchedule[`is${capitalizeFirstLetter(periodName)}Order`];
+
       if (existingEmployeeSchedule[`${periodName}Additional`]) {
         return {
           email,
           notAvailableHours:
             existingEmployeeSchedule[`${periodName}Additional`],
+          isOrder,
         };
       } else {
-        return { email };
+        return { email, isOrder };
       }
     });
 

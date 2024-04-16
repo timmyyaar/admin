@@ -26,6 +26,15 @@
     }
   }
 
+  .order-time {
+    background: #2b8afc;
+    cursor: pointer;
+
+    &:hover {
+      background: rgba(#2b8afc, 0.75);
+    }
+  }
+
   .disabled-row {
     opacity: 50%;
     pointer-events: none;

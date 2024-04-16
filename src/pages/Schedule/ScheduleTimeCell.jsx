@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import ScheduleTimeModal from "./ScheduleTimeModal";
-import { getTimeRemaining, isAdmin } from "../../utils";
+import { capitalizeFirstLetter, getTimeRemaining, isAdmin } from "../../utils";
 import { LocaleContext } from "../../contexts";
 
 function ScheduleTimeCell({
@@ -26,12 +26,19 @@ function ScheduleTimeCell({
   const isPeriodAvailable = !existingSchedule || existingSchedule[periodName];
   const isPeriodAdditionAvailable =
     existingSchedule && existingSchedule[`${periodName}Additional`];
+  const isOrderPeriod =
+    existingSchedule &&
+    existingSchedule[`is${capitalizeFirstLetter(periodName)}Order`];
 
   const cellClassName = isPeriodAdditionAvailable
-    ? `partial-available-time ${isCellDisabled ? "disabled-row" : ""}`
+    ? `${isOrderPeriod ? "order-time" : "partial-available-time"} ${
+        isCellDisabled ? "disabled-row" : ""
+      }`
     : isPeriodAvailable
     ? `available-time  ${isCellDisabled ? "disabled-row" : ""}`
-    : `not-available-time  ${isCellDisabled ? "disabled-row" : ""}`;
+    : `${isOrderPeriod ? "order-time" : "not-available-time"} ${
+        isCellDisabled ? "disabled-row" : ""
+      }`;
 
   return (
     <>
