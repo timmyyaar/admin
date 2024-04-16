@@ -136,14 +136,14 @@ export const getDateTimeObjectFromString = (string) => {
   return new Date(providedDateString);
 };
 
-export const getDateString = date => {
+export const getDateString = (date) => {
   const day = date.getDate();
   const month = date.getMonth() + 1;
   const twoDigitsMonth = month < 10 ? `0${month}` : month;
   const year = date.getFullYear();
 
-  return `${day}/${twoDigitsMonth}/${year}`
-}
+  return `${day}/${twoDigitsMonth}/${year}`;
+};
 
 export const getDateTimeString = (date) => {
   const day = date.getDate();

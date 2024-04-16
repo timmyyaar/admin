@@ -109,7 +109,6 @@ function Schedule() {
   const prevMonthYearText = getMonthAndYearText(currentMonth, { isPrev: true });
   const nextMonthYearText = getMonthAndYearText(currentMonth, { isNext: true });
 
-  console.log(selectedEmployee)
   return (
     <div className="schedule-wrapper _mt-3">
       <Louder visible={isScheduleLoading || isUsersLoading} />
