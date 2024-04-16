@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import ScheduleTimeModal from "./ScheduleTimeModal";
-import { getTimeRemaining } from "../../utils";
+import { getTimeRemaining, isAdmin } from "../../utils";
 import { LocaleContext } from "../../contexts";
 
 function ScheduleTimeCell({
@@ -15,10 +15,10 @@ function ScheduleTimeCell({
   const { t } = useContext(LocaleContext);
   const [isTimeModalOpened, setIsTimeModalOpened] = useState(false);
   const remainingTimeTillDate = getTimeRemaining(`${date} 00:00`);
-  const lessThanThreeDaysRemaining = remainingTimeTillDate.days < 3;
+  const isCellDisabled = remainingTimeTillDate.days < (isAdmin() ? -1 : 3);
 
   const onClickTableCell = () => {
-    if (!isLoading && !lessThanThreeDaysRemaining) {
+    if (!isLoading && !isCellDisabled) {
       addOrEditSchedule(periodName, !isPeriodAvailable);
     }
   };
@@ -28,12 +28,10 @@ function ScheduleTimeCell({
     existingSchedule && existingSchedule[`${periodName}Additional`];
 
   const cellClassName = isPeriodAdditionAvailable
-    ? `partial-available-time ${
-        lessThanThreeDaysRemaining ? "disabled-row" : ""
-      }`
+    ? `partial-available-time ${isCellDisabled ? "disabled-row" : ""}`
     : isPeriodAvailable
-    ? `available-time  ${lessThanThreeDaysRemaining ? "disabled-row" : ""}`
-    : `not-available-time  ${lessThanThreeDaysRemaining ? "disabled-row" : ""}`;
+    ? `available-time  ${isCellDisabled ? "disabled-row" : ""}`
+    : `not-available-time  ${isCellDisabled ? "disabled-row" : ""}`;
 
   return (
     <>
@@ -52,7 +50,7 @@ function ScheduleTimeCell({
           <button
             className="btn btn-sm btn-secondary visible-on-table-cell-hover"
             onClick={(event) => {
-              if (!isLoading && !lessThanThreeDaysRemaining) {
+              if (!isLoading && !isCellDisabled) {
                 event.stopPropagation();
                 setIsTimeModalOpened(true);
               }
