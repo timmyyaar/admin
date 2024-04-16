@@ -302,10 +302,14 @@ export const OrderPage = ({ subscription = false }) => {
                     <div>
                       {(el.is_new_client || el.note) && (
                         <div className="mb-3 mobile-only">
-                          <NewClientMessage t={t} />
-                          <div className={`${el.is_new_client ? "_mt-3" : ""}`}>
-                            <Note t={t} note={el.note} />
-                          </div>
+                          {el.is_new_client && <NewClientMessage t={t} />}
+                          {el.note && (
+                            <div
+                              className={`${el.is_new_client ? "_mt-3" : ""}`}
+                            >
+                              <Note t={t} note={el.note} />
+                            </div>
+                          )}
                         </div>
                       )}
                       {(isAdmin() ||
