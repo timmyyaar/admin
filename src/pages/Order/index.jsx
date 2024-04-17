@@ -205,26 +205,6 @@ export const OrderPage = ({ subscription = false }) => {
 
           return status === statusFilter;
         })
-        .filter(({ date }) => {
-          const dateObject = getDateTimeObjectFromString(date);
-
-          if (dateFilter.fromDate && dateFilter.toDate) {
-            return (
-              dateObject >= dateFilter.fromDate &&
-              dateObject <= dateFilter.toDate
-            );
-          }
-
-          if (dateFilter.fromDate) {
-            return dateObject >= dateFilter.fromDate;
-          }
-
-          if (dateFilter.toDate) {
-            return dateObject <= dateFilter.toDate;
-          }
-
-          return true;
-        })
     : orders
         .filter(({ title }) => {
           if (isDryCleaner()) {
@@ -268,6 +248,27 @@ export const OrderPage = ({ subscription = false }) => {
           return cleaner_id.includes(getUserId()) && status === statusFilter;
         });
 
+  const filteredOrdersByDate = filteredOrders.filter(({ date }) => {
+    const dateObject = getDateTimeObjectFromString(date);
+
+    if (dateFilter.fromDate && dateFilter.toDate) {
+      return (
+          dateObject >= dateFilter.fromDate &&
+          dateObject <= dateFilter.toDate
+      );
+    }
+
+    if (dateFilter.fromDate) {
+      return dateObject >= dateFilter.fromDate;
+    }
+
+    if (dateFilter.toDate) {
+      return dateObject <= dateFilter.toDate;
+    }
+
+    return true;
+  })
+
   return (
     <div className="order-page">
       <Louder visible={loading || isUsersLoading} />
@@ -283,8 +284,8 @@ export const OrderPage = ({ subscription = false }) => {
         setDateFilter={setDateFilter}
       />
       <div className="_mt-8">
-        {filteredOrders.length > 0
-          ? filteredOrders.map((el) => (
+        {filteredOrdersByDate.length > 0
+          ? filteredOrdersByDate.map((el) => (
               <div className="card _mb-3" key={el.id}>
                 <div
                   className={`card-header _gap-4 d-flex justify-content-between align-items-center ${
