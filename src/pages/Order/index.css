@@ -2,19 +2,14 @@
   width: 75%;
 }
 
-.filters-wrapper-admin {
+.filters-wrapper {
   width: 100%;
   display: inline-grid;
   grid-template-columns: max-content 1fr max-content 1fr max-content 1fr;
 }
 
-.filters-wrapper-cleaner {
-  display: inline-grid;
-  grid-template-columns: max-content auto;
-}
-
 @media screen and (max-width: 950px) {
-  .filters-wrapper-admin {
+  .filters-wrapper {
     display: grid;
     grid-template-columns: max-content auto;
   }

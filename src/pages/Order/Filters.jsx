@@ -72,11 +72,7 @@ const Filters = ({
   };
 
   return (
-    <div
-      className={`_items-center _gap-4 _mt-2 ${
-        isAdmin() ? "filters-wrapper-admin" : "filters-wrapper-cleaner"
-      }`}
-    >
+    <div className="_items-center _gap-4 _mt-2 filters-wrapper">
       <label>{t("admin_order_status_filter_title")}:</label>
       <select
         value={statusFilter}
@@ -136,40 +132,40 @@ const Filters = ({
               </option>
             ))}
           </select>
-          <span>{t("admin_order_date_from_filter_title")}:</span>
-          <div>
-            <DatePicker
-              showTimeSelect
-              selectsStart
-              selected={dateFilter.fromDate}
-              onChange={(newDate) => onDateChange(newDate, "fromDate")}
-              dateFormat="d/MM/yyyy HH:mm"
-              timeFormat="HH:mm"
-              maxDate={dateFilter.toDate}
-              isClearable={dateFilter.fromDate}
-              filterTime={filterPassedTimeFromDate}
-              startDate={dateFilter.fromDate}
-              endDate={dateFilter.toDate}
-            />
-          </div>
-          <span>{t("admin_order_date_to_filter_title")}:</span>
-          <div>
-            <DatePicker
-              showTimeSelect
-              selectsEnd
-              selected={dateFilter.toDate}
-              onChange={(newDate) => onDateChange(newDate, "toDate")}
-              dateFormat="d/MM/yyyy HH:mm"
-              timeFormat="HH:mm"
-              minDate={dateFilter.fromDate}
-              isClearable={dateFilter.toDate}
-              filterTime={filterPassedTimeToDate}
-              startDate={dateFilter.fromDate}
-              endDate={dateFilter.toDate}
-            />
-          </div>
         </>
       )}
+      <span>{t("admin_order_date_from_filter_title")}:</span>
+      <div>
+        <DatePicker
+          showTimeSelect
+          selectsStart
+          selected={dateFilter.fromDate}
+          onChange={(newDate) => onDateChange(newDate, "fromDate")}
+          dateFormat="d/MM/yyyy HH:mm"
+          timeFormat="HH:mm"
+          maxDate={dateFilter.toDate}
+          isClearable={dateFilter.fromDate}
+          filterTime={filterPassedTimeFromDate}
+          startDate={dateFilter.fromDate}
+          endDate={dateFilter.toDate}
+        />
+      </div>
+      <span>{t("admin_order_date_to_filter_title")}:</span>
+      <div>
+        <DatePicker
+          showTimeSelect
+          selectsEnd
+          selected={dateFilter.toDate}
+          onChange={(newDate) => onDateChange(newDate, "toDate")}
+          dateFormat="d/MM/yyyy HH:mm"
+          timeFormat="HH:mm"
+          minDate={dateFilter.fromDate}
+          isClearable={dateFilter.toDate}
+          filterTime={filterPassedTimeToDate}
+          startDate={dateFilter.fromDate}
+          endDate={dateFilter.toDate}
+        />
+      </div>
     </div>
   );
 };
