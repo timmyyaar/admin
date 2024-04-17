@@ -1,5 +1,6 @@
-import { isAdmin } from "../../utils";
+import { getDateString, isAdmin } from "../../utils";
 import React, { useContext } from "react";
+import DatePicker from "react-datepicker";
 import { ORDER_STATUS, ORDER_TYPE } from "../../constants";
 import { LocaleContext } from "../../contexts";
 
@@ -23,6 +24,8 @@ const Filters = ({
   cleaners,
   orderTypeFilter,
   setOrderTypeFilter,
+  dateFilter,
+  setDateFilter,
 }) => {
   const { t } = useContext(LocaleContext);
 
@@ -30,12 +33,46 @@ const Filters = ({
     ? ADMIN_STATUS_FILTER_OPTIONS
     : CLEANER_STATUS_FILTER_OPTIONS;
 
+  const onDateChange = (date, field) => {
+    setDateFilter((prev) => ({ ...prev, [field]: date }));
+  };
+
+  const filterPassedTimeFromDate = (time) => {
+    const toDate = dateFilter.toDate;
+    const selectedDate = new Date(time);
+
+    if (!toDate) {
+      return true;
+    }
+
+    const isSameDay = getDateString(toDate) === getDateString(selectedDate);
+
+    if (!isSameDay) {
+      return true;
+    }
+
+    return toDate.getTime() > selectedDate.getTime();
+  };
+
+  const filterPassedTimeToDate = (time) => {
+    const fromDate = dateFilter.fromDate;
+    const selectedDate = new Date(time);
+
+    if (!fromDate) {
+      return true;
+    }
+
+    const isSameDay = getDateString(fromDate) === getDateString(selectedDate);
+
+    if (!isSameDay) {
+      return true;
+    }
+
+    return fromDate.getTime() < selectedDate.getTime();
+  };
+
   return (
-    <div
-      className={`_items-center _gap-4 _mt-2 ${
-        isAdmin() ? "filters-wrapper-admin" : "filters-wrapper-cleaner"
-      }`}
-    >
+    <div className="_items-center _gap-4 _mt-2 filters-wrapper">
       <label>{t("admin_order_status_filter_title")}:</label>
       <select
         value={statusFilter}
@@ -97,6 +134,38 @@ const Filters = ({
           </select>
         </>
       )}
+      <span>{t("admin_order_date_from_filter_title")}:</span>
+      <div>
+        <DatePicker
+          showTimeSelect
+          selectsStart
+          selected={dateFilter.fromDate}
+          onChange={(newDate) => onDateChange(newDate, "fromDate")}
+          dateFormat="d/MM/yyyy HH:mm"
+          timeFormat="HH:mm"
+          maxDate={dateFilter.toDate}
+          isClearable={dateFilter.fromDate}
+          filterTime={filterPassedTimeFromDate}
+          startDate={dateFilter.fromDate}
+          endDate={dateFilter.toDate}
+        />
+      </div>
+      <span>{t("admin_order_date_to_filter_title")}:</span>
+      <div>
+        <DatePicker
+          showTimeSelect
+          selectsEnd
+          selected={dateFilter.toDate}
+          onChange={(newDate) => onDateChange(newDate, "toDate")}
+          dateFormat="d/MM/yyyy HH:mm"
+          timeFormat="HH:mm"
+          minDate={dateFilter.fromDate}
+          isClearable={dateFilter.toDate}
+          filterTime={filterPassedTimeToDate}
+          startDate={dateFilter.fromDate}
+          endDate={dateFilter.toDate}
+        />
+      </div>
     </div>
   );
 };

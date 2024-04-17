@@ -6,6 +6,7 @@ import "./index.css";
 import { Louder } from "../../components/Louder";
 
 import {
+  getDateTimeObjectFromString,
   getTimeRemaining,
   getUserId,
   isAdmin,
@@ -81,6 +82,10 @@ export const OrderPage = ({ subscription = false }) => {
   const [isStatusLoading, setIsStatusLoading] = useState([]);
   const [statusFilter, setStatusFilter] = useState("All");
   const [orderTypeFilter, setOrderTypeFilter] = useState("All");
+  const [dateFilter, setDateFilter] = useState({
+    fromDate: null,
+    toDate: null,
+  });
 
   const { t } = useContext(LocaleContext);
 
@@ -200,6 +205,26 @@ export const OrderPage = ({ subscription = false }) => {
 
           return status === statusFilter;
         })
+        .filter(({ date }) => {
+          const dateObject = getDateTimeObjectFromString(date);
+
+          if (dateFilter.fromDate && dateFilter.toDate) {
+            return (
+              dateObject >= dateFilter.fromDate &&
+              dateObject <= dateFilter.toDate
+            );
+          }
+
+          if (dateFilter.fromDate) {
+            return dateObject >= dateFilter.fromDate;
+          }
+
+          if (dateFilter.toDate) {
+            return dateObject <= dateFilter.toDate;
+          }
+
+          return true;
+        })
     : orders
         .filter(({ title }) => {
           if (isDryCleaner()) {
@@ -254,6 +279,8 @@ export const OrderPage = ({ subscription = false }) => {
         cleaners={cleaners}
         orderTypeFilter={orderTypeFilter}
         setOrderTypeFilter={setOrderTypeFilter}
+        dateFilter={dateFilter}
+        setDateFilter={setDateFilter}
       />
       <div className="_mt-8">
         {filteredOrders.length > 0
