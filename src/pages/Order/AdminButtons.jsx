@@ -1,10 +1,12 @@
 import EditOrderModal from "./EditOrderModal";
 import React, { useState } from "react";
 import { request } from "../../utils";
+import DuplicateModal from "./DuplicateModal";
 
 function AdminButtons({ t, setOrders, order }) {
   const [isEditModalOpened, setIsEditModalOpened] = useState(null);
   const [deletingOrderIds, setDeletingOrderIds] = useState([]);
+  const [isDuplicateModalOpened, setIsDuplicateModalOpened] = useState(false);
 
   const onDeleteOrder = async (id, email) => {
     const confirmed = window.confirm(
@@ -26,6 +28,21 @@ function AdminButtons({ t, setOrders, order }) {
 
   return (
     <div className="d-flex">
+      <button
+        className="btn btn-outline-secondary _mx-2"
+        title={t("admin_order_duplicate")}
+        onClick={() => setIsDuplicateModalOpened(true)}
+      >
+        📋
+      </button>
+      {isDuplicateModalOpened && (
+        <DuplicateModal
+          t={t}
+          onClose={() => setIsDuplicateModalOpened(false)}
+          order={order}
+          setOrders={setOrders}
+        />
+      )}
       <button
         className="btn btn-primary"
         onClick={() => setIsEditModalOpened(order.id)}
