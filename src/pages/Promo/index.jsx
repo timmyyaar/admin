@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 
+import "./style.scss";
+
 import { Louder } from "../../components/Louder";
 
 import { request } from "../../utils";
@@ -56,7 +58,7 @@ export const PromoPage = () => {
           setPromo={setPromo}
         />
       )}
-      <div className="_grid _grid-cols-2 _gap-4 ">
+      <div className="_grid promos-wrapper _gap-4 ">
         {promo.map((el, i) => (
           <div key={el.id}>
             <div className="card">
