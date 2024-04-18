@@ -65,7 +65,7 @@ function AddNewPromoModal({ onClose, promo, setPromo }) {
       errorMessage={addNewPromoError}
       onActionButtonClick={addNewPromo}
     >
-      <h5 className="mb-4">Add new promo</h5>
+      <h5 className="mb-4 text-center">Add new promo</h5>
       <div className="mb-4">
         <div className="form-check">
           <input

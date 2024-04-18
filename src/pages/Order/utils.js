@@ -1,4 +1,5 @@
 import { ORDER_TYPE } from "../../constants";
+import { getFloatOneDigit } from "../../utils";
 
 export const getCleanerReward = ({
   title,
@@ -13,7 +14,7 @@ export const getCleanerReward = ({
   const numericEstimate = Number(`${hours}.${minutesPercentage}`);
 
   if ([ORDER_TYPE.DRY, ORDER_TYPE.OZONATION].includes(title)) {
-    return price_original / 2 / cleaners_count;
+    return getFloatOneDigit(price_original / 2 / cleaners_count);
   } else {
     if (price_original <= process.env.REACT_APP_MIDDLE_ORDER_ESTIMATE) {
       return (
@@ -23,11 +24,13 @@ export const getCleanerReward = ({
       price_original > process.env.REACT_APP_MIDDLE_ORDER_ESTIMATE &&
       price_original <= process.env.REACT_APP_HIGH_ORDER_ESTIMATE
     ) {
-      return (
+      return getFloatOneDigit(
         numericEstimate * process.env.REACT_APP_MIDDLE_ORDER_PER_HOUR_PRICE
       );
     } else {
-      return numericEstimate * process.env.REACT_APP_HIGH_ORDER_PER_HOUR_PRICE;
+      return getFloatOneDigit(
+        numericEstimate * process.env.REACT_APP_HIGH_ORDER_PER_HOUR_PRICE
+      );
     }
   }
 };
