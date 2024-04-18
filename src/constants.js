@@ -28,6 +28,8 @@ export const AUTH_TOKEN_COOKIE_KEY = "authToken";
 
 export const BRACKETS_REGEX = /\([^()]*\)/;
 
+export const POSITIVE_NUMBER_EMPTY_REGEX = /^(\s*|[1-9][0-9]*)+$/;
+
 export const NEGATIVE_POSITIVE_NUMBERS_EMPTY_REGEX = /^-?(\s*|[0-9\b])+$/;
 
 export const NUMBER_EMPTY_REGEX = /^(\s*|\d+)$/;
