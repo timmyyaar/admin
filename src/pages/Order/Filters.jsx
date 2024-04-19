@@ -109,7 +109,7 @@ const Filters = ({
             </option>
             {cleaners.map((cleaner) => (
               <option value={cleaner.id} key={cleaner.id}>
-                {cleaner.email}
+                {`${cleaner.first_name} ${cleaner.last_name}`}
               </option>
             ))}
           </select>

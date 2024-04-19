@@ -98,15 +98,18 @@ function ReviewModal({ onReviewModalClose, setReviews, editingReview }) {
             onChange={({ target: { value } }) => setText(value)}
           />
         </div>
-        <div className="d-flex align-items-center">
+        <div className="form-check">
           <input
             id="visible-checkbox"
-            className="_cursor-pointer"
+            className="form-check-input _cursor-pointer"
             type="checkbox"
             checked={isVisible}
             onChange={() => setIsVisible(!isVisible)}
           />
-          <label htmlFor="visible-checkbox" className="ms-2 _cursor-pointer">
+          <label
+            htmlFor="visible-checkbox"
+            className="form-check-label _cursor-pointer"
+          >
             Visible
           </label>
         </div>

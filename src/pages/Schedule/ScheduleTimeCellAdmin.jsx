@@ -18,7 +18,7 @@ function ScheduleTimeCellAdmin({
 
       return existingEmployeeSchedule?.[periodName] === false;
     })
-    .map(({ id, email }) => {
+    .map(({ id, email, first_name, last_name }) => {
       const existingEmployeeSchedule = existingSchedules.find(
         ({ employeeId }) => employeeId === id
       );
@@ -30,12 +30,14 @@ function ScheduleTimeCellAdmin({
       if (existingEmployeeSchedule[`${periodName}Additional`]) {
         return {
           email,
+          first_name,
+          last_name,
           notAvailableHours:
             existingEmployeeSchedule[`${periodName}Additional`],
           isOrder,
         };
       } else {
-        return { email, isOrder };
+        return { email, first_name, last_name, isOrder };
       }
     });
 

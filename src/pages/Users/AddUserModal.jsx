@@ -9,14 +9,28 @@ const AddUserModal = ({ onClose, setUsers }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState(ROLES.ADMIN);
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [haveVacuumCleaner, setHaveVacuumCleaner] = useState(false);
   const [haveCar, setHaveCar] = useState(false);
   const [isCreateLoading, setIsCreateLoading] = useState(false);
   const [createError, setCreateError] = useState(null);
 
-  const isEmailValid = EMAIL_REGEX.test(email);
+  const isCreateEnabled =
+    email &&
+    EMAIL_REGEX.test(email) &&
+    password &&
+    role &&
+    firstName &&
+    lastName;
+
+  const showCheckboxes = [ROLES.CLEANER_DRY, ROLES.CLEANER].includes(role);
 
   const onCreateUser = async () => {
+    if (!isCreateEnabled) {
+      return;
+    }
+
     try {
       setIsCreateLoading(true);
       setCreateError(null);
@@ -24,7 +38,14 @@ const AddUserModal = ({ onClose, setUsers }) => {
       const newUser = await request({
         url: "users",
         method: "POST",
-        body: { email, password, role, haveVacuumCleaner, haveCar },
+        body: {
+          email,
+          password,
+          role,
+          firstName,
+          lastName,
+          ...(showCheckboxes && { haveVacuumCleaner, haveCar }),
+        },
       });
 
       setUsers((users) => [...users, newUser]);
@@ -43,71 +64,78 @@ const AddUserModal = ({ onClose, setUsers }) => {
       onClose={onClose}
       actionButtonText="Create user"
       onActionButtonClick={onCreateUser}
-      isActionButtonDisabled={
-        !email || !password || !role || !isEmailValid || isCreateLoading
-      }
+      isActionButtonDisabled={!isCreateEnabled || isCreateLoading}
       isLoading={isCreateLoading}
     >
-      <div>
-        <div className="w-100 mb-3">
-          <label className="mb-2">Email:</label>
-          <input
-            className="form-control"
-            value={email}
-            onChange={({ target: { value } }) => setEmail(value)}
-          />
-        </div>
-        <div className="w-100 mb-3">
-          <label className="mb-2">Password:</label>
-          <input
-            className="form-control"
-            value={password}
-            onChange={({ target: { value } }) => setPassword(value)}
-          />
-        </div>
-        <div className="w-100">
-          <label className="mb-2">Role:</label>
-          <select
-            className="form-select"
-            onChange={({ target: { value } }) => setRole(value)}
-          >
-            {ROLES_OPTIONS.map((option) => (
-              <option selected={option === role} value={option}>
-                {option}
-              </option>
-            ))}
-          </select>
-        </div>
-        {[ROLES.CLEANER_DRY, ROLES.CLEANER].includes(role) && (
-          <>
-            <div className="w-100 my-3">
-              <input
-                id="vacuum-cleaner"
-                className="_cursor-pointer"
-                type="checkbox"
-                checked={haveVacuumCleaner}
-                onClick={() => setHaveVacuumCleaner(!haveVacuumCleaner)}
-              />
-              <label htmlFor="vacuum-cleaner" className="ms-2 _cursor-pointer">
-                Cleaner has a vacuum cleaner
-              </label>
-            </div>
-            <div className="w-100 my-3">
-              <input
-                id="car"
-                className="_cursor-pointer"
-                type="checkbox"
-                checked={haveCar}
-                onClick={() => setHaveCar(!haveCar)}
-              />
-              <label htmlFor="car" className="ms-2 _cursor-pointer">
-                Cleaner has a car
-              </label>
-            </div>
-          </>
-        )}
-        {createError && <div className="mt-3 text-danger">{createError}</div>}
+      <div className="_inline-grid _gap-4 _w-full grid-two-columns-max-auto align-items-center">
+        <label className="_mr-2">Email:</label>
+        <input
+          className="form-control"
+          value={email}
+          onChange={({ target: { value } }) => setEmail(value)}
+        />
+        <label className="_mr-2">Password:</label>
+        <input
+          className="form-control"
+          value={password}
+          onChange={({ target: { value } }) => setPassword(value)}
+        />
+        <label className="_mr-2">First name:</label>
+        <input
+          className="form-control"
+          value={firstName}
+          onChange={({ target: { value } }) => setFirstName(value)}
+        />
+        <label className="_mr-2">Last name:</label>
+        <input
+          className="form-control"
+          value={lastName}
+          onChange={({ target: { value } }) => setLastName(value)}
+        />
+        <label className="_mr-2">Role:</label>
+        <select
+          className="form-select"
+          onChange={({ target: { value } }) => setRole(value)}
+        >
+          {ROLES_OPTIONS.map((option) => (
+            <option selected={option === role} value={option}>
+              {option}
+            </option>
+          ))}
+        </select>
       </div>
+      {showCheckboxes && (
+        <>
+          <div className="form-check mt-4">
+            <input
+              id="vacuum-cleaner"
+              className="form-check-input _cursor-pointer"
+              type="checkbox"
+              checked={haveVacuumCleaner}
+              onClick={() => setHaveVacuumCleaner(!haveVacuumCleaner)}
+            />
+            <label
+              htmlFor="vacuum-cleaner"
+              className="form-check-label _cursor-pointer"
+            >
+              Cleaner has a vacuum cleaner
+            </label>
+          </div>
+          <div className="form-check">
+            <input
+              id="car"
+              className="form-check-input _cursor-pointer"
+              type="checkbox"
+              checked={haveCar}
+              onClick={() => setHaveCar(!haveCar)}
+            />
+            <label htmlFor="car" className="form-check-label _cursor-pointer">
+              Cleaner has a car
+            </label>
+          </div>
+        </>
+      )}
+      {createError && <div className="mt-3 text-danger">{createError}</div>}
     </Modal>
   );
 };
