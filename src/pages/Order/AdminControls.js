@@ -22,7 +22,10 @@ const AdminControls = ({
     const updatedAssignedValue = order.cleaner_id.map((id) => {
       const cleaner = cleaners.find((cleaner) => cleaner.id === id);
 
-      return { value: cleaner?.id, label: cleaner?.email };
+      return {
+        value: cleaner?.id,
+        label: cleaner ? `${cleaner.first_name} ${cleaner.last_name}` : "N/A",
+      };
     });
 
     setAssignedValue(updatedAssignedValue);
@@ -66,7 +69,10 @@ const AdminControls = ({
         ? role === ROLES.CLEANER_DRY
         : role === ROLES.CLEANER
     )
-    .map(({ email, id }) => ({ value: id, label: email }));
+    .map(({ first_name, last_name, id }) => ({
+      value: id,
+      label: `${first_name} ${last_name}`,
+    }));
 
   return (
     <div className="d-flex admin-controls _gap-4 _w-full">

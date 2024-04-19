@@ -114,10 +114,10 @@ export const ReviewsPage = () => {
                     />
                   ))}
                 </div>
-                <div className="_ml-12">
+                <div className="_ml-12 form-check">
                   <input
                     id={`${review.id}-review-visible-checkbox`}
-                    className="_cursor-pointer"
+                    className="form-check-input _cursor-pointer"
                     type="checkbox"
                     checked={review.visible}
                     onClick={() => toggleReviewVisibility(review)}
@@ -125,7 +125,7 @@ export const ReviewsPage = () => {
                   />
                   <label
                     htmlFor={`${review.id}-review-visible-checkbox`}
-                    className="ms-2 _cursor-pointer"
+                    className="form-check-label _cursor-pointer"
                   >
                     Is review visible
                   </label>

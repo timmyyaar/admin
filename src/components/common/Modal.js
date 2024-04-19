@@ -12,6 +12,7 @@ function Modal({
   errorMessage,
   isLoading,
   isActionButtonDanger,
+  noOverflow = false,
 }) {
   const { t } = useContext(LocaleContext);
 
@@ -26,7 +27,13 @@ function Modal({
   return createPortal(
     <>
       <div className="custom-modal bg-body border d-flex flex-column">
-        <div className="p-3 custom-modal-body">{children}</div>
+        <div
+          className={`p-3 custom-modal-body ${
+            !noOverflow ? "overflow-auto" : ""
+          }`}
+        >
+          {children}
+        </div>
         <div className="border-top p-3 _mt-auto d-flex align-items-center">
           {errorMessage && <span className="text-danger">{errorMessage}</span>}
           <div className="d-flex justify-content-end _ml-auto">

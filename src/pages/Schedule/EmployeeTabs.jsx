@@ -11,9 +11,9 @@ function EmployeeTabs({
   users,
 }) {
   const { t } = useContext(LocaleContext);
-  const employeesOptions = users.map(({ id, email }) => ({
+  const employeesOptions = users.map(({ id, first_name, last_name }) => ({
     value: id,
-    label: email,
+    label: `${first_name} ${last_name}`,
   }));
 
   return (

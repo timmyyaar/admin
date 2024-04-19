@@ -2,22 +2,20 @@ import React, { useEffect, useState } from "react";
 import AddUserModal from "./AddUserModal";
 import { getUserEmail, request } from "../../utils";
 import { Louder } from "../../components/Louder";
-import ChangeRoleModal from "./ChangeRoleModal";
 import ChangePasswordModal from "./ChangePasswordModal";
 import DeleteUserModal from "./DeleteUserModal";
-import EditUserDetailsModal from "./EditUserDetailsModal";
 import { ROLES } from "../../constants";
 import { ReactComponent as StarIcon } from "../../assets/icons/star.svg";
 import UserRatingPopover from "./UserRatingPopover/UserRatingPopover";
+import EditUserModal from "./EditUserModal";
 
 const Users = () => {
   const [users, setUsers] = useState([]);
   const [isUsersLoading, setIsUsersLoading] = useState(false);
   const [isAddNewModalOpened, setIsAddNewModalOpened] = useState(false);
+  const [updatingUser, setUpdatingUser] = useState(null);
   const [updatingPasswordUser, setUpdatingPasswordUser] = useState(null);
-  const [updatingUserRole, setUpdatingUserRole] = useState(null);
   const [deletingUser, setDeletingUser] = useState(null);
-  const [editingUserDetails, setEditingUserDetails] = useState(null);
   const [editingUserRating, setEditingUserRating] = useState(null);
   const [ratingIdsLoading, setRatingIdsLoading] = useState([]);
 
@@ -52,12 +50,11 @@ const Users = () => {
           setUsers={setUsers}
         />
       )}
-      {updatingUserRole && (
-        <ChangeRoleModal
-          onClose={() => setUpdatingUserRole(null)}
+      {updatingUser && (
+        <EditUserModal
+          onClose={() => setUpdatingUser(null)}
+          user={updatingUser}
           setUsers={setUsers}
-          currentRole={updatingUserRole.role}
-          id={updatingUserRole.id}
         />
       )}
       {updatingPasswordUser && (
@@ -65,13 +62,6 @@ const Users = () => {
           onClose={() => setUpdatingPasswordUser(null)}
           setUsers={setUsers}
           id={updatingPasswordUser.id}
-        />
-      )}
-      {editingUserDetails && (
-        <EditUserDetailsModal
-          user={editingUserDetails}
-          setUsers={setUsers}
-          onClose={() => setEditingUserDetails(null)}
         />
       )}
       {deletingUser && (
@@ -85,7 +75,7 @@ const Users = () => {
         <div className="card mb-3" key={user.id}>
           <div className="card-header d-flex align-items-center">
             <h5 className="card-title mb-0 d-flex justify-content-start align-items-center">
-              ️{user.email}
+              ️{user.first_name} {user.last_name}
             </h5>
             <div className="_ml-auto d-flex">
               {getUserEmail() !== user.email &&
@@ -115,12 +105,12 @@ const Users = () => {
                     )}
                   </div>
                 )}
-              {[ROLES.CLEANER, ROLES.CLEANER_DRY].includes(user.role) && (
+              {getUserEmail() !== user.email && (
                 <button
                   className="btn btn-secondary _ml-3"
-                  onClick={() => setEditingUserDetails(user)}
+                  onClick={() => setUpdatingUser(user)}
                 >
-                  Update details
+                  Edit user
                 </button>
               )}
               {getUserEmail() !== user.email && (
@@ -133,16 +123,8 @@ const Users = () => {
               )}
               {getUserEmail() !== user.email && (
                 <button
-                  className="btn btn-secondary _ml-3"
-                  onClick={() => setUpdatingUserRole(user)}
-                >
-                  Change role
-                </button>
-              )}
-              {getUserEmail() !== user.email && (
-                <button
                   type="button"
-                  title="Delete review"
+                  title="Delete user"
                   className="btn btn-danger _ml-3"
                   onClick={() => setDeletingUser(user)}
                 >
@@ -152,6 +134,10 @@ const Users = () => {
             </div>
           </div>
           <div className="card-body">
+            <p>
+              Email:
+              <span className="_font-bold _ml-2">{user.email}</span>
+            </p>
             <p>
               Role:
               <span className="_font-bold _ml-2">{user.role}</span>
