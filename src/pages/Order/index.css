@@ -47,3 +47,17 @@
   border: 1px solid #495057;
   border-radius: 1rem;
 }
+
+.check-list-item::before {
+  content: "•";
+  display: inline-block;
+  font-size: 16px;
+  margin-right: 11px;
+}
+
+.check-list-item-checked::before {
+  content: "✓";
+  display: inline-block;
+  font-size: 16px;
+  margin-right: 11px;
+}

@@ -116,36 +116,44 @@ code {
 }
 
 .mobile-only {
-  display: none;
+  display: none !important;
 }
 
 .mobile-none {
-  display: block;
+  display: block !important;
+}
+
+.mobile-none-flex {
+  display: flex !important;
 }
 
 .mobile-only-table-cell {
-  display: none;
+  display: none !important;
 }
 
 .mobile-none-table-cell {
-  display: table-cell;
+  display: table-cell !important;
 }
 
 @media screen and (max-width: 950px) {
   .mobile-only {
-    display: block;
+    display: block !important;
   }
 
   .mobile-none {
-    display: none;
+    display: none !important;
   }
 
   .mobile-only-table-cell {
-    display: table-cell;
+    display: table-cell !important;
   }
 
   .mobile-none-table-cell {
-    display: none;
+    display: none !important;
+  }
+
+  .mobile-none-flex {
+    display: none !important;
   }
 }
 
@@ -235,4 +243,29 @@ code {
 
 .white-space-nowrap {
   white-space: nowrap;
+}
+
+.break-word {
+  word-break: break-word;
+}
+
+.custom-scroll {
+  &::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: rgba(#dee2e6, 0.3);
+    border: 2px solid transparent;
+    border-radius: 9px;
+    background-clip: content-box;
+
+    &:hover {
+      background-color: rgba(#dee2e6, 0.5);
+    }
+  }
+}
+
+.border-semi-round {
+  border-radius: 40px;
 }

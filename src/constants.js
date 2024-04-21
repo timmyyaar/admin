@@ -22,6 +22,22 @@ export const ORDER_TYPE = {
   OZONATION: "Ozonation",
 };
 
+export const ORDER_TYPE_ADDITIONAL = {
+  SUBSCRIPTION: "Subscription",
+  ECO: "Eco cleaning",
+  OFFICE: "Office",
+  DEEP_KITCHEN: "Deep kitchen",
+  CUSTOM: "Custom cleaning",
+  DEEP: "Deep",
+  MOVE: "Move in/out",
+  AFTER_PARTY: "After party",
+  LAST_MINUTE: "In a last minute",
+  WHILE_SICK: "While sickness",
+  AIRBNB: "Airbnb",
+  POST_CONSTRUCTION: "Post-construction",
+  WINDOW: "Window cleaning",
+};
+
 export const USER_DATA_LOCAL_STORAGE_KEY = "userData";
 
 export const AUTH_TOKEN_COOKIE_KEY = "authToken";
@@ -35,3 +51,5 @@ export const NEGATIVE_POSITIVE_NUMBERS_EMPTY_REGEX = /^-?(\s*|[0-9\b])+$/;
 export const NUMBER_EMPTY_REGEX = /^(\s*|\d+)$/;
 
 export const NUMBER_FLOAT_EMPTY_REGEX = /^(\s*|((\d+)\.?(\s*|\d+)))$/;
+
+export const FIGURE_BRACKETS_REGEX = /{([^}]*)}/g;

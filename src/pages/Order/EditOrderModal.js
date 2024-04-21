@@ -3,12 +3,10 @@ import React, { useContext, useState } from "react";
 import {
   EMAIL_REGEX,
   NUMBER_FLOAT_EMPTY_REGEX,
-  ORDER_TYPE,
+  ORDER_TYPE_ADDITIONAL,
 } from "../../constants";
 import { getFloatOneDigit, request } from "../../utils";
 import { LocaleContext } from "../../contexts";
-
-const ORDER_TYPE_OPTIONS = Object.values(ORDER_TYPE);
 
 const EditOrderModal = ({ onClose, order, setOrders }) => {
   const { t } = useContext(LocaleContext);
@@ -27,11 +25,11 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
   );
   const [onlinePayment, setOnlinePayment] = useState(order.onlinepayment);
   const [estimate, setEstimate] = useState(order.estimate);
-  const [title, setTitle] = useState(order.title);
   const [counter, setCounter] = useState(order.counter);
   const [subService, setSubService] = useState(order.subservice);
   const [note, setNote] = useState(order.note || "");
   const [reward, setReward] = useState(order.reward || "");
+  const [ownCheckList, setOwnCheckList] = useState(order.own_check_list || "");
   const [isUpdateLoading, setIsUpdateLoading] = useState(false);
   const [updateError, setUpdateError] = useState("");
 
@@ -54,7 +52,7 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
           onlinePayment,
           price,
           estimate,
-          title,
+          title: order.title,
           counter,
           subService,
           note,
@@ -62,6 +60,7 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
           total_service_price_original: totalPriceOriginal,
           price_original: priceOriginal,
           reward: reward ? +reward : null,
+          ownCheckList,
         },
       });
 
@@ -197,23 +196,6 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
           />
         </div>
         <div className="w-100 mb-3">
-          <label className="mb-2">{t("admin_order_edit_title")}:</label>
-          <select
-            className="form-select"
-            onChange={({ target: { value } }) => setTitle(value)}
-          >
-            {ORDER_TYPE_OPTIONS.map((option) => (
-              <option selected={option === title} value={option}>
-                {t(
-                  `admin_order_type_${option
-                    .toLowerCase()
-                    .replaceAll(" ", "_")}_option`
-                )}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div className="w-100 mb-3">
           <label className="mb-2">{t("admin_order_edit_counter")}:</label>
           <textarea
             className="form-control"
@@ -250,19 +232,41 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
           />
         </div>
         <div className="w-100 mb-3">
-          <input
-            id="online-payment"
-            className="_cursor-pointer"
-            type="checkbox"
-            checked={onlinePayment}
-            onClick={() => setOnlinePayment(!onlinePayment)}
-          />
-          <label htmlFor="online-payment" className="ms-2 _cursor-pointer">
-            {t("admin_order_edit_online_payment")}
-          </label>
+          <div className="form-check">
+            <input
+              id="online-payment"
+              className="form-check-input _cursor-pointer"
+              type="checkbox"
+              checked={onlinePayment}
+              onClick={() => setOnlinePayment(!onlinePayment)}
+            />
+            <label
+              htmlFor="online-payment"
+              className="form-check-label _cursor-pointer"
+            >
+              {t("admin_order_edit_online_payment")}
+            </label>
+          </div>
         </div>
         {updateError && <div className="mt-3 text-danger">{updateError}</div>}
       </div>
+      {order.title === ORDER_TYPE_ADDITIONAL.OFFICE && !order.is_confirmed && (
+        <div className="w-100 mb-3">
+          <div className="form-check">
+            <input
+              type="checkbox"
+              className="form-check-input _cursor-pointer"
+              id="own_check_list"
+              name="own_check_list"
+              checked={ownCheckList}
+              onChange={() => setOwnCheckList((prev) => !prev)}
+            />
+            <label htmlFor="own_check_list">
+              {t("we_provide_our_own_check_list")}
+            </label>
+          </div>
+        </div>
+      )}
     </Modal>
   );
 };

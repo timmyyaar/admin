@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { request } from "../../utils";
 import DuplicateModal from "./DuplicateModal";
 
-function AdminButtons({ t, setOrders, order }) {
+function AdminButtons({ t, setOrders, order, onCheckListOpen }) {
   const [isEditModalOpened, setIsEditModalOpened] = useState(null);
   const [deletingOrderIds, setDeletingOrderIds] = useState([]);
   const [isDuplicateModalOpened, setIsDuplicateModalOpened] = useState(false);
@@ -28,6 +28,15 @@ function AdminButtons({ t, setOrders, order }) {
 
   return (
     <div className="d-flex">
+      {order.check_list && (
+        <button
+          className="btn btn-outline-secondary"
+          title={t("check_list")}
+          onClick={() => onCheckListOpen(order.id)}
+        >
+          🔍
+        </button>
+      )}
       <button
         className="btn btn-outline-secondary _mx-2"
         title={t("admin_order_duplicate")}

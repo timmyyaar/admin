@@ -1,0 +1,25 @@
+.check-list-modal-button {
+  width: 50%;
+
+  @media screen and (max-width: 950px) {
+    width: 100%;
+  }
+}
+
+.complex-check-list-modal-button-wrapper {
+  display: flex;
+
+  @media screen and (max-width: 950px) {
+    flex-direction: column;
+  }
+
+  .warning-message {
+    margin-right: 0.75rem;
+
+    @media screen and (max-width: 950px) {
+      margin-right: 0;
+      margin-bottom: 0.75rem;
+      text-align: center;
+    }
+  }
+}
