@@ -20,6 +20,7 @@ import Documents from "./pages/Documents";
 import Clients from "./pages/Clients";
 import Schedule from "./pages/Schedule";
 import Blogs from "./pages/Blogs";
+import OrdersSummary from "./pages/OrdersSummary";
 
 const LOCALE_LOCAL_STORAGE_KEY = "locale";
 
@@ -103,6 +104,10 @@ function App() {
                   {isAdmin() && (
                     <>
                       <Route path="/locales" element={<LocalesPage />} />
+                      <Route
+                        path="/orders-summary"
+                        element={<OrdersSummary />}
+                      />
                       <Route path="/career" element={<CareerPage />} />
                       <Route path="/gift" element={<GiftPage />} />
                       <Route path="/promo" element={<PromoPage />} />

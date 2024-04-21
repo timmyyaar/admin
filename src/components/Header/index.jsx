@@ -14,6 +14,7 @@ const CLEANER_NAVIGATION = [
 
 const ADMIN_NAVIGATION = [
   { to: "/locales", title: "Locales" },
+  { to: "/orders-summary", title: "Orders summary" },
   { to: "/career", title: "Career" },
   { to: "/gift", title: "Gifts" },
   { to: "/promo", title: "Promo Codes" },

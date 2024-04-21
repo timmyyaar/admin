@@ -23,7 +23,6 @@ import Price from "./Price";
 import AdminButtons from "./AdminButtons";
 import NewClientMessage from "./NewClientMessage";
 import NumberOfCleaners from "./NumberOfCleaners/NumberOfCleaners";
-import { getCleanerReward } from "./utils";
 import Note from "./Note";
 import CheckListModal from "./CleckListModal";
 
@@ -423,14 +422,14 @@ export const OrderPage = ({ subscription = false }) => {
                       <p className="card-text">
                         💰 {t("admin_order_your_reward")}:
                         <span className="_ml-1">
-                          {el.reward || getCleanerReward(el)} zl
+                          {el.reward || el.reward_original} zl
                         </span>
                         {isAdmin() && Boolean(el.reward) && (
                           <span className="_ml-1">
                             <span className="_mr-1">
                               ({t("admin_order_original_reward")}:
                             </span>
-                            {getCleanerReward(el)} zl)
+                            {el.reward_original} zl)
                           </span>
                         )}
                       </p>
