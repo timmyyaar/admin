@@ -1,4 +1,4 @@
-import { ORDER_STATUS } from "../../constants";
+import { ORDER_STATUS, ORDER_TYPE } from "../../constants";
 import React, { useContext, useState } from "react";
 import { getUserId, isAdmin, request } from "../../utils";
 import AssignOnMe from "./AssignOnMe";
@@ -10,6 +10,8 @@ const CleanerControls = ({
   isStatusLoading,
   onChangeOrderStatus,
   setOrders,
+  onCheckListOpen,
+  onCheckListEditOpen,
 }) => {
   const { t } = useContext(LocaleContext);
 
@@ -38,6 +40,11 @@ const CleanerControls = ({
     }
   };
 
+  const isDryCleaningOrOzonation = [
+    ORDER_TYPE.DRY,
+    ORDER_TYPE.OZONATION,
+  ].includes(order.title);
+
   const canRefuseOrder = getTimeRemaining(order.date).days > 4;
 
   return (
@@ -50,9 +57,18 @@ const CleanerControls = ({
       {order.cleaner_id.includes(getUserId()) && (
         <div className="d-flex align-items-center">
           {order.status === ORDER_STATUS.DONE.value && (
-            <span className="text-success _font-semibold">
+            <span className="text-success _font-semibold _mr-2">
               {t("admin_completed_order")}
             </span>
+          )}
+          {order.check_list && (
+            <button
+              className="btn btn-outline-secondary"
+              title={t("check_list")}
+              onClick={() => onCheckListOpen(order.id)}
+            >
+              🔍
+            </button>
           )}
           {order.status === ORDER_STATUS.APPROVED.value && (
             <>
@@ -98,9 +114,13 @@ const CleanerControls = ({
                 isStatusLoading.includes(order.id) ? "loading" : ""
               }`}
               disabled={isStatusLoading.includes(order.id)}
-              onClick={() =>
-                onChangeOrderStatus(order.id, ORDER_STATUS.DONE.value)
-              }
+              onClick={() => {
+                if (isDryCleaningOrOzonation) {
+                  onChangeOrderStatus(order.id, ORDER_STATUS.DONE.value);
+                } else {
+                  onCheckListEditOpen(order.id);
+                }
+              }}
             >
               {t("admin_finish_order")}
             </button>

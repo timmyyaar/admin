@@ -25,6 +25,7 @@ import NewClientMessage from "./NewClientMessage";
 import NumberOfCleaners from "./NumberOfCleaners/NumberOfCleaners";
 import { getCleanerReward } from "./utils";
 import Note from "./Note";
+import CheckListModal from "./CleckListModal";
 
 export const ORDER_STATUS_OPTIONS = Object.values(ORDER_STATUS);
 
@@ -86,6 +87,8 @@ export const OrderPage = ({ subscription = false }) => {
     fromDate: null,
     toDate: null,
   });
+  const [showCheckListId, setShowCheckListId] = useState(null);
+  const [showCheckListEditId, setShowCheckListEditId] = useState(null);
 
   const { t } = useContext(LocaleContext);
 
@@ -157,13 +160,14 @@ export const OrderPage = ({ subscription = false }) => {
     }
   }, []);
 
-  const onChangeOrderStatus = async (id, status) => {
+  const onChangeOrderStatus = async (id, status, checkList) => {
     try {
       setIsStatusLoading((prevIsStatusLoading) => [...prevIsStatusLoading, id]);
 
       const updatedOrder = await request({
         url: `order/${id}/update-status/${status}`,
         method: "PATCH",
+        ...(checkList && { body: { checkList } }),
       });
 
       setOrders((prevOrders) =>
@@ -253,8 +257,7 @@ export const OrderPage = ({ subscription = false }) => {
 
     if (dateFilter.fromDate && dateFilter.toDate) {
       return (
-          dateObject >= dateFilter.fromDate &&
-          dateObject <= dateFilter.toDate
+        dateObject >= dateFilter.fromDate && dateObject <= dateFilter.toDate
       );
     }
 
@@ -267,7 +270,7 @@ export const OrderPage = ({ subscription = false }) => {
     }
 
     return true;
-  })
+  });
 
   return (
     <div className="order-page">
@@ -287,6 +290,23 @@ export const OrderPage = ({ subscription = false }) => {
         {filteredOrdersByDate.length > 0
           ? filteredOrdersByDate.map((el) => (
               <div className="card _mb-3" key={el.id}>
+                {el.id === showCheckListId && (
+                  <CheckListModal
+                    order={el}
+                    onClose={() => setShowCheckListId(null)}
+                    t={t}
+                    isPlain
+                    isFinished={el.status === ORDER_STATUS.DONE.value}
+                  />
+                )}
+                {el.id === showCheckListEditId && (
+                  <CheckListModal
+                    order={el}
+                    onClose={() => setShowCheckListEditId(null)}
+                    t={t}
+                    onChangeOrderStatus={onChangeOrderStatus}
+                  />
+                )}
                 <div
                   className={`card-header _gap-4 d-flex justify-content-between align-items-center ${
                     isAdmin() ? "order-header" : ""
@@ -296,7 +316,12 @@ export const OrderPage = ({ subscription = false }) => {
                     <div>#️⃣️ {el.id}</div>
                     {isAdmin() && (
                       <div className="mobile-only">
-                        <AdminButtons t={t} setOrders={setOrders} order={el} />
+                        <AdminButtons
+                          t={t}
+                          setOrders={setOrders}
+                          order={el}
+                          onCheckListOpen={(id) => setShowCheckListId(id)}
+                        />
                       </div>
                     )}
                   </h5>
@@ -307,6 +332,7 @@ export const OrderPage = ({ subscription = false }) => {
                       cleaners={cleaners}
                       onChangeOrderStatus={onChangeOrderStatus}
                       setOrders={setOrders}
+                      setShowCheckListEditId={setShowCheckListEditId}
                     />
                   )}
                   <CleanerControls
@@ -314,10 +340,17 @@ export const OrderPage = ({ subscription = false }) => {
                     isStatusLoading={isStatusLoading}
                     onChangeOrderStatus={onChangeOrderStatus}
                     setOrders={setOrders}
+                    onCheckListOpen={(id) => setShowCheckListId(id)}
+                    onCheckListEditOpen={(id) => setShowCheckListEditId(id)}
                   />
                   {isAdmin() && (
                     <div className="mobile-none">
-                      <AdminButtons t={t} setOrders={setOrders} order={el} />
+                      <AdminButtons
+                        t={t}
+                        setOrders={setOrders}
+                        order={el}
+                        onCheckListOpen={(id) => setShowCheckListId(id)}
+                      />
                     </div>
                   )}
                 </div>

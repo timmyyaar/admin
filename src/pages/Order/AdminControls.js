@@ -1,4 +1,4 @@
-import { ORDER_STATUS, ROLES } from "../../constants";
+import { ORDER_STATUS, ORDER_TYPE, ROLES } from "../../constants";
 import React, { useContext, useEffect, useState } from "react";
 import { ORDER_STATUS_OPTIONS } from "./index";
 import { LocaleContext } from "../../contexts";
@@ -11,6 +11,7 @@ const AdminControls = ({
   cleaners,
   onChangeOrderStatus,
   setOrders,
+  setShowCheckListEditId,
 }) => {
   const { t } = useContext(LocaleContext);
 
@@ -74,6 +75,18 @@ const AdminControls = ({
       label: `${first_name} ${last_name}`,
     }));
 
+  const statusOptions = ORDER_STATUS_OPTIONS.filter(({ value }) =>
+    order.cleaner_id.length > 0 ? value !== ORDER_STATUS.CREATED.value : true
+  ).map(({ value, label }) => ({
+    value,
+    label: t(`admin_order_${label.toLowerCase().replaceAll(" ", "_")}_option`),
+  }));
+
+  const isDryCleaningOrOzonation = [
+    ORDER_TYPE.DRY,
+    ORDER_TYPE.OZONATION,
+  ].includes(order.title);
+
   return (
     <div className="d-flex admin-controls _gap-4 _w-full">
       <div className="_w-full d-flex align-items-center">
@@ -95,30 +108,29 @@ const AdminControls = ({
         />
       </div>
       <div className="_w-full d-flex align-items-center">
-        {t("admin_status")}:
-        <select
-          disabled={
+        <span className="_mr-2">{t("admin_status")}:</span>
+        <Select
+          isDisabled={
             isStatusLoading.includes(order.id) ||
             isAssignLoading.includes(order.id)
           }
-          value={order.status}
-          className="form-select status-select _ml-2"
-          onChange={({ target: { value } }) =>
-            onChangeOrderStatus(order.id, value)
-          }
-        >
-          {ORDER_STATUS_OPTIONS.filter(({ value }) =>
-            order.cleaner_id.length > 0
-              ? value !== ORDER_STATUS.CREATED.value
-              : true
-          ).map(({ value, label }) => (
-            <option value={value} key={value}>
-              {t(
-                `admin_order_${label.toLowerCase().replaceAll(" ", "_")}_option`
-              )}
-            </option>
-          ))}
-        </select>
+          isLoading={isStatusLoading.includes(order.id)}
+          value={ORDER_STATUS_OPTIONS.find(
+            ({ value }) => value === order.status
+          )}
+          onChange={(option) => {
+            if (
+              option.value === ORDER_STATUS.DONE.value &&
+              order.check_list &&
+              !isDryCleaningOrOzonation
+            ) {
+              setShowCheckListEditId(order.id);
+            } else {
+              onChangeOrderStatus(order.id, option.value);
+            }
+          }}
+          options={statusOptions}
+        />
       </div>
       {assignError && <span className="text-danger _mt-3">{assignError}</span>}
     </div>
