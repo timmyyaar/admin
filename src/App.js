@@ -21,6 +21,7 @@ import Clients from "./pages/Clients";
 import Schedule from "./pages/Schedule";
 import Blogs from "./pages/Blogs";
 import OrdersSummary from "./pages/OrdersSummary";
+import Incomes from "./pages/Incomes";
 
 const LOCALE_LOCAL_STORAGE_KEY = "locale";
 
@@ -108,6 +109,7 @@ function App() {
                         path="/orders-summary"
                         element={<OrdersSummary />}
                       />
+                      <Route path="/incomes" element={<Incomes />} />
                       <Route path="/career" element={<CareerPage />} />
                       <Route path="/gift" element={<GiftPage />} />
                       <Route path="/promo" element={<PromoPage />} />
