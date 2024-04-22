@@ -173,7 +173,7 @@ function Incomes() {
             </td>
             <td className="align-middle">{yearOrders.length}</td>
             <td className="align-middle">{getFloatOneDigit(yearRevenue)}</td>
-            <td className="align-middle text-success">
+            <td className="align-middle text-success font-weight-bold">
               {getFloatOneDigit(yearRevenue - spentMoneyYear)}
             </td>
             <td className="align-middle">
