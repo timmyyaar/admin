@@ -1,5 +1,5 @@
 @import "bootstrap/dist/css/bootstrap.min.css";
-@import "./react-datepicker.css";
+@import "react-datepicker";
 @tailwind components;
 @tailwind utilities;
 
@@ -268,4 +268,8 @@ code {
 
 .border-semi-round {
   border-radius: 40px;
+}
+
+.font-weight-bold {
+  font-weight: bold;
 }
