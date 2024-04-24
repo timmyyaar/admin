@@ -4,6 +4,7 @@ import { ORDER_STATUS_OPTIONS } from "./index";
 import { LocaleContext } from "../../contexts";
 import Select from "../../components/common/Select/Select";
 import { request } from "../../utils";
+import { getFilteredCleanersForOrder } from "./utils";
 
 const AdminControls = ({
   order,
@@ -12,6 +13,7 @@ const AdminControls = ({
   onChangeOrderStatus,
   setOrders,
   setShowCheckListEditId,
+  schedule,
 }) => {
   const { t } = useContext(LocaleContext);
 
@@ -64,16 +66,18 @@ const AdminControls = ({
     }
   };
 
-  const cleanersOptions = cleaners
-    .filter(({ role }) =>
+  const cleanersOptions = getFilteredCleanersForOrder(
+    cleaners.filter(({ role }) =>
       ["Dry cleaning", "Ozonation"].includes(order.title)
         ? role === ROLES.CLEANER_DRY
         : role === ROLES.CLEANER
-    )
-    .map(({ first_name, last_name, id }) => ({
-      value: id,
-      label: `${first_name} ${last_name}`,
-    }));
+    ),
+    order,
+    schedule
+  ).map(({ first_name, last_name, id }) => ({
+    value: id,
+    label: `${first_name} ${last_name}`,
+  }));
 
   const statusOptions = ORDER_STATUS_OPTIONS.filter(({ value }) =>
     order.cleaner_id.length > 0 ? value !== ORDER_STATUS.CREATED.value : true

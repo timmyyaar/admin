@@ -29,7 +29,7 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
   const [subService, setSubService] = useState(order.subservice);
   const [note, setNote] = useState(order.note || "");
   const [reward, setReward] = useState(order.reward || "");
-  const [ownCheckList, setOwnCheckList] = useState(order.own_check_list || "");
+  const [ownCheckList, setOwnCheckList] = useState(order.own_check_list || false);
   const [isUpdateLoading, setIsUpdateLoading] = useState(false);
   const [updateError, setUpdateError] = useState("");
 

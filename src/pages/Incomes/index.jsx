@@ -39,6 +39,15 @@ const getDatesBetween = (startDate, stopDate) => {
   return dateArray;
 };
 
+const getRevenue = (orders) =>
+  orders.reduce((result, { price }) => result + price, 0);
+const getSpent = (orders) =>
+  orders.reduce(
+    (result, { reward, reward_original, extra_expenses }) =>
+      result + ((reward || reward_original) + (extra_expenses || 0)),
+    0
+  );
+
 const hundredYears = Array(101)
   .fill(2024)
   .map((n, i) => n + i);
@@ -72,6 +81,14 @@ function Incomes() {
     getDateString(date)
   );
 
+  const currentPeriodOrders = orders.filter(({ date }) => {
+    const dateObject = getDateTimeObjectFromString(date);
+
+    return dateObject >= dateFrom && dateObject <= dateTo;
+  });
+  const currentPeriodRevenue = getRevenue(currentPeriodOrders);
+  const spentCurrentPeriod = getSpent(currentPeriodOrders);
+
   const yearStart = getYearStart(year);
   const yearEnd = getYearEnd(year);
   const yearOrders = orders.filter(({ date }) => {
@@ -79,15 +96,8 @@ function Incomes() {
 
     return dateObject >= yearStart && dateObject <= yearEnd;
   });
-  const yearRevenue = yearOrders.reduce(
-    (result, { price }) => result + price,
-    0
-  );
-  const spentMoneyYear = yearOrders.reduce(
-    (result, { reward, reward_original, extra_expenses }) =>
-      result + ((reward || reward_original) + (extra_expenses || 0)),
-    0
-  );
+  const yearRevenue = getRevenue(yearOrders);
+  const spentMoneyYear = getSpent(yearOrders);
 
   return (
     <div>
@@ -136,15 +146,8 @@ function Incomes() {
               (order) =>
                 getDateString(getDateTimeObjectFromString(order.date)) === date
             );
-            const revenueOnThisDay = ordersOnThisDay.reduce(
-              (result, { price }) => result + price,
-              0
-            );
-            const spentMoneyThisDay = ordersOnThisDay.reduce(
-              (result, { reward, reward_original, extra_expenses }) =>
-                result + ((reward || reward_original) + (extra_expenses || 0)),
-              0
-            );
+            const revenueOnThisDay = getRevenue(ordersOnThisDay);
+            const spentMoneyThisDay = getSpent(ordersOnThisDay);
 
             return (
               <tr>
@@ -162,7 +165,22 @@ function Incomes() {
               </tr>
             );
           })}
-          <tr className="year-row">
+          <tr className="general-row">
+            <td className="align-middle">TOTAL</td>
+            <td className="align-middle">{currentPeriodOrders.length}</td>
+            <td className="align-middle">
+              {getFloatOneDigit(currentPeriodRevenue)}
+            </td>
+            <td className="align-middle text-success font-weight-bold">
+              {getFloatOneDigit(currentPeriodRevenue - spentCurrentPeriod)}
+            </td>
+            <td className="align-middle">
+              {getFloatOneDigit(
+                currentPeriodRevenue / (currentPeriodOrders.length || 1)
+              )}
+            </td>
+          </tr>
+          <tr className="general-row">
             <td className="align-middle">
               <Select
                 value={{ value: year, label: year }}

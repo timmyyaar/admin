@@ -187,4 +187,7 @@ export const getTimeRemaining = (endTime) => {
 
 export const capitalizeFirstLetter = (string) => {
   return string.charAt(0).toUpperCase() + string.slice(1);
-}
+};
+
+export const getTimeUnitWithPrefix = (timeUnit) =>
+  timeUnit < 10 ? `0${timeUnit}` : timeUnit;

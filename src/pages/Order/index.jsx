@@ -88,6 +88,8 @@ export const OrderPage = ({ subscription = false }) => {
   });
   const [showCheckListId, setShowCheckListId] = useState(null);
   const [showCheckListEditId, setShowCheckListEditId] = useState(null);
+  const [isScheduleLoading, setIsScheduleLoading] = useState(false);
+  const [schedule, setSchedule] = useState([]);
 
   const { t } = useContext(LocaleContext);
 
@@ -151,9 +153,22 @@ export const OrderPage = ({ subscription = false }) => {
     }
   };
 
+  const getSchedule = async () => {
+    try {
+      setIsScheduleLoading(true);
+
+      const scheduleResponse = await request({ url: "schedule" });
+
+      setSchedule(scheduleResponse);
+    } finally {
+      setIsScheduleLoading(false);
+    }
+  };
+
   useEffect(() => {
     if (isAdmin()) {
       getUsers();
+      getSchedule();
     } else {
       setIsUsersLoading(false);
     }
@@ -273,7 +288,7 @@ export const OrderPage = ({ subscription = false }) => {
 
   return (
     <div className="order-page">
-      <Louder visible={loading || isUsersLoading} />
+      <Louder visible={loading || isUsersLoading || isScheduleLoading} />
       <Filters
         statusFilter={statusFilter}
         setStatusFilter={setStatusFilter}
@@ -332,6 +347,7 @@ export const OrderPage = ({ subscription = false }) => {
                       onChangeOrderStatus={onChangeOrderStatus}
                       setOrders={setOrders}
                       setShowCheckListEditId={setShowCheckListEditId}
+                      schedule={schedule}
                     />
                   )}
                   <CleanerControls
