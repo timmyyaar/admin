@@ -66,7 +66,7 @@ function OrdersSummary() {
             <th className="text-center">Payment</th>
             <th className="text-center">Cleaner reward</th>
             <th className="text-center">Extra expenses</th>
-            <th className="text-center">Settlement</th>
+            <th className="text-center">Invoice</th>
             <th className="text-center">Cleaners</th>
           </tr>
         </thead>
@@ -122,6 +122,10 @@ function OrdersSummary() {
                   {order.onlinepayment ? (
                     <span className="text-danger">
                       -{reward + (order.extra_expenses || 0)}
+                    </span>
+                  ) : companyEarning < 0 ? (
+                    <span className="text-danger">
+                      {companyEarning - (order.extra_expenses || 0)}
                     </span>
                   ) : (
                     <span className="text-success">

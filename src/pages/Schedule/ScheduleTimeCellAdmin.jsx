@@ -50,6 +50,8 @@ function ScheduleTimeCellAdmin({
     notAvailableUsers.length === users.length &&
     !notAvailableUsers.some(({ notAvailableHours }) => notAvailableHours);
 
+  const availableUsersCount = users.length - notAvailableUsers.length;
+
   const cellClassName = showPartialAvailableTime
     ? "partial-available-time"
     : showNotAvailableTime
@@ -66,6 +68,9 @@ function ScheduleTimeCellAdmin({
           }
         }}
       >
+        <div className="text-center">
+          <b className="text-black">{availableUsersCount}</b>
+        </div>
         {isPopoverOpened && (
           <NotAvailableEmployeesPopover
             notAvailableUsers={notAvailableUsers}

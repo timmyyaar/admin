@@ -31,12 +31,12 @@ function ScheduleTimeCell({
     existingSchedule[`is${capitalizeFirstLetter(periodName)}Order`];
 
   const cellClassName = isPeriodAdditionAvailable
-    ? `${isOrderPeriod ? "order-time" : "partial-available-time"} ${
+    ? `${isOrderPeriod ? "order-time disabled-row" : "partial-available-time"} ${
         isCellDisabled ? "disabled-row" : ""
       }`
     : isPeriodAvailable
     ? `available-time  ${isCellDisabled ? "disabled-row" : ""}`
-    : `${isOrderPeriod ? "order-time" : "not-available-time"} ${
+    : `${isOrderPeriod ? "order-time disabled-row" : "not-available-time"} ${
         isCellDisabled ? "disabled-row" : ""
       }`;
 
