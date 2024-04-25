@@ -2,36 +2,49 @@ import React, { useEffect, useState } from "react";
 
 import { Louder } from "../../components/Louder";
 
-import { getCareers, deleteCareers } from "./actions";
+import { request } from "../../utils";
 
 export const CareerPage = () => {
   const [career, setCareers] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [forceUpdate, setForceUpdate] = useState(false);
+  const [deleteLoadingIds, setDeleteLoadingIds] = useState([]);
+  const [deleteError, setDeleteError] = useState(false);
 
-  const toggleForceUpdate = () => setForceUpdate((fU) => !fU);
-
-  const onDeleteCareer = (id) => {
+  const onDeleteCareer = async (id) => {
     const confirmed = window.confirm(
       "Are you sure you want to delete the contact permanently?"
     );
 
     if (confirmed) {
+      try {
+        setDeleteLoadingIds((prev) => [...prev, id]);
+
+        await request({ url: `career/${id}`, method: "DELETE" });
+
+        setCareers((prev) => prev.filter((career) => career.id !== id));
+      } catch (error) {
+        setDeleteError(error.message);
+      } finally {
+        setDeleteLoadingIds((prev) => prev.filter((item) => item !== id));
+      }
+    }
+  };
+
+  const getCareers = async () => {
+    try {
       setLoading(true);
-      deleteCareers({ id }).then(() => {
-        setLoading(false);
-        toggleForceUpdate();
-      });
+
+      const careersResponse = await request({ url: "careers" });
+
+      setCareers(careersResponse);
+    } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
-    setLoading(true);
-    getCareers().then((data) => {
-      setCareers(data.careers);
-      setLoading(false);
-    });
-  }, [forceUpdate]);
+    getCareers();
+  }, []);
 
   return (
     <div className="career-page">
@@ -43,11 +56,16 @@ export const CareerPage = () => {
               <h5 className="card-title mb-0">{el.name}</h5>
               <button
                 type="button"
-                className="btn btn-danger"
+                className={`btn btn-danger icon-button ${
+                  deleteLoadingIds.includes(el.id) ? "loading" : ""
+                }`}
                 onClick={() => onDeleteCareer(el.id)}
               >
-                x
+                {deleteLoadingIds.includes(el.id) ? "" : <>&#10005;</>}
               </button>
+              {deleteError && (
+                <span className="text-danger">{deleteError}</span>
+              )}
             </div>
             <div className="card-body">
               <p className="card-text">Phone: {el.phone}</p>
