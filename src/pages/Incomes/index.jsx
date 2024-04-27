@@ -11,6 +11,7 @@ import { Louder } from "../../components/Louder";
 import Select from "../../components/common/Select/Select";
 
 import "./style.scss";
+import { ORDER_STATUS } from "../../constants";
 
 const getFirstDateOfMonth = (date = new Date()) =>
   new Date(date.getFullYear(), date.getMonth(), 1);
@@ -81,7 +82,11 @@ function Incomes() {
     getDateString(date)
   );
 
-  const currentPeriodOrders = orders.filter(({ date }) => {
+  const completedOrders = orders.filter(
+    ({ status }) => status === ORDER_STATUS.DONE.value
+  );
+
+  const currentPeriodOrders = completedOrders.filter(({ date }) => {
     const dateObject = getDateTimeObjectFromString(date);
 
     return dateObject >= dateFrom && dateObject <= dateTo;
@@ -91,7 +96,7 @@ function Incomes() {
 
   const yearStart = getYearStart(year);
   const yearEnd = getYearEnd(year);
-  const yearOrders = orders.filter(({ date }) => {
+  const yearOrders = completedOrders.filter(({ date }) => {
     const dateObject = getDateTimeObjectFromString(date);
 
     return dateObject >= yearStart && dateObject <= yearEnd;
@@ -142,7 +147,7 @@ function Incomes() {
         </thead>
         <tbody>
           {datesBetweenRange.map((date) => {
-            const ordersOnThisDay = orders.filter(
+            const ordersOnThisDay = completedOrders.filter(
               (order) =>
                 getDateString(getDateTimeObjectFromString(order.date)) === date
             );

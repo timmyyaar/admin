@@ -4,12 +4,14 @@ import {
   getFloatOneDigit,
   request,
 } from "../../utils";
-import { useEffect, useState } from "react";
-import { ROLES } from "../../constants";
+import { useContext, useEffect, useState } from "react";
+import { ORDER_STATUS, ROLES } from "../../constants";
 
 import "./style.scss";
 import ExtraExpensesPopover from "./ExtraExpensesPopover";
 import { Louder } from "../../components/Louder";
+import Filters from "./Filters";
+import { LocaleContext } from "../../contexts";
 
 function OrdersSummary() {
   const [isLoading, setIsLoading] = useState(false);
@@ -17,6 +19,12 @@ function OrdersSummary() {
   const [cleaners, setCleaners] = useState([]);
   const [orders, setOrders] = useState([]);
   const [extraExpensesOpenedId, setExtraExpensesOpenedId] = useState(null);
+
+  const [fromDate, setFromDate] = useState(null);
+  const [toDate, setToDate] = useState(null);
+  const [cleanersFilter, setCleanersFilter] = useState([]);
+
+  const { t } = useContext(LocaleContext);
 
   const getOrders = async () => {
     try {
@@ -51,9 +59,44 @@ function OrdersSummary() {
     getUsers();
   }, []);
 
+  const filteredOrders = orders
+    .filter(({ status }) => status === ORDER_STATUS.DONE.value)
+    .filter(({ date }) => {
+      const dateObject = getDateTimeObjectFromString(date);
+
+      if (fromDate && toDate) {
+        return dateObject >= fromDate && dateObject <= toDate;
+      }
+
+      if (fromDate) {
+        return dateObject >= fromDate;
+      }
+
+      if (toDate) {
+        return dateObject <= toDate;
+      }
+
+      return true;
+    })
+    .filter(({ cleaner_id }) =>
+      cleanersFilter.length > 0
+        ? cleaner_id.some((id) => cleanersFilter.includes(id))
+        : true
+    );
+
   return (
-    <div>
+    <div className="orders-summary">
       <Louder visible={isLoading || isUsersLoading} />
+      <Filters
+        t={t}
+        fromDate={fromDate}
+        setFromDate={setFromDate}
+        toDate={toDate}
+        setToDate={setToDate}
+        cleaners={cleaners}
+        cleanersFilter={cleanersFilter}
+        setCleanersFilter={setCleanersFilter}
+      />
       <table className="table table-dark table-bordered">
         <thead>
           <tr>
@@ -71,7 +114,7 @@ function OrdersSummary() {
           </tr>
         </thead>
         <tbody>
-          {orders.map((order) => {
+          {filteredOrders.map((order) => {
             const reward = order.reward || order.reward_original;
             const discountPercent = Math.round(
               100 - (100 * order.price) / order.price_original
