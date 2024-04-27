@@ -39,6 +39,23 @@ const SHOW_CORRIDOR_TITLES = [
   "Airbnb",
 ];
 
+const SHOW_VACUUM_CLEANER_TITLES = [
+  "Regular",
+  "Deep",
+  "Eco cleaning",
+  "Custom",
+  "Office",
+  "Move in/out",
+  "Deep kitchen",
+  "After party",
+  "Airbnb",
+  "In a last minute",
+];
+
+const getSubServiceWithoutVacuumCleaner = (subService) => {
+  return subService.replace("Vacuum_cleaner_sub_service_summery (1)", "");
+};
+
 const getSubServiceWithBalcony = (subService) => {
   const balconyMatch = subService.match(/Balcony_summery\s+\(\d+\)/)?.[0];
 
@@ -463,7 +480,7 @@ export const OrderPage = ({ subscription = false }) => {
                       <p className="card-text font-weight-semi-bold">
                         ⏳ {t("admin_order_estimate")}: {el.estimate}
                       </p>
-                      {el.title === "Regular" && (
+                      {SHOW_VACUUM_CLEANER_TITLES.includes(el.title) && (
                         <p className="card-text _ml-2 font-weight-semi-bold">
                           <span className="_mr-1">🔌</span>
                           {el.subservice.includes(
@@ -484,7 +501,9 @@ export const OrderPage = ({ subscription = false }) => {
                         {reactStringReplace(
                           getTranslatedServices(
                             getSubServiceWithCarpet(
-                              getSubServiceWithBalcony(el.subservice)
+                              getSubServiceWithBalcony(
+                                getSubServiceWithoutVacuumCleaner(el.subservice)
+                              )
                             )
                           ),
                           "m2",
