@@ -9,7 +9,7 @@ function SubService({ subService, getPrices, t }) {
 
   const isUpdateDisabled =
     subServicePrice === subService.price ||
-    !subServicePrice ||
+    !String(subServicePrice) ||
     String(subServicePrice).endsWith(".");
 
   const updatePrice = async () => {

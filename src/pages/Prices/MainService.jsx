@@ -13,8 +13,8 @@ function MainService({ servicePrices, getPrices, t }) {
   const [updateError, setUpdateError] = useState("");
 
   const isUpdateDisabled =
-    rows.every(({ price }, index) => servicePrices[index].price === price) ||
-    rows.some(({ price }) => !price) ||
+    rows.every(({ price }, index) => servicePrices[index]?.price === price) ||
+    rows.some(({ price }) => !String(price)) ||
     rows.some(({ price }) => String(price).endsWith("."));
 
   const onRowPriceChange = (key, price) => {
