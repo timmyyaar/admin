@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 
 import { AppContext, LocaleContext } from "./contexts";
 import { Header } from "./components/Header";
@@ -23,7 +23,6 @@ import Blogs from "./pages/Blogs";
 import OrdersSummary from "./pages/OrdersSummary";
 import Incomes from "./pages/Incomes";
 import Prices from "./pages/Prices";
-import { Navigate } from "react-router";
 
 const LOCALE_LOCAL_STORAGE_KEY = "locale";
 
