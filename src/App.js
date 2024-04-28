@@ -23,6 +23,7 @@ import Blogs from "./pages/Blogs";
 import OrdersSummary from "./pages/OrdersSummary";
 import Incomes from "./pages/Incomes";
 import Prices from "./pages/Prices";
+import { Navigate } from "react-router";
 import Payment from "./pages/Payment";
 
 const LOCALE_LOCAL_STORAGE_KEY = "locale";
@@ -100,7 +101,7 @@ function App() {
               />
               <main className="container app-container">
                 <Routes>
-                  <Route path="/" element={<div />} />
+                  <Route path="/" element={<Navigate to="/order" replace />} />
                   <Route path="/order" element={<OrderPage />} />
                   <Route path="/documents" element={<Documents />} />
                   <Route path="/schedule" element={<Schedule />} />
