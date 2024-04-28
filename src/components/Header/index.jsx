@@ -1,10 +1,17 @@
-import React, { Fragment, useContext, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import React, {
+  Fragment,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+import { Link, useLocation } from "react-router-dom";
 import { isAdmin, isCleaner, isDryCleaner, request } from "../../utils";
 
-import "./index.css";
+import "./index.scss";
 import { LocaleContext } from "../../contexts";
 import LocaleSelect from "../LocaleSelect/LocaleSelect";
+import useClickOutside from "../../hooks/useClickOutside";
 
 const CLEANER_NAVIGATION = [
   { to: "/order", title: "Orders" },
@@ -14,6 +21,7 @@ const CLEANER_NAVIGATION = [
 
 const ADMIN_NAVIGATION = [
   { to: "/locales", title: "Locales" },
+  { to: "/prices", title: "Prices" },
   { to: "/orders-summary", title: "Orders summary" },
   { to: "/incomes", title: "Incomes" },
   { to: "/career", title: "Career" },
@@ -32,6 +40,8 @@ export const Header = ({ onLogOut, locale, setLocale }) => {
   const [showMenu, setShowMenu] = useState(false);
   const [myUser, setMyUser] = useState(null);
 
+  const { pathname } = useLocation();
+
   const getMyUser = async () => {
     const myUserResponse = await request({ url: "users/my-user" });
 
@@ -48,28 +58,38 @@ export const Header = ({ onLogOut, locale, setLocale }) => {
     ? [...CLEANER_NAVIGATION, ...ADMIN_NAVIGATION]
     : CLEANER_NAVIGATION;
 
+  const menuRef = useRef();
+  useClickOutside(menuRef, () => setShowMenu(false));
+
   return (
-    <header className="container d-flex align-items-center header-wrapper">
-      <div className="mobile-only w-100">
-        <button
-          className="btn btn-primary _mr-3"
-          onClick={() => setShowMenu(!showMenu)}
+    <header className="container d-flex align-items-center header-wrapper border-bottom">
+      <button
+        className="btn btn-primary _mr-3"
+        onClick={() => setShowMenu(!showMenu)}
+      >
+        {t("admin_menu")}
+      </button>
+      <div className="w-100">
+        <div
+          ref={menuRef}
+          className={`h-100 position-fixed _left-0 _top-0 _z-10 navigation overflow-auto d-flex flex-column ${
+            showMenu ? "navigation-visible" : "navigation-invisible"
+          }`}
         >
-          {t("admin_menu")}
-        </button>
-        {showMenu && (
-          <div className="w-100 h-100 position-fixed _left-0 _top-0 _z-10 mobile-navigation">
-            <div className="_p-4 d-flex justify-content-end">
-              <button
-                className="btn btn-primary"
-                onClick={() => setShowMenu(!showMenu)}
-              >
-                &#10006;
-              </button>
-            </div>
+          <div className="_p-4 d-flex justify-content-end">
+            <button
+              className="btn btn-primary"
+              onClick={() => setShowMenu(!showMenu)}
+            >
+              &#10006;
+            </button>
+          </div>
+          <div className="overflow-auto custom-scroll">
             {navigation.map((nav) => (
               <div
-                className={`_p-4 mobile-navigation-item _text-center`}
+                className={`_p-4 navigation-item _text-center ${
+                  nav.to.includes(pathname) ? "active" : ""
+                }`}
                 key={nav.title}
               >
                 <Link
@@ -84,26 +104,7 @@ export const Header = ({ onLogOut, locale, setLocale }) => {
               </div>
             ))}
           </div>
-        )}
-      </div>
-      <div className="mobile-none w-100">
-        <nav className="navbar navbar-expand container">
-          <div className="navbar-nav">
-            {navigation.map((nav) => (
-              <Fragment key={nav.to + nav.title}>
-                <div className="nav-item">
-                  <Link to={nav.to} className="nav-link whitespace-nowrap">
-                    {t(
-                      `admin_${nav.title
-                        .toLowerCase()
-                        .replace(" ", "_")}_header`
-                    )}
-                  </Link>
-                </div>
-              </Fragment>
-            ))}
-          </div>
-        </nav>
+        </div>
       </div>
       <div className="ml-auto d-flex align-items-center">
         <LocaleSelect locale={locale} setLocale={setLocale} />
