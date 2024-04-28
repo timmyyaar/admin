@@ -1,10 +1,4 @@
-import React, {
-  Fragment,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { isAdmin, isCleaner, isDryCleaner, request } from "../../utils";
 
@@ -88,7 +82,7 @@ export const Header = ({ onLogOut, locale, setLocale }) => {
             {navigation.map((nav) => (
               <div
                 className={`_p-4 navigation-item _text-center ${
-                  nav.to.includes(pathname) ? "active" : ""
+                  pathname !== "/" && nav.to === pathname ? "active" : ""
                 }`}
                 key={nav.title}
               >
