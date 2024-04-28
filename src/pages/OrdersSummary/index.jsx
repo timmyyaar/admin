@@ -84,6 +84,20 @@ function OrdersSummary() {
         : true
     );
 
+  const invoiceForPeriod = filteredOrders.reduce((result, order) => {
+    const reward = order.reward || order.reward_original;
+    const companyEarning = getFloatOneDigit(
+      order.price - reward * order.cleaners_count
+    );
+
+    const invoice = order.onlinepayment
+      ? -(reward + (order.extra_expenses || 0))
+      : companyEarning - (order.extra_expenses || 0);
+
+    return result + invoice;
+  }, 0);
+  const invoiceForPeriodOneDigit = getFloatOneDigit(invoiceForPeriod);
+
   return (
     <div className="orders-summary">
       <Louder visible={isLoading || isUsersLoading} />
@@ -188,6 +202,21 @@ function OrdersSummary() {
               </tr>
             );
           })}
+          <tr>
+            <td colSpan="9" className="text-end align-middle">
+              Total for period:
+            </td>
+            <td className="text-center align-middle">
+              <span
+                className={
+                  invoiceForPeriodOneDigit < 0 ? "text-danger" : "text-success"
+                }
+              >
+                {invoiceForPeriodOneDigit}
+              </span>
+            </td>
+            <td />
+          </tr>
         </tbody>
       </table>
     </div>
