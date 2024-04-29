@@ -1,5 +1,6 @@
 import React, { useContext } from "react";
 import { LocaleContext } from "../../contexts";
+import Select from "../common/Select/Select";
 
 const mainLocales = {
   en: "English",
@@ -19,11 +20,11 @@ function LocaleSelect({ locale, setLocale }) {
   return (
     <select
       value={locale}
-      className="form-select locales-select w-auto"
+      className="form-select w-auto"
       onChange={({ target: { value } }) => setLocale(value)}
     >
       {localesOptions.map(({ value, label }) => (
-        <option selected={locale === value} value={value}>
+        <option selected={locale === value} value={value} key={value}>
           {t(label)}
         </option>
       ))}

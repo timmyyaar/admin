@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 
 import { AppContext, LocaleContext } from "./contexts";
 import { Header } from "./components/Header";
@@ -22,6 +22,7 @@ import Schedule from "./pages/Schedule";
 import Blogs from "./pages/Blogs";
 import OrdersSummary from "./pages/OrdersSummary";
 import Incomes from "./pages/Incomes";
+import Prices from "./pages/Prices";
 
 const LOCALE_LOCAL_STORAGE_KEY = "locale";
 
@@ -98,7 +99,7 @@ function App() {
               />
               <main className="container app-container">
                 <Routes>
-                  <Route path="/" element={<div />} />
+                  <Route path="/" element={<Navigate to="/order" replace />} />
                   <Route path="/order" element={<OrderPage />} />
                   <Route path="/documents" element={<Documents />} />
                   <Route path="/schedule" element={<Schedule />} />
@@ -122,6 +123,7 @@ function App() {
                       <Route path="/discounts" element={<Discounts />} />
                       <Route path="/clients" element={<Clients />} />
                       <Route path="/blogs" element={<Blogs />} />
+                      <Route path="/prices" element={<Prices />} />}
                     </>
                   )}
                 </Routes>

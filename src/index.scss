@@ -273,3 +273,12 @@ code {
 .font-weight-bold {
   font-weight: bold;
 }
+
+.width-50-mobile-100 {
+  width: 50%;
+
+  @media screen and (max-width: 950px) {
+    width: 100%;
+  }
+}
+
