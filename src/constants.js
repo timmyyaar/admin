@@ -53,3 +53,10 @@ export const NUMBER_EMPTY_REGEX = /^(\s*|\d+)$/;
 export const NUMBER_FLOAT_EMPTY_REGEX = /^(\s*|((\d+)\.?(\s*|\d+)))$/;
 
 export const FIGURE_BRACKETS_REGEX = /{([^}]*)}/g;
+
+export const PAYMENT_STATUS = {
+  PENDING: "pending",
+  WAITING_FOR_CONFIRMATION: "waiting_for_confirmation",
+  FAILED: "failed",
+  CONFIRMED: "confirmed",
+};
