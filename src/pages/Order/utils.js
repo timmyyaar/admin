@@ -3,7 +3,6 @@ import {
   getDateTimeObjectFromString,
   getTimeUnitWithPrefix,
 } from "../../utils";
-import { PAYMENT_STATUS } from "../../constants";
 
 export const getEstimateInTimeFormat = (estimate) => {
   const estimateArray = estimate.split(", ");
@@ -131,7 +130,7 @@ export const getFilteredCleanersForOrder = (cleaners, order, schedule) => {
 
     if (thirdTimeSlot && !cleanerSchedule.thirdPeriod) {
       return getAdditionalPeriodFilter(
-        thirdTimeSlot,
+          thirdTimeSlot,
         cleanerSchedule.thirdPeriodAdditional
       );
     }
@@ -145,34 +144,4 @@ export const getFilteredCleanersForOrder = (cleaners, order, schedule) => {
 
     return true;
   });
-};
-
-export const getPaymentColorDependsOnStatus = (paymentStatus) => {
-  switch (paymentStatus) {
-    case PAYMENT_STATUS.PENDING:
-      return "text-info";
-    case PAYMENT_STATUS.FAILED:
-      return "text-danger";
-    case PAYMENT_STATUS.WAITING_FOR_CONFIRMATION:
-      return "text-warning";
-    case PAYMENT_STATUS.CONFIRMED:
-      return "text-success";
-    default:
-      return "text-white";
-  }
-};
-
-export const getPaymentTextDependsOnStatus = (paymentStatus) => {
-  switch (paymentStatus) {
-    case PAYMENT_STATUS.PENDING:
-      return "client_payment_waiting";
-    case PAYMENT_STATUS.FAILED:
-      return "client_payment_failed";
-    case PAYMENT_STATUS.WAITING_FOR_CONFIRMATION:
-      return "client_payment_waiting_for_confirmation";
-    case PAYMENT_STATUS.CONFIRMED:
-      return "client_payment_succeeded";
-    default:
-      return "";
-  }
 };
