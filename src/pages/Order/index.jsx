@@ -25,6 +25,10 @@ import NewClientMessage from "./NewClientMessage";
 import NumberOfCleaners from "./NumberOfCleaners/NumberOfCleaners";
 import Note from "./Note";
 import CheckListModal from "./CleckListModal";
+import {
+  getPaymentColorDependsOnStatus,
+  getPaymentTextDependsOnStatus,
+} from "./utils";
 
 export const ORDER_STATUS_OPTIONS = Object.values(ORDER_STATUS);
 
@@ -466,7 +470,13 @@ export const OrderPage = ({ subscription = false }) => {
                           </span>
                         )}
                       </p>
-                      <p className="card-text font-weight-semi-bold">
+                      <p
+                        className={`card-text font-weight-semi-bold ${
+                          isAdmin() && el.payment_status && el.onlinepayment
+                            ? getPaymentColorDependsOnStatus(el.payment_status)
+                            : ""
+                        }`}
+                      >
                         <span className="_mr-1">
                           {el.onlinepayment ? "💳" : "💲"}
                         </span>
@@ -476,6 +486,12 @@ export const OrderPage = ({ subscription = false }) => {
                         {el.onlinepayment
                           ? `${t("admin_order_online")}`
                           : `${t("admin_order_cash")}`}
+                        {isAdmin() &&
+                          el.onlinepayment &&
+                          el.payment_status &&
+                          ` (${t(
+                            getPaymentTextDependsOnStatus(el.payment_status)
+                          )})`}
                       </p>
                       <p className="card-text font-weight-semi-bold">
                         ⏳ {t("admin_order_estimate")}: {el.estimate}
