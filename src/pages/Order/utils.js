@@ -157,6 +157,8 @@ export const getPaymentColorDependsOnStatus = (paymentStatus) => {
       return "text-warning";
     case PAYMENT_STATUS.CONFIRMED:
       return "text-success";
+    case PAYMENT_STATUS.CANCELED:
+      return "text-secondary";
     default:
       return "text-white";
   }
@@ -172,6 +174,8 @@ export const getPaymentTextDependsOnStatus = (paymentStatus) => {
       return "client_payment_waiting_for_confirmation";
     case PAYMENT_STATUS.CONFIRMED:
       return "client_payment_succeeded";
+    case PAYMENT_STATUS.CANCELED:
+      return "client_payment_canceled";
     default:
       return "";
   }
