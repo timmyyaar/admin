@@ -84,6 +84,7 @@ function Payment({ order, setOrders, t }) {
                 onClick={() => {
                   navigator.clipboard.writeText(paymentLink);
                   setWasCopied(true);
+                  setTimeout(() => setWasCopied(false), 3000);
                 }}
               >
                 {wasCopied ? "✓" : "📋"}
