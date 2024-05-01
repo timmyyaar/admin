@@ -3,7 +3,7 @@ import {
   getDateTimeObjectFromString,
   getTimeUnitWithPrefix,
 } from "../../utils";
-import { PAYMENT_STATUS } from "../../constants";
+import { BRACKETS_REGEX, PAYMENT_STATUS } from "../../constants";
 
 export const getEstimateInTimeFormat = (estimate) => {
   const estimateArray = estimate.split(", ");
@@ -145,6 +145,73 @@ export const getFilteredCleanersForOrder = (cleaners, order, schedule) => {
 
     return true;
   });
+};
+
+const SHOW_CORRIDOR_TITLES = [
+  "Regular",
+  "Deep",
+  "Eco cleaning",
+  "Move in/out",
+  "In a last minute",
+  "After party",
+  "While sickness",
+  "Airbnb",
+];
+
+export const getTranslatedServices = (t, services, title) => {
+  let transformedServicesString = services;
+
+  if (SHOW_CORRIDOR_TITLES.includes(title)) {
+    transformedServicesString = `${transformedServicesString}, ${t(
+      "Corridor"
+    )} (1)`;
+  }
+
+  services
+    .split(BRACKETS_REGEX)
+    .map((service) => service.trim())
+    .forEach((service) => {
+      transformedServicesString = transformedServicesString.replace(
+        service,
+        t(service)
+      );
+    });
+
+  return transformedServicesString;
+};
+
+export const getSubServiceWithBalcony = (subService) => {
+  const balconyMatch = subService.match(/Balcony_summery\s+\(\d+\)/)?.[0];
+
+  if (!balconyMatch) {
+    return subService;
+  }
+
+  const metersSquare = balconyMatch.match(/\d+/);
+  const balconyWithMetersSquare = balconyMatch.replace(
+    metersSquare,
+    `${metersSquare}m2`
+  );
+
+  return subService.replace(balconyMatch, balconyWithMetersSquare);
+};
+
+export const getSubServiceWithCarpet = (subService) => {
+  const carpetMatch = subService.match(
+    /Carpet\sdry\scleaning_summery\s+\(\d+\)/
+  )?.[0];
+
+  if (!carpetMatch) {
+    return subService;
+  }
+
+  const metersSquare = carpetMatch.match(/\d+/);
+  const carpetWithMetersSquare = carpetMatch.replace(
+    metersSquare,
+    `${metersSquare}m2`
+  );
+
+  return subService.replace(carpetMatch, carpetWithMetersSquare);
 };
 
 export const getPaymentColorDependsOnStatus = (paymentStatus) => {

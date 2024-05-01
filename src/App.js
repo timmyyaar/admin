@@ -88,7 +88,7 @@ function App() {
 
   return isLocalesLoading ? null : (
     <AppContext.Provider value={{ onLogOut }}>
-      <LocaleContext.Provider value={{ t }}>
+      <LocaleContext.Provider value={{ t, locale }}>
         <div className="App">
           {localStorageUserData || isLoggedIn ? (
             <BrowserRouter>

@@ -14,7 +14,7 @@ import {
   isDryCleaner,
   request,
 } from "../../utils";
-import { BRACKETS_REGEX, ORDER_STATUS, ROLES } from "../../constants";
+import { ORDER_STATUS, ROLES } from "../../constants";
 import Filters from "./Filters";
 import AdminControls from "./AdminControls";
 import CleanerControls from "./CleanerControls";
@@ -28,20 +28,13 @@ import CheckListModal from "./CleckListModal";
 import {
   getPaymentColorDependsOnStatus,
   getPaymentTextDependsOnStatus,
+  getSubServiceWithBalcony,
+  getSubServiceWithCarpet,
+  getTranslatedServices,
 } from "./utils";
+import Payment from "./Payment";
 
 export const ORDER_STATUS_OPTIONS = Object.values(ORDER_STATUS);
-
-const SHOW_CORRIDOR_TITLES = [
-  "Regular",
-  "Deep",
-  "Eco cleaning",
-  "Move in/out",
-  "In a last minute",
-  "After party",
-  "While sickness",
-  "Airbnb",
-];
 
 const SHOW_VACUUM_CLEANER_TITLES = [
   "Regular",
@@ -58,40 +51,6 @@ const SHOW_VACUUM_CLEANER_TITLES = [
 
 const getSubServiceWithoutVacuumCleaner = (subService) => {
   return subService.replace("Vacuum_cleaner_sub_service_summery (1)", "");
-};
-
-const getSubServiceWithBalcony = (subService) => {
-  const balconyMatch = subService.match(/Balcony_summery\s+\(\d+\)/)?.[0];
-
-  if (!balconyMatch) {
-    return subService;
-  }
-
-  const metersSquare = balconyMatch.match(/\d+/);
-  const balconyWithMetersSquare = balconyMatch.replace(
-    metersSquare,
-    `${metersSquare}m2`
-  );
-
-  return subService.replace(balconyMatch, balconyWithMetersSquare);
-};
-
-const getSubServiceWithCarpet = (subService) => {
-  const carpetMatch = subService.match(
-    /Carpet\sdry\scleaning_summery\s+\(\d+\)/
-  )?.[0];
-
-  if (!carpetMatch) {
-    return subService;
-  }
-
-  const metersSquare = carpetMatch.match(/\d+/);
-  const carpetWithMetersSquare = carpetMatch.replace(
-    metersSquare,
-    `${metersSquare}m2`
-  );
-
-  return subService.replace(carpetMatch, carpetWithMetersSquare);
 };
 
 export const OrderPage = ({ subscription = false }) => {
@@ -113,28 +72,6 @@ export const OrderPage = ({ subscription = false }) => {
   const [schedule, setSchedule] = useState([]);
 
   const { t } = useContext(LocaleContext);
-
-  const getTranslatedServices = (services, title) => {
-    let transformedServicesString = services;
-
-    if (SHOW_CORRIDOR_TITLES.includes(title)) {
-      transformedServicesString = `${transformedServicesString}, ${t(
-        "Corridor"
-      )} (1)`;
-    }
-
-    services
-      .split(BRACKETS_REGEX)
-      .map((service) => service.trim())
-      .forEach((service) => {
-        transformedServicesString = transformedServicesString.replace(
-          service,
-          t(service)
-        );
-      });
-
-    return transformedServicesString;
-  };
 
   const getOrders = async () => {
     try {
@@ -470,29 +407,7 @@ export const OrderPage = ({ subscription = false }) => {
                           </span>
                         )}
                       </p>
-                      <p
-                        className={`card-text font-weight-semi-bold ${
-                          isAdmin() && el.payment_status && el.onlinepayment
-                            ? getPaymentColorDependsOnStatus(el.payment_status)
-                            : ""
-                        }`}
-                      >
-                        <span className="_mr-1">
-                          {el.onlinepayment ? "💳" : "💲"}
-                        </span>
-                        <span className="_mr-1">
-                          {t("admin_order_payment")}:
-                        </span>
-                        {el.onlinepayment
-                          ? `${t("admin_order_online")}`
-                          : `${t("admin_order_cash")}`}
-                        {isAdmin() &&
-                          el.onlinepayment &&
-                          el.payment_status &&
-                          ` (${t(
-                            getPaymentTextDependsOnStatus(el.payment_status)
-                          )})`}
-                      </p>
+                      <Payment t={t} order={el} setOrders={setOrders}/>
                       <p className="card-text font-weight-semi-bold">
                         ⏳ {t("admin_order_estimate")}: {el.estimate}
                       </p>
@@ -511,11 +426,12 @@ export const OrderPage = ({ subscription = false }) => {
                     <div>
                       <p className="card-text">{t(el.title)}:</p>
                       <p className="card-text">
-                        {getTranslatedServices(el.counter, el.title)}
+                        {getTranslatedServices(t, el.counter, el.title)}
                       </p>
                       <p className="card-text">
                         {reactStringReplace(
                           getTranslatedServices(
+                            t,
                             getSubServiceWithCarpet(
                               getSubServiceWithBalcony(
                                 getSubServiceWithoutVacuumCleaner(el.subservice)
