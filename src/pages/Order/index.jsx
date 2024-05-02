@@ -134,16 +134,20 @@ export const OrderPage = ({ subscription = false }) => {
     try {
       setIsStatusLoading((prevIsStatusLoading) => [...prevIsStatusLoading, id]);
 
-      const updatedOrder = await request({
+      const updatedOrders = await request({
         url: `order/${id}/update-status/${status}`,
         method: "PATCH",
         ...(checkList && { body: { checkList } }),
       });
 
       setOrders((prevOrders) =>
-        prevOrders.map((prevOrder) =>
-          prevOrder.id === updatedOrder.id ? updatedOrder : prevOrder
-        )
+        prevOrders.map((prev) => {
+          const updatedOrder = updatedOrders.find(
+            (item) => item.id === prev.id
+          );
+
+          return updatedOrder || prev;
+        })
       );
     } finally {
       setIsStatusLoading((prevIsStatusLoading) =>
