@@ -25,7 +25,7 @@ function Payment({ order, setOrders, t }) {
   const createOrderPaymentIntent = async () => {
     setIsLoading(true);
 
-    const updatedOrder = await request({
+    const updatedOrders = await request({
       url: `order/${order.id}/payment-intent`,
       method: "PUT",
     });
@@ -33,10 +33,14 @@ function Payment({ order, setOrders, t }) {
     setIsLoading(false);
 
     setOrders((prev) =>
-      prev.map((prev) => (prev.id === updatedOrder.id ? updatedOrder : prev))
+      prev.map((prev) => {
+        const updatedOrder = updatedOrders.find((item) => item.id === prev.id);
+
+        return updatedOrder || prev;
+      })
     );
 
-    return updatedOrder.payment_intent;
+    return updatedOrders[0].payment_intent;
   };
 
   const generatePaymentLink = (payment_intent) => {
