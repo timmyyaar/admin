@@ -26,8 +26,6 @@ import NumberOfCleaners from "./NumberOfCleaners/NumberOfCleaners";
 import Note from "./Note";
 import CheckListModal from "./CleckListModal";
 import {
-  getPaymentColorDependsOnStatus,
-  getPaymentTextDependsOnStatus,
   getSubServiceWithBalcony,
   getSubServiceWithCarpet,
   getTranslatedServices,
@@ -407,7 +405,7 @@ export const OrderPage = ({ subscription = false }) => {
                           </span>
                         )}
                       </p>
-                      <Payment t={t} order={el} setOrders={setOrders}/>
+                      <Payment t={t} order={el} setOrders={setOrders} />
                       <p className="card-text font-weight-semi-bold">
                         ⏳ {t("admin_order_estimate")}: {el.estimate}
                       </p>

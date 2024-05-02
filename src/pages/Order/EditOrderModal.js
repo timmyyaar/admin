@@ -77,7 +77,7 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
       );
       onClose();
     } catch (error) {
-      setUpdateError("Error!");
+      setUpdateError(error.message);
     } finally {
       setIsUpdateLoading(false);
     }
@@ -163,6 +163,7 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
 
               setPrice(value);
             }}
+            disabled={order.payment_intent}
           />
         </div>
         <div className="w-100 mb-3">
@@ -181,6 +182,7 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
 
               setPriceOriginal(value);
             }}
+            disabled={order.payment_intent}
           />
         </div>
         <div className="w-100 mb-3">
@@ -245,6 +247,7 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
               type="checkbox"
               checked={onlinePayment}
               onClick={() => setOnlinePayment(!onlinePayment)}
+              disabled={order.payment_intent}
             />
             <label
               htmlFor="online-payment"
