@@ -131,7 +131,7 @@ export const getFilteredCleanersForOrder = (cleaners, order, schedule) => {
 
     if (thirdTimeSlot && !cleanerSchedule.thirdPeriod) {
       return getAdditionalPeriodFilter(
-        thirdTimeSlot,
+          thirdTimeSlot,
         cleanerSchedule.thirdPeriodAdditional
       );
     }
