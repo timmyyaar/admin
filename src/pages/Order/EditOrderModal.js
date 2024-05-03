@@ -29,7 +29,9 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
   const [subService, setSubService] = useState(order.subservice);
   const [note, setNote] = useState(order.note || "");
   const [reward, setReward] = useState(order.reward || "");
-  const [ownCheckList, setOwnCheckList] = useState(order.own_check_list || false);
+  const [ownCheckList, setOwnCheckList] = useState(
+    order.own_check_list || false
+  );
   const [isUpdateLoading, setIsUpdateLoading] = useState(false);
   const [updateError, setUpdateError] = useState("");
 
@@ -39,7 +41,7 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
     try {
       setIsUpdateLoading(true);
 
-      const updatedOrder = await request({
+      const updatedOrders = await request({
         url: `order/${order.id}`,
         method: "PUT",
         body: {
@@ -64,14 +66,18 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
         },
       });
 
-      setOrders((orders) =>
-        orders.map((prev) =>
-          prev.id === updatedOrder.id ? updatedOrder : prev
-        )
+      setOrders((prevOrders) =>
+        prevOrders.map((prev) => {
+          const updatedOrder = updatedOrders.find(
+            (item) => item.id === prev.id
+          );
+
+          return updatedOrder || prev;
+        })
       );
       onClose();
     } catch (error) {
-      setUpdateError("Error!");
+      setUpdateError(error.message);
     } finally {
       setIsUpdateLoading(false);
     }
@@ -157,6 +163,7 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
 
               setPrice(value);
             }}
+            disabled={order.payment_intent}
           />
         </div>
         <div className="w-100 mb-3">
@@ -175,6 +182,7 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
 
               setPriceOriginal(value);
             }}
+            disabled={order.payment_intent}
           />
         </div>
         <div className="w-100 mb-3">
@@ -239,6 +247,7 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
               type="checkbox"
               checked={onlinePayment}
               onClick={() => setOnlinePayment(!onlinePayment)}
+              disabled={order.payment_intent}
             />
             <label
               htmlFor="online-payment"

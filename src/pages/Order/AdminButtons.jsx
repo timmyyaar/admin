@@ -17,9 +17,14 @@ function AdminButtons({ t, setOrders, order, onCheckListOpen }) {
       try {
         setDeletingOrderIds((prev) => [...prev, id]);
 
-        await request({ url: `order/${id}`, method: "DELETE" });
+        const deletedOrderIds = await request({
+          url: `order/${id}`,
+          method: "DELETE",
+        });
 
-        setOrders((prev) => prev.filter((order) => order.id !== id));
+        setOrders((prev) =>
+          prev.filter((order) => !deletedOrderIds.includes(order.id))
+        );
       } finally {
         setDeletingOrderIds((prev) => prev.filter((order) => order.id !== id));
       }
