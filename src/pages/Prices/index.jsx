@@ -40,6 +40,8 @@ function Prices() {
 
   useEffect(() => {
     getPricesGeneral();
+
+    //eslint-disable-next-line
   }, []);
 
   return (

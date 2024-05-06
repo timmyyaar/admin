@@ -5,7 +5,7 @@ import reactStringReplace from "react-string-replace";
 import "./style.scss";
 import { NUMBER_FLOAT_EMPTY_REGEX } from "../../constants";
 
-export const SUP_REGEXP = /<sup>([^<\/sup>]*)<\/sup>/g;
+export const SUP_REGEXP = /<sup>([^</sup>]*)<\/sup>/g;
 
 function MainService({ servicePrices, getPrices, t }) {
   const [rows, setRows] = useState(servicePrices);

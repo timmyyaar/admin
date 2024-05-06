@@ -145,6 +145,15 @@ export const getDateString = (date) => {
   return `${day}/${twoDigitsMonth}/${year}`;
 };
 
+export const getTimeString = (date) => {
+  const hours = date.getHours();
+  const twoDigitsHours = hours < 10 ? `0${hours}` : hours;
+  const minutes = date.getMinutes();
+  const twoDigitsMinutes = minutes < 10 ? `0${minutes}` : minutes;
+
+  return `${twoDigitsHours}:${twoDigitsMinutes}`;
+};
+
 export const getDateTimeString = (date) => {
   const day = date.getDate();
   const month = date.getMonth() + 1;
@@ -183,6 +192,28 @@ export const getTimeRemaining = (endTime) => {
     minutes,
     seconds,
   };
+};
+
+export const getDatesBetween = (startDate, stopDate) => {
+  const dateArray = [];
+
+  let currentDate = new Date(startDate);
+
+  const dayAfterStopDate = new Date(
+    new Date(stopDate).setDate(stopDate.getDate() + 1)
+  );
+
+  while (currentDate <= dayAfterStopDate) {
+    dateArray.push(new Date(currentDate));
+
+    const currentDateCopy = new Date(currentDate);
+
+    currentDateCopy.setDate(currentDateCopy.getDate() + 1);
+
+    currentDate = currentDateCopy;
+  }
+
+  return dateArray;
 };
 
 export const capitalizeFirstLetter = (string) => {

@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import {
+  getDatesBetween,
   getDateString,
   getDateTimeObjectFromString,
   getFloatOneDigit,
@@ -22,23 +23,6 @@ const getEndOfDay = (date = new Date()) =>
 const getYearStart = (year) => new Date(year, 0, 1);
 
 const getYearEnd = (year) => new Date(year, 11, 31, 23, 59, 59, 999);
-
-const getDatesBetween = (startDate, stopDate) => {
-  const dateArray = [];
-  let currentDate = new Date(startDate);
-
-  while (currentDate <= stopDate) {
-    dateArray.push(new Date(currentDate));
-
-    const currentDateCopy = new Date(currentDate);
-
-    currentDateCopy.setDate(currentDateCopy.getDate() + 1);
-
-    currentDate = currentDateCopy;
-  }
-
-  return dateArray;
-};
 
 const getRevenue = (orders) =>
   orders.reduce((result, { price }) => result + price, 0);

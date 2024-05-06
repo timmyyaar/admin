@@ -19,6 +19,7 @@ function Modal({
   outsideClickClose = false,
   noFooter = false,
   minHeight = true,
+  infoMessage,
 }) {
   const { t } = useContext(LocaleContext);
   const ref = useRef();
@@ -67,9 +68,11 @@ function Modal({
               customFooter
             ) : (
               <>
-                {errorMessage && (
-                  <span className="text-danger">{errorMessage}</span>
-                )}
+                {errorMessage ? (
+                  <span className="text-danger _mr-2">{errorMessage}</span>
+                ) : infoMessage ? (
+                  <span className="text-info _mr-2">{infoMessage}</span>
+                ) : null}
                 <div className="d-flex justify-content-end _ml-auto">
                   <button className="btn btn-secondary _mr-3" onClick={onClose}>
                     {t("admin_cancel")}

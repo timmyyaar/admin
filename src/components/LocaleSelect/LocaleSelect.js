@@ -1,6 +1,5 @@
 import React, { useContext } from "react";
 import { LocaleContext } from "../../contexts";
-import Select from "../common/Select/Select";
 
 const mainLocales = {
   en: "English",
