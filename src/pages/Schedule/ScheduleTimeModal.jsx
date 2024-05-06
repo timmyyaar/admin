@@ -2,36 +2,10 @@ import Modal from "../../components/common/Modal";
 import React, { useContext, useState } from "react";
 import DatePicker from "react-datepicker";
 import { LocaleContext } from "../../contexts";
+import { getTimeString } from "../../utils";
+import { getMinOrMaxTime, getTimeWithMinuteDifference } from "./utils";
 
-const getMinOrMaxTime = (time) => {
-  const splittedTime = time.split(":");
-
-  const minOrMaxTime = new Date();
-  minOrMaxTime.setHours(splittedTime[0]);
-  minOrMaxTime.setMinutes(splittedTime[1]);
-  minOrMaxTime.setSeconds(0);
-
-  return minOrMaxTime;
-};
-
-const getTimeWithMinuteDifference = (time, symbol = "plus") => {
-  const newTime = new Date(time);
-
-  const minutes = time.getMinutes();
-
-  newTime.setMinutes(symbol === "plus" ? minutes + 1 : minutes - 1);
-
-  return newTime;
-};
-
-const getFormattedTime = (date) => {
-  const hours = date.getHours();
-  const twoDigitsHours = hours < 10 ? `0${hours}` : hours;
-  const minutes = date.getMinutes();
-  const twoDigitsMinutes = minutes < 10 ? `0${minutes}` : minutes;
-
-  return `${twoDigitsHours}:${twoDigitsMinutes}`;
-};
+const FULL_PERIOD_DURATION_HOURS = 4;
 
 function ScheduleTimeModal({
   onClose,
@@ -46,11 +20,21 @@ function ScheduleTimeModal({
   const [endTime, setEndTime] = useState(null);
 
   const editUnavailableTime = async () => {
-    const timeRange = `${getFormattedTime(startTime)} - ${getFormattedTime(
-      endTime
-    )}`;
+    const startTimeString = getTimeString(startTime);
+    const endTimeString = getTimeString(endTime);
 
-    await addOrEditSchedule(`${periodName}Additional`, timeRange);
+    const timeRange = `${startTimeString} - ${endTimeString}`;
+
+    const isFullPeriodSelected =
+      Number(endTimeString.split(":")[0]) -
+        Number(startTimeString.split(":")[0]) ===
+      FULL_PERIOD_DURATION_HOURS;
+
+    if (isFullPeriodSelected) {
+      await addOrEditSchedule(periodName, false);
+    } else {
+      await addOrEditSchedule(`${periodName}Additional`, timeRange);
+    }
 
     onClose();
   };
@@ -60,7 +44,7 @@ function ScheduleTimeModal({
   return (
     <Modal
       onClose={onClose}
-      actionButtonText={t("admin_schedule_edit_time")}
+      actionButtonText={t("admin_save")}
       isActionButtonDisabled={!isEnabled || isLoading}
       isLoading={isLoading}
       onActionButtonClick={editUnavailableTime}

@@ -11,6 +11,7 @@ import ScheduleDayRowAll from "./ScheduleDayRowAll";
 import { ROLES } from "../../constants";
 import EmployeeTabs from "./EmployeeTabs";
 import { LocaleContext } from "../../contexts";
+import BulkEditModal from "./BulkEditModal/BulkEditModal";
 
 const getDaysInMonth = (date) => {
   const year = date.getFullYear();
@@ -51,6 +52,7 @@ function Schedule() {
   const [isUsersLoading, setIsUsersLoading] = useState(false);
   const [selectedRole, setSelectedRole] = useState(ROLES.CLEANER);
   const [selectedEmployee, setSelectedEmployee] = useState(null);
+  const [showBulkEditModal, setShowBulkEditModal] = useState(false);
 
   const filteredUsersByRole = users.filter(({ role }) => role === selectedRole);
   const filteredUsers = filteredUsersByRole.filter(
@@ -144,7 +146,30 @@ function Schedule() {
         <table className="table table-dark table-borderless schedule-table">
           <thead>
             <tr key="header">
-              <th />
+              <th className="text-center">
+                {(!isAdmin() || selectedEmployee) && (
+                  <>
+                    <button
+                      className="btn btn-info rounded-pill"
+                      onClick={() => setShowBulkEditModal(true)}
+                    >
+                      <span className="font-weight-semi-bold">
+                        {t("admin_schedule_bulk_edit")}
+                      </span>
+                    </button>
+                    {showBulkEditModal && (
+                      <BulkEditModal
+                        onClose={() => setShowBulkEditModal(false)}
+                        employeeId={selectedEmployee}
+                        schedule={schedule}
+                        getSchedule={getSchedule}
+                        t={t}
+                        currentMonth={currentMonth}
+                      />
+                    )}
+                  </>
+                )}
+              </th>
               <th className="whitespace-nowrap w-25 min-width-10-rem text-center">
                 06:00 - 10:00
               </th>
@@ -176,6 +201,7 @@ function Schedule() {
                   setSchedule={setSchedule}
                   key={day}
                   selectedEmployee={selectedEmployee}
+                  t={t}
                 />
               )
             )}
