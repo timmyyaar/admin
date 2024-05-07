@@ -1,0 +1,32 @@
+<svg width="48" height="49" viewBox="0 0 48 49" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect x="45.7617" y="12.5" width="24" height="0.688524" rx="0.344262" transform="rotate(90 45.7617 12.5)" fill="#343657"/>
+    <path d="M34.5 35.5H45.5V36.5H34.9C34.6791 36.5 34.5 36.3209 34.5 36.1V35.5Z" fill="#353456"/>
+    <rect width="7.96721" height="2.55738" transform="translate(34.8438 33.1562)" fill="#2B8AFC"/>
+    <g clip-path="url(#clip0_11020_100530)">
+        <rect width="8.5" height="20" transform="translate(34.5 15.5)" fill="#2B8AFC"/>
+        <rect width="9.5" height="1" transform="translate(43.5 31) rotate(-180)" fill="#353456"/>
+    </g>
+    <rect width="21.2459" height="1.27869" transform="translate(45.0703 14.4688) rotate(90)" fill="#13277E"/>
+    <g clip-path="url(#clip1_11020_100530)">
+        <rect width="24" height="8.5" transform="translate(10.5 15.5)" fill="#2B8AFC"/>
+        <rect width="26.6557" height="0.688522" transform="translate(32.9258 24.4492) rotate(-180)" fill="#343657"/>
+    </g>
+    <rect width="9.5" height="1" transform="translate(12.5 14.5) rotate(90)" fill="#353456"/>
+    <rect width="9.5" height="1" transform="translate(24 15) rotate(90)" fill="#353456"/>
+    <rect width="8.5" height="8.5" transform="translate(2.5 15)" fill="#2B8AFC"/>
+    <rect width="42.5" height="1.5" transform="translate(2.5 13)" fill="#13277E"/>
+    <path d="M2 13.3852C2 12.8963 2.39634 12.5 2.88525 12.5V24.5C2.39634 24.5 2 24.1037 2 23.6148V13.3852Z" fill="#333458"/>
+    <path d="M34.8438 14.6641L34.8437 36.5001C34.4635 36.5001 34.1552 36.1919 34.1552 35.8116L34.1552 14.6641L34.8438 14.6641Z" fill="#343657"/>
+    <rect width="21.8361" height="0.983606" transform="translate(43.7969 14.6641) rotate(90)" fill="#343657"/>
+    <path d="M43.5 24.5L3 24.5C2.44772 24.5 2 24.0523 2 23.5L43.5 23.5L43.5 24.5Z" fill="#343657"/>
+    <rect width="41.5" height="0.999996" transform="translate(44 15.5) rotate(-180)" fill="#343657"/>
+    <path d="M2.5 13C2.5 12.7239 2.72386 12.5 3 12.5H45.75C45.8881 12.5 46 12.6119 46 12.75C46 12.8881 45.8881 13 45.75 13H2.5Z" fill="#343657"/>
+    <defs>
+        <clipPath id="clip0_11020_100530">
+            <rect width="8.5" height="20" fill="white" transform="translate(34.5 15.5)"/>
+        </clipPath>
+        <clipPath id="clip1_11020_100530">
+            <rect width="24" height="8.5" fill="white" transform="translate(10.5 15.5)"/>
+        </clipPath>
+    </defs>
+</svg>

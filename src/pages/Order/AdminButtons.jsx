@@ -1,4 +1,4 @@
-import EditOrderModal from "./EditOrderModal";
+import EditOrderModal from "./EditOrderModal/EditOrderModal";
 import React, { useState } from "react";
 import { request } from "../../utils";
 import DuplicateModal from "./DuplicateModal";

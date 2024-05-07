@@ -22,6 +22,28 @@ export const getEstimateInTimeFormat = (estimate) => {
   return `${estimateHoursWithPrefix}:${estimateMinutesWithPrefix}`;
 };
 
+export const getEstimateInMinutes = (estimate) => {
+  const estimateArray = estimate.split(", ");
+  const estimateHours = +estimateArray[0].slice(
+    0,
+    estimateArray[0].indexOf("h")
+  );
+  const estimateMinutes = +estimateArray[1].slice(
+    0,
+    estimateArray[1].indexOf("m")
+  );
+
+  return estimateHours * 60 + estimateMinutes;
+};
+
+export const getEstimateInHoursMinutesFormat = (estimateInMinutes) => {
+  const estimateHours = Math.trunc(estimateInMinutes / 60);
+
+  const estimateMinutes = Math.trunc(estimateInMinutes % 60);
+
+  return `${estimateHours}h, ${estimateMinutes}m`;
+};
+
 export const getOrderEndTime = (orderTime, estimate) => {
   const splitOrderTime = orderTime.split(":");
   const splitEstimateTime = getEstimateInTimeFormat(estimate).split(":");
@@ -131,7 +153,7 @@ export const getFilteredCleanersForOrder = (cleaners, order, schedule) => {
 
     if (thirdTimeSlot && !cleanerSchedule.thirdPeriod) {
       return getAdditionalPeriodFilter(
-          thirdTimeSlot,
+        thirdTimeSlot,
         cleanerSchedule.thirdPeriodAdditional
       );
     }
