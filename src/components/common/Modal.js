@@ -20,6 +20,7 @@ function Modal({
   noFooter = false,
   minHeight = true,
   infoMessage,
+  isInitialDataLoading,
 }) {
   const { t } = useContext(LocaleContext);
   const ref = useRef();
@@ -68,6 +69,7 @@ function Modal({
               customFooter
             ) : (
               <>
+                {isInitialDataLoading && <div className="loader" /> }
                 {errorMessage ? (
                   <span className="text-danger _mr-2">{errorMessage}</span>
                 ) : infoMessage ? (

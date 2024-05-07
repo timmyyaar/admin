@@ -1,12 +1,25 @@
-import Modal from "../../components/common/Modal";
-import React, { useContext, useState } from "react";
+import Modal from "../../../components/common/Modal";
+import React, { useContext, useEffect, useState } from "react";
 import {
   EMAIL_REGEX,
   NUMBER_FLOAT_EMPTY_REGEX,
   ORDER_TYPE_ADDITIONAL,
-} from "../../constants";
-import { getFloatOneDigit, request } from "../../utils";
-import { LocaleContext } from "../../contexts";
+  POSITIVE_NUMBER_EMPTY_REGEX,
+} from "../../../constants";
+import {
+  getDateTimeObjectFromString,
+  getDateTimeString,
+  getFloatOneDigit,
+  request,
+} from "../../../utils";
+import { LocaleContext } from "../../../contexts";
+import {
+  getEstimateInHoursMinutesFormat,
+  getEstimateInMinutes,
+} from "../utils";
+import DatePicker from "react-datepicker";
+import CounterEdit from "./CounterEdit";
+import SubServiceEdit from "./SubServicesEdit";
 
 const EditOrderModal = ({ onClose, order, setOrders }) => {
   const { t } = useContext(LocaleContext);
@@ -14,8 +27,10 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
   const [name, setName] = useState(order.name);
   const [number, setNumber] = useState(order.number);
   const [email, setEmail] = useState(order.email);
-  const [date, setDate] = useState(order.date);
-  const [dateCreated, setDateCreated] = useState(order.creation_date);
+  const [date, setDate] = useState(getDateTimeObjectFromString(order.date));
+  const [dateCreated] = useState(
+    getDateTimeObjectFromString(order.creation_date)
+  );
   const [address, setAddress] = useState(order.address);
   const [price, setPrice] = useState(order.price);
   const [totalPrice, setTotalPrice] = useState(order.total_service_price);
@@ -32,12 +47,54 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
   const [ownCheckList, setOwnCheckList] = useState(
     order.own_check_list || false
   );
+  const [cleanersCount, setCleanersCount] = useState(order.cleaners_count || 0);
   const [isUpdateLoading, setIsUpdateLoading] = useState(false);
   const [updateError, setUpdateError] = useState("");
 
+  const [prices, setPrices] = useState({});
+  const [isPricesLoading, setIsPricesLoading] = useState(false);
+
+  const getPrices = async () => {
+    try {
+      setIsPricesLoading(true);
+
+      const pricesResponse = await request({ url: "prices" });
+
+      setPrices(
+        pricesResponse.reduce(
+          (result, item) => ({ ...result, [item.key]: item.price }),
+          {}
+        )
+      );
+    } finally {
+      setIsPricesLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getPrices();
+  }, []);
+
   const isEmailValid = EMAIL_REGEX.test(email);
+  const isOrderValid =
+    name &&
+    number &&
+    email &&
+    isEmailValid &&
+    address &&
+    date &&
+    price &&
+    priceOriginal &&
+    totalPrice &&
+    totalPriceOriginal &&
+    estimate &&
+    cleanersCount;
 
   const onUpdateOrder = async () => {
+    if (!isOrderValid) {
+      return;
+    }
+
     try {
       setIsUpdateLoading(true);
 
@@ -49,8 +106,7 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
           number,
           email,
           address,
-          date,
-          dateCreated,
+          date: getDateTimeString(date),
           onlinePayment,
           price,
           estimate,
@@ -63,6 +119,7 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
           price_original: priceOriginal,
           reward: reward ? +reward : null,
           ownCheckList,
+          cleanersCount: +cleanersCount,
         },
       });
 
@@ -90,13 +147,59 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
     order.total_service_price_original - order.price_original
   );
 
+  const initialEstimateInMinutes = getEstimateInMinutes(order.estimate);
+  const initialEstimateWithOneCleaner =
+    initialEstimateInMinutes * order.cleaners_count;
+
+  const onCleanersCountChange = ({ target: { value } }) => {
+    if (order.manual_cleaners_count) {
+      return;
+    }
+
+    if (POSITIVE_NUMBER_EMPTY_REGEX.test(value)) {
+      setCleanersCount(value);
+
+      if (value) {
+        setEstimate(
+          getEstimateInHoursMinutesFormat(initialEstimateWithOneCleaner / value)
+        );
+      }
+    }
+  };
+
+  const onPriceChange = (value) => {
+    if (order.price === order.total_service_price) {
+      setTotalPrice(value);
+    } else {
+      setTotalPrice(getFloatOneDigit(totalPriceDifference + +value));
+    }
+
+    setPrice(value);
+  };
+
+  const onOriginalPriceChange = (value) => {
+    if (order.price_original === order.total_service_price_original) {
+      setTotalPriceOriginal(value);
+    } else {
+      setTotalPriceOriginal(
+        getFloatOneDigit(totalPriceOriginalDifference + +value)
+      );
+    }
+
+    setPriceOriginal(value);
+  };
+
+  const isPricesLoaded = Object.keys(prices).length > 0;
+  const discount = Math.round(100 - (order.price * 100) / order.price_original);
+
   return (
     <Modal
       onClose={onClose}
       actionButtonText={t("admin_order_edit_update_order")}
       onActionButtonClick={onUpdateOrder}
-      isActionButtonDisabled={!isEmailValid || isUpdateLoading}
+      isActionButtonDisabled={!isOrderValid || isUpdateLoading}
       isLoading={isUpdateLoading}
+      isInitialDataLoading={isPricesLoading}
     >
       <div>
         <div className="w-100 mb-3">
@@ -133,18 +236,22 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
         </div>
         <div className="w-100 mb-3">
           <label className="mb-2">{t("admin_order_edit_date")}:</label>
-          <input
-            className="form-control"
-            value={date}
-            onChange={({ target: { value } }) => setDate(value)}
+          <DatePicker
+            showTimeSelect
+            selected={date}
+            onChange={(newDate) => setDate(newDate)}
+            dateFormat="d/MM/yyyy HH:mm"
+            timeFormat="HH:mm"
           />
         </div>
         <div className="w-100 mb-3">
           <label className="mb-2">{t("admin_order_created")}:</label>
-          <input
-            className="form-control"
-            value={dateCreated}
-            onChange={({ target: { value } }) => setDateCreated(value)}
+          <DatePicker
+            showTimeSelect
+            selected={dateCreated}
+            dateFormat="d/MM/yyyy HH:mm"
+            timeFormat="HH:mm"
+            disabled
           />
         </div>
         <div className="w-100 mb-3">
@@ -154,15 +261,7 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
           <input
             className="form-control"
             value={price}
-            onChange={({ target: { value } }) => {
-              if (order.price === order.total_service_price) {
-                setTotalPrice(value);
-              } else {
-                setTotalPrice(getFloatOneDigit(totalPriceDifference + +value));
-              }
-
-              setPrice(value);
-            }}
+            onChange={({ target: { value } }) => onPriceChange(value)}
             disabled={order.payment_intent}
           />
         </div>
@@ -171,17 +270,7 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
           <input
             className="form-control"
             value={priceOriginal}
-            onChange={({ target: { value } }) => {
-              if (order.price_original === order.total_service_price_original) {
-                setTotalPriceOriginal(value);
-              } else {
-                setTotalPriceOriginal(
-                  getFloatOneDigit(totalPriceOriginalDifference + +value)
-                );
-              }
-
-              setPriceOriginal(value);
-            }}
+            onChange={({ target: { value } }) => onOriginalPriceChange(value)}
             disabled={order.payment_intent}
           />
         </div>
@@ -201,24 +290,49 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
             className="form-control"
             value={estimate}
             onChange={({ target: { value } }) => setEstimate(value)}
+            disabled
           />
         </div>
-        <div className="w-100 mb-3">
-          <label className="mb-2">{t("admin_order_edit_counter")}:</label>
-          <textarea
-            className="form-control"
-            value={counter}
-            onChange={({ target: { value } }) => setCounter(value)}
-          />
-        </div>
-        <div className="w-100 mb-3">
-          <label className="mb-2">{t("admin_order_edit_services")}:</label>
-          <textarea
-            className="form-control"
-            value={subService}
-            onChange={({ target: { value } }) => setSubService(value)}
-          />
-        </div>
+        {counter && isPricesLoaded && (
+          <div className="w-100 mb-3">
+            <label className="mb-2">{t("admin_order_edit_counter")}:</label>
+            <CounterEdit
+              title={order.title}
+              counter={order.counter}
+              prices={prices}
+              t={t}
+              cleanersCount={cleanersCount}
+              manualCleanersCount={order.manual_cleaners_count}
+              isPrivateHouse={order.address.includes("(Private house)")}
+              setCounter={setCounter}
+              discount={discount}
+              orderPrice={order.price}
+              orderPriceOriginal={order.price_original}
+              onPriceChange={onPriceChange}
+              onOriginalPriceChange={onOriginalPriceChange}
+            />
+          </div>
+        )}
+        {isPricesLoaded && (
+          <div className="w-100 mb-3">
+            <label className="mb-2">{t("admin_order_edit_services")}:</label>
+            <SubServiceEdit
+              prices={prices}
+              title={order.title}
+              subServices={order.subservice}
+              setSubServices={setSubService}
+              t={t}
+              cleanersCount={cleanersCount}
+              manualCleanersCount={order.manual_cleaners_count}
+              discount={discount}
+              isPrivateHouse={order.address.includes("(Private house)")}
+              orderPrice={order.price}
+              orderPriceOriginal={order.price_original}
+              onPriceChange={onPriceChange}
+              onOriginalPriceChange={onOriginalPriceChange}
+            />
+          </div>
+        )}
         <div className="w-100 mb-3">
           <label className="mb-2">{t("admin_order_note")}:</label>
           <textarea
@@ -228,7 +342,13 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
           />
         </div>
         <div className="w-100 mb-3">
-          <label className="mb-2">{t("admin_order_reward")}:</label>
+          <label className="mb-2">
+            {t("admin_order_reward")}{" "}
+            <span className="text-danger">
+              ({t("admin_order_this_will_override_reward")})
+            </span>
+            :
+          </label>
           <input
             className="form-control"
             value={reward}
@@ -237,6 +357,24 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
                 setReward(value.trim());
               }
             }}
+          />
+        </div>
+        <div className="w-100 mb-3">
+          <label className="mb-2">
+            {t("admin_order_cleaners_count")}
+            {Boolean(order.manual_cleaners_count) && (
+              <span className="text-warning">
+                {" "}
+                ({t("admin_order_you_cant_edit_manual_cleaners")})
+              </span>
+            )}
+            :
+          </label>
+          <input
+            className="form-control"
+            value={cleanersCount}
+            onChange={onCleanersCountChange}
+            disabled={order.manual_cleaners_count}
           />
         </div>
         <div className="w-100 mb-3">
