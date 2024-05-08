@@ -276,7 +276,11 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
           <input
             className="form-control"
             value={priceOriginal}
-            onChange={({ target: { value } }) => onOriginalPriceChange(value)}
+            onChange={({ target: { value } }) => {
+              if (NUMBER_FLOAT_EMPTY_REGEX.test(value)) {
+                onOriginalPriceChange(value);
+              }
+            }}
             disabled={order.payment_intent}
           />
         </div>
