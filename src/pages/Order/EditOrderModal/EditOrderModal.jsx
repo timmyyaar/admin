@@ -21,6 +21,8 @@ import DatePicker from "react-datepicker";
 import CounterEdit from "./CounterEdit";
 import SubServiceEdit from "./SubServicesEdit";
 
+import './style.scss'
+
 const EditOrderModal = ({ onClose, order, setOrders }) => {
   const { t } = useContext(LocaleContext);
 

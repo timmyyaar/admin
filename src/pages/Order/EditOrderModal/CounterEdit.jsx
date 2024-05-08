@@ -1,4 +1,7 @@
-import { BRACKETS_REGEX } from "../../../constants";
+import {
+  BRACKETS_REGEX,
+  POSITIVE_NUMBER_EMPTY_REGEX,
+} from "../../../constants";
 import { useEffect, useState } from "react";
 import {
   getPriceFromCounterByService,
@@ -133,6 +136,14 @@ function CounterEdit({
     );
   };
 
+  const onFieldCountChange = (title, value) => {
+    setFields(
+      fields.map((field) =>
+        title === field.title ? { ...field, count: +value } : field
+      )
+    );
+  };
+
   return (
     <div className="d-flex flex-column _gap-3">
       {fields.map((field) =>
@@ -147,7 +158,19 @@ function CounterEdit({
             </button>
             <span className="badge bg-secondary">
               {t(field.title)}
-              {field.count}
+              <input
+                className="counter-input"
+                value={field.count}
+                onChange={({ target: { value } }) => {
+                  if (POSITIVE_NUMBER_EMPTY_REGEX.test(value)) {
+                    onFieldCountChange(
+                      field.title,
+                      !value ? minimumCounterValue : value
+                    );
+                  }
+                }}
+                style={{ width: `${field.count.toString().length}ch` }}
+              />
             </span>
             <button
               className="btn btn-sm btn-secondary font-weight-bold _ml-2 rounded-circle icon-button-small"
