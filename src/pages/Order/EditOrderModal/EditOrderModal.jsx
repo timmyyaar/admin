@@ -21,7 +21,7 @@ import DatePicker from "react-datepicker";
 import CounterEdit from "./CounterEdit";
 import SubServiceEdit from "./SubServicesEdit";
 
-import './style.scss'
+import "./style.scss";
 
 const EditOrderModal = ({ onClose, order, setOrders }) => {
   const { t } = useContext(LocaleContext);
@@ -263,7 +263,11 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
           <input
             className="form-control"
             value={price}
-            onChange={({ target: { value } }) => onPriceChange(value)}
+            onChange={({ target: { value } }) => {
+              if (NUMBER_FLOAT_EMPTY_REGEX.test(value)) {
+                onPriceChange(value);
+              }
+            }}
             disabled={order.payment_intent}
           />
         </div>

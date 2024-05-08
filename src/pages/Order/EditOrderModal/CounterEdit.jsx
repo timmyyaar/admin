@@ -96,8 +96,12 @@ function CounterEdit({
         )
       : counterPriceDifference;
 
-    onPriceChange(orderPrice + counterPriceDifferenceWithDiscount);
-    onOriginalPriceChange(orderPriceOriginal + counterPriceDifference);
+    onPriceChange(
+      getRoundedServicePrice(orderPrice + counterPriceDifferenceWithDiscount)
+    );
+    onOriginalPriceChange(
+      getRoundedServicePrice(orderPriceOriginal + counterPriceDifference)
+    );
 
     //eslint-disable-next-line
   }, [counterPrice, originalCounterPrice]);
