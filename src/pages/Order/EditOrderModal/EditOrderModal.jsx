@@ -24,8 +24,9 @@ import CounterEdit from "./CounterEdit";
 import SubServiceEdit from "./SubServicesEdit";
 import Select from "../../../components/common/Select/Select";
 import { AGGREGATOR_OPTIONS } from "../constants";
-
 import "./style.scss";
+
+const ESTIMATE_REGEXP = /^[0-9]+h, [0-9]+m$/;
 
 const AggregatorOption = (props) => (
   <components.Option {...props}>
@@ -75,7 +76,7 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
     order.total_service_price_original
   );
   const [onlinePayment, setOnlinePayment] = useState(order.onlinepayment);
-  const [estimate, setEstimate] = useState(order.estimate);
+  const [estimate, setEstimate] = useState(order.estimate || "");
   const [counter, setCounter] = useState(order.counter);
   const [subService, setSubService] = useState(order.subservice);
   const [note, setNote] = useState(order.note || "");
@@ -83,6 +84,7 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
   const [ownCheckList, setOwnCheckList] = useState(
     order.own_check_list || false
   );
+  console.log(ESTIMATE_REGEXP.test(estimate))
   const [cleanersCount, setCleanersCount] = useState(order.cleaners_count || 0);
   const [aggregator, setAggregator] = useState(
     order.aggregator
@@ -129,6 +131,7 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
     totalPrice &&
     totalPriceOriginal &&
     estimate &&
+    ESTIMATE_REGEXP.test(estimate) &&
     cleanersCount;
 
   const onUpdateOrder = async () => {
@@ -340,7 +343,6 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
             className="form-control"
             value={estimate}
             onChange={({ target: { value } }) => setEstimate(value)}
-            disabled
           />
         </div>
         {counter && isPricesLoaded && (

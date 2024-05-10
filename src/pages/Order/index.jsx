@@ -31,7 +31,6 @@ import {
   getTranslatedServices,
 } from "./utils";
 import Payment from "./Payment";
-import { AGGREGATOR_OPTIONS } from "./constants";
 import AggregatorId from "./AggregatorId";
 
 export const ORDER_STATUS_OPTIONS = Object.values(ORDER_STATUS);
