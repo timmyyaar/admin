@@ -22,7 +22,16 @@ const getDefaultCounterPrice = (counter, prices, prefix) => {
   }, defaultPrice);
 };
 
-export const getPriceFromCounterByService = (prices, mainService, counter) => {
+export const getPriceFromCounterByService = (
+  prices,
+  mainService,
+  counter,
+  isSquareMetersCounter
+) => {
+  if (isSquareMetersCounter) {
+    return counter[0].count * 3;
+  }
+
   switch (mainService) {
     case "Deep kitchen":
       return prices.defaultDeepKitchen;

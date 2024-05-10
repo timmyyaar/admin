@@ -40,6 +40,36 @@ import carpetSvg from "./icons/carpet.svg";
 import officeSvg from "./icons/office.svg";
 import vacuumCleanerSvg from "./icons/vacuum-cleaner.svg";
 import ownSuppliesSvg from "./icons/own-supplies.svg";
+import wallStainRemovalSvg from "./icons/wall-stain.svg";
+import limescaleRemovalSvg from "./icons/lomescale-removal.svg";
+import moldRemovalSvg from "./icons/mold-removal.svg";
+
+const AGGREGATOR_SERVICES = [
+  {
+    title: "Wall stain removal",
+    icons: wallStainRemovalSvg,
+    originalPrice: 1,
+    price: 1,
+    oldPrice: 1,
+    time: 1,
+  },
+  {
+    title: "Limescale removal",
+    icons: limescaleRemovalSvg,
+    originalPrice: 1,
+    price: 1,
+    oldPrice: 1,
+    time: 1,
+  },
+  {
+    title: "Mold removal",
+    icons: moldRemovalSvg,
+    originalPrice: 1,
+    price: 1,
+    oldPrice: 1,
+    time: 1,
+  },
+];
 
 export const allServices = (prices, priceMultiplier = 1) => [
   {
@@ -418,6 +448,7 @@ export const allServices = (prices, priceMultiplier = 1) => [
     oldPrice: priceMultiplier === 1 ? "" : prices.ownSupplies,
     time: 0,
   },
+  ...AGGREGATOR_SERVICES,
 ];
 
 export const getSubServiceListByMainService = (
@@ -468,7 +499,7 @@ export const getSubServiceListByMainService = (
 
     case "Dry cleaning":
       return allServices(prices, priceMultiplier).filter((el) => {
-        const excludedTitles = [
+        const includedTitles = [
           "Two-seater sofa",
           "Three-seater sofa",
           "Four-seater sofa",
@@ -486,7 +517,7 @@ export const getSubServiceListByMainService = (
           "Cleaning baby stroller",
         ];
 
-        return excludedTitles.includes(el.title);
+        return includedTitles.includes(el.title);
       });
 
     case "Subscription":

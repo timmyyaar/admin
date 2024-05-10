@@ -1,15 +1,19 @@
-import {
-  BRACKETS_REGEX,
-  POSITIVE_NUMBER_EMPTY_REGEX,
-} from "../../../constants";
+import { BRACKETS_REGEX } from "../../../constants";
 import { useEffect, useState } from "react";
 import {
   getPriceFromCounterByService,
   getRoundedServicePrice,
   getServicePriceBasedOnManualCleaners,
 } from "../priceUtils";
+import CounterType from "./CounterType";
+import CounterField from "./counter/CounterField";
 
-const NON_ZERO_COUNTER_MAIN_SERVICES = [
+export const COUNTER_TYPE = {
+  DEFAULT: "Default",
+  SQUARE_METERS: "Square meters",
+};
+
+export const NON_ZERO_COUNTER_MAIN_SERVICES = [
   "Deep",
   "Move in/out",
   "After party",
@@ -72,17 +76,28 @@ function CounterEdit({
   onOriginalPriceChange,
 }) {
   const originalCounter = getFieldsFromCounter(counter);
+  const isOriginalCounterSquareMeters = counter.includes("square_meters_total");
 
+  const [counterType, setCounterType] = useState(
+    isOriginalCounterSquareMeters
+      ? COUNTER_TYPE.SQUARE_METERS
+      : COUNTER_TYPE.DEFAULT
+  );
   const [fields, setFields] = useState(originalCounter);
+  const isSquareMetersCounter = counterType === COUNTER_TYPE.SQUARE_METERS;
 
   const originalCounterPrice = getServicePriceBasedOnManualCleaners(
-    getPriceFromCounterByService(prices, title, originalCounter) *
-      (isPrivateHouse ? 1.3 : 1),
+    getPriceFromCounterByService(
+      prices,
+      title,
+      originalCounter,
+      isOriginalCounterSquareMeters
+    ) * (isPrivateHouse ? 1.3 : 1),
     cleanersCount - manualCleanersCount,
     manualCleanersCount
   );
   const counterPrice = getServicePriceBasedOnManualCleaners(
-    getPriceFromCounterByService(prices, title, fields) *
+    getPriceFromCounterByService(prices, title, fields, isSquareMetersCounter) *
       (isPrivateHouse ? 1.3 : 1),
     cleanersCount - manualCleanersCount,
     manualCleanersCount
@@ -116,73 +131,24 @@ function CounterEdit({
     //eslint-disable-next-line
   }, [fields]);
 
-  const minimumCounterValue = NON_ZERO_COUNTER_MAIN_SERVICES.includes(title)
-    ? 1
-    : 0;
-
-  const onMinusClick = ({ count, title }) => {
-    if (count === minimumCounterValue) {
-      return;
-    }
-
-    setFields(
-      fields.map((field) =>
-        title === field.title ? { ...field, count: field.count - 1 } : field
-      )
-    );
-  };
-
-  const onPlusClick = ({ title }) => {
-    setFields(
-      fields.map((field) =>
-        title === field.title ? { ...field, count: field.count + 1 } : field
-      )
-    );
-  };
-
-  const onFieldCountChange = (title, value) => {
-    setFields(
-      fields.map((field) =>
-        title === field.title ? { ...field, count: +value } : field
-      )
-    );
-  };
-
   return (
     <div className="d-flex flex-column _gap-3">
+      {NON_ZERO_COUNTER_MAIN_SERVICES.includes(title) && (
+        <CounterType
+          counterType={counterType}
+          setCounterType={setCounterType}
+          setFields={setFields}
+          t={t}
+        />
+      )}
       {fields.map((field) =>
         field.type === FIELD_TYPE.COUNTER ? (
-          <h4 className="d-flex align-items-center">
-            <button
-              className="btn btn-sm btn-secondary font-weight-bold _mr-2 rounded-circle icon-button-small"
-              disabled={field.count === minimumCounterValue}
-              onClick={() => onMinusClick(field)}
-            >
-              &ndash;
-            </button>
-            <span className="badge bg-secondary">
-              {t(field.title)}
-              <input
-                className="counter-input"
-                value={field.count}
-                onChange={({ target: { value } }) => {
-                  if (POSITIVE_NUMBER_EMPTY_REGEX.test(value)) {
-                    onFieldCountChange(
-                      field.title,
-                      !value ? minimumCounterValue : value
-                    );
-                  }
-                }}
-                style={{ width: `${field.count.toString().length}ch` }}
-              />
-            </span>
-            <button
-              className="btn btn-sm btn-secondary font-weight-bold _ml-2 rounded-circle icon-button-small"
-              onClick={() => onPlusClick(field)}
-            >
-              +
-            </button>
-          </h4>
+          <CounterField
+            field={field}
+            setFields={setFields}
+            t={t}
+            title={title}
+          />
         ) : (
           <div className="d-flex">
             <div className="form-check _mr-3">

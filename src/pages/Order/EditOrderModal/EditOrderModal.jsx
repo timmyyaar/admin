@@ -1,5 +1,6 @@
-import Modal from "../../../components/common/Modal";
 import React, { useContext, useEffect, useState } from "react";
+import { components } from "react-select";
+import Modal from "../../../components/common/Modal";
 import {
   EMAIL_REGEX,
   NUMBER_FLOAT_EMPTY_REGEX,
@@ -7,6 +8,7 @@ import {
   POSITIVE_NUMBER_EMPTY_REGEX,
 } from "../../../constants";
 import {
+  capitalizeFirstLetter,
   getDateTimeObjectFromString,
   getDateTimeString,
   getFloatOneDigit,
@@ -20,8 +22,41 @@ import {
 import DatePicker from "react-datepicker";
 import CounterEdit from "./CounterEdit";
 import SubServiceEdit from "./SubServicesEdit";
-
+import Select from "../../../components/common/Select/Select";
+import { AGGREGATOR_OPTIONS } from "../constants";
 import "./style.scss";
+
+const ESTIMATE_REGEXP = /^[0-9]+h, [0-9]+m$/;
+
+const AggregatorOption = (props) => (
+  <components.Option {...props}>
+    <div className="d-flex align-items-center">
+      <img
+        className="_mr-2"
+        src={props.data.icon}
+        alt={props.label}
+        width="24"
+        height="24"
+      />
+      {props.label}
+    </div>
+  </components.Option>
+);
+
+const AggregatorSingleValue = (props) => (
+  <components.SingleValue {...props}>
+    <div className="d-flex align-items-center">
+      <img
+        className="_mr-2"
+        src={props.data.icon}
+        alt={props.data.label}
+        width="24"
+        height="24"
+      />
+      {props.data.label}
+    </div>
+  </components.SingleValue>
+);
 
 const EditOrderModal = ({ onClose, order, setOrders }) => {
   const { t } = useContext(LocaleContext);
@@ -41,7 +76,7 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
     order.total_service_price_original
   );
   const [onlinePayment, setOnlinePayment] = useState(order.onlinepayment);
-  const [estimate, setEstimate] = useState(order.estimate);
+  const [estimate, setEstimate] = useState(order.estimate || "");
   const [counter, setCounter] = useState(order.counter);
   const [subService, setSubService] = useState(order.subservice);
   const [note, setNote] = useState(order.note || "");
@@ -49,7 +84,13 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
   const [ownCheckList, setOwnCheckList] = useState(
     order.own_check_list || false
   );
+  console.log(ESTIMATE_REGEXP.test(estimate))
   const [cleanersCount, setCleanersCount] = useState(order.cleaners_count || 0);
+  const [aggregator, setAggregator] = useState(
+    order.aggregator
+      ? AGGREGATOR_OPTIONS.find(({ value }) => order.aggregator === value)
+      : null
+  );
   const [isUpdateLoading, setIsUpdateLoading] = useState(false);
   const [updateError, setUpdateError] = useState("");
 
@@ -90,6 +131,7 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
     totalPrice &&
     totalPriceOriginal &&
     estimate &&
+    ESTIMATE_REGEXP.test(estimate) &&
     cleanersCount;
 
   const onUpdateOrder = async () => {
@@ -122,6 +164,7 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
           reward: reward ? +reward : null,
           ownCheckList,
           cleanersCount: +cleanersCount,
+          aggregator: aggregator?.value || null,
         },
       });
 
@@ -300,7 +343,6 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
             className="form-control"
             value={estimate}
             onChange={({ target: { value } }) => setEstimate(value)}
-            disabled
           />
         </div>
         {counter && isPricesLoaded && (
@@ -404,6 +446,23 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
               {t("admin_order_edit_online_payment")}
             </label>
           </div>
+        </div>
+        <div className="w-100 mb-3">
+          <label className="mb-2">
+            {capitalizeFirstLetter(t("aggregator"))}
+          </label>
+          <Select
+            placeholder={t("select_placeholder")}
+            options={AGGREGATOR_OPTIONS}
+            onChange={setAggregator}
+            value={aggregator}
+            components={{
+              Option: AggregatorOption,
+              SingleValue: AggregatorSingleValue,
+            }}
+            menuPlacement="top"
+            isClearable
+          />
         </div>
         {updateError && <div className="mt-3 text-danger">{updateError}</div>}
       </div>
