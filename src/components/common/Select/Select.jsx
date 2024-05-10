@@ -112,7 +112,7 @@ function Select(props) {
           neutral0: "#212529",
           neutral5: "#495057",
           neutral10: "#495057",
-          primary: "black",
+          primary: "#41464b",
           primary25: "#495057",
           primary50: "#495057",
         },

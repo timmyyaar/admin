@@ -31,6 +31,8 @@ import {
   getTranslatedServices,
 } from "./utils";
 import Payment from "./Payment";
+import { AGGREGATOR_OPTIONS } from "./constants";
+import AggregatorId from "./AggregatorId";
 
 export const ORDER_STATUS_OPTIONS = Object.values(ORDER_STATUS);
 
@@ -287,7 +289,7 @@ export const OrderPage = ({ subscription = false }) => {
                   }`}
                 >
                   <h5 className="card-title mb-0 min-width-max-content _mr-2 d-flex align-items-center justify-content-between order-title">
-                    <div>#️⃣️ {el.id}</div>
+                    <AggregatorId order={el} />
                     {isAdmin() && (
                       <div className="mobile-only">
                         <AdminButtons
