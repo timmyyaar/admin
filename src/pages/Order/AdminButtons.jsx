@@ -32,54 +32,58 @@ function AdminButtons({ t, setOrders, order, onCheckListOpen }) {
   };
 
   return (
-    <div className="d-flex">
-      {order.check_list && (
+    <div className="d-flex _gap-2 admin-buttons">
+      <div className="d-flex _gap-2">
+        {order.check_list && (
+          <button
+            className="btn btn-outline-secondary"
+            title={t("check_list")}
+            onClick={() => onCheckListOpen(order.id)}
+          >
+            🔍
+          </button>
+        )}
         <button
           className="btn btn-outline-secondary"
-          title={t("check_list")}
-          onClick={() => onCheckListOpen(order.id)}
+          title={t("admin_order_duplicate")}
+          onClick={() => setIsDuplicateModalOpened(true)}
         >
-          🔍
+          📋
         </button>
-      )}
-      <button
-        className="btn btn-outline-secondary _mx-2"
-        title={t("admin_order_duplicate")}
-        onClick={() => setIsDuplicateModalOpened(true)}
-      >
-        📋
-      </button>
-      {isDuplicateModalOpened && (
-        <DuplicateModal
-          t={t}
-          onClose={() => setIsDuplicateModalOpened(false)}
-          order={order}
-          setOrders={setOrders}
-        />
-      )}
-      <button
-        className="btn btn-primary"
-        onClick={() => setIsEditModalOpened(order.id)}
-      >
-        {t("admin_edit")}
-      </button>
-      {isEditModalOpened === order.id && (
-        <EditOrderModal
-          order={order}
-          onClose={() => setIsEditModalOpened(null)}
-          setOrders={setOrders}
-        />
-      )}
-      <button
-        type="button"
-        className={`btn btn-danger d-flex align-items-center justify-content-center _ml-2 ${
-          deletingOrderIds.includes(order.id) ? "loading" : ""
-        }`}
-        onClick={() => onDeleteOrder(order.id, order.email)}
-        disabled={deletingOrderIds.includes(order.id)}
-      >
-        {t("admin_delete")}
-      </button>
+        {isDuplicateModalOpened && (
+          <DuplicateModal
+            t={t}
+            onClose={() => setIsDuplicateModalOpened(false)}
+            order={order}
+            setOrders={setOrders}
+          />
+        )}
+      </div>
+      <div className="d-flex _ml-auto _gap-2">
+        <button
+          className="btn btn-primary"
+          onClick={() => setIsEditModalOpened(order.id)}
+        >
+          {t("admin_edit")}
+        </button>
+        {isEditModalOpened === order.id && (
+          <EditOrderModal
+            order={order}
+            onClose={() => setIsEditModalOpened(null)}
+            setOrders={setOrders}
+          />
+        )}
+        <button
+          type="button"
+          className={`btn btn-danger d-flex align-items-center justify-content-center ${
+            deletingOrderIds.includes(order.id) ? "loading" : ""
+          }`}
+          onClick={() => onDeleteOrder(order.id, order.email)}
+          disabled={deletingOrderIds.includes(order.id)}
+        >
+          {t("admin_delete")}
+        </button>
+      </div>
     </div>
   );
 }

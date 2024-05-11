@@ -1,14 +1,15 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import DatePicker from "react-datepicker";
 import {
   getDatesBetween,
   getDateString,
   getTimeString,
-  isAdmin,
   request,
 } from "../../../utils";
 import Modal from "../../../components/common/Modal";
 import Period from "./Period";
+import { AppContext } from "../../../contexts";
+import { ROLES } from "../../../constants";
 
 const getLastDateOfMonth = (date = new Date()) =>
   new Date(date.getFullYear(), date.getMonth() + 1, 0);
@@ -53,10 +54,15 @@ function BulkEditModal({
   getSchedule,
   currentMonth,
 }) {
+  const {
+    userData: { role },
+  } = useContext(AppContext);
+  const isAdmin = role === ROLES.ADMIN;
+
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
   const [dateFrom, setDateFrom] = useState(
-    isAdmin() ? getMinimumDateAdmin(currentMonth) : getMinimumDate(currentMonth)
+    isAdmin ? getMinimumDateAdmin(currentMonth) : getMinimumDate(currentMonth)
   );
   const [dateTo, setDateTo] = useState(null);
   const [isFirstPeriodOff, setIsFirstPeriodOff] = useState(false);
@@ -216,7 +222,7 @@ function BulkEditModal({
               onChange={(newDate) => setDateFrom(newDate)}
               dateFormat="d/MM/yyyy"
               minDate={
-                isAdmin()
+                isAdmin
                   ? getMinimumDateAdmin(currentMonth)
                   : getMinimumDate(currentMonth)
               }
@@ -244,7 +250,7 @@ function BulkEditModal({
       </div>
       <div>
         <Period
-          title={t('first')}
+          title={t("first")}
           isOff={isFirstPeriodOff}
           setIsOff={setIsFirstPeriodOff}
           t={t}
@@ -256,7 +262,7 @@ function BulkEditModal({
           maxTime="10:00"
         />
         <Period
-          title={t('second')}
+          title={t("second")}
           isOff={isSecondPeriodOff}
           setIsOff={setIsSecondPeriodOff}
           t={t}
@@ -268,7 +274,7 @@ function BulkEditModal({
           maxTime="14:00"
         />
         <Period
-          title={t('third')}
+          title={t("third")}
           isOff={isThirdPeriodOff}
           setIsOff={setIsThirdPeriodOff}
           t={t}
@@ -280,7 +286,7 @@ function BulkEditModal({
           maxTime="18:00"
         />
         <Period
-          title={t('fourth')}
+          title={t("fourth")}
           isOff={isFourthPeriodOff}
           setIsOff={setIsFourthPeriodOff}
           t={t}

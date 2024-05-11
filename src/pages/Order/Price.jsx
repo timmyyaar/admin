@@ -1,5 +1,6 @@
-import React from "react";
-import { isAdmin } from "../../utils";
+import React, { useContext } from "react";
+import { AppContext } from "../../contexts";
+import { ROLES } from "../../constants";
 
 function Price({
   t,
@@ -9,9 +10,14 @@ function Price({
   total_service_price_original,
   promo,
 }) {
+  const {
+    userData: { role },
+  } = useContext(AppContext);
+  const isAdmin = role === ROLES.ADMIN;
+
   return (
     <>
-      {isAdmin() ? (
+      {isAdmin ? (
         <>
           <p className="card-text">
             💵 {t("admin_order_price")}: {price_original} zl

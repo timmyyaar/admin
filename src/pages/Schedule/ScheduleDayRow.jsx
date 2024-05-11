@@ -1,10 +1,17 @@
-import { useState } from "react";
-import { getTimeRemaining, isAdmin, request } from "../../utils";
+import { useContext, useState } from "react";
+import { getTimeRemaining, request } from "../../utils";
 import ScheduleTimeCell from "./ScheduleTimeCell";
+import { AppContext } from "../../contexts";
+import { ROLES } from "../../constants";
 
 function ScheduleDayRow({ date, schedule, setSchedule, selectedEmployee, t }) {
+  const {
+    userData: { role },
+  } = useContext(AppContext);
+  const isAdmin = role === ROLES.ADMIN;
+
   const remainingTimeTillDate = getTimeRemaining(`${date} 00:00`);
-  const isRowDisabled = remainingTimeTillDate.days < (isAdmin() ? -1 : 3);
+  const isRowDisabled = remainingTimeTillDate.days < (isAdmin ? -1 : 3);
   const existingSchedule = schedule.find(
     (item) =>
       item.date === date &&

@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { isAdmin, request } from "../../utils";
+import { request } from "../../utils";
 import ScheduleDayRow from "./ScheduleDayRow";
 
 import "./index.scss";
@@ -10,7 +10,7 @@ import { Louder } from "../../components/Louder";
 import ScheduleDayRowAll from "./ScheduleDayRowAll";
 import { ROLES } from "../../constants";
 import EmployeeTabs from "./EmployeeTabs";
-import { LocaleContext } from "../../contexts";
+import {AppContext, LocaleContext} from "../../contexts";
 import BulkEditModal from "./BulkEditModal/BulkEditModal";
 
 const getDaysInMonth = (date) => {
@@ -44,6 +44,11 @@ const getRowDate = (date, index) => {
 };
 
 function Schedule() {
+  const {
+    userData: { role },
+  } = useContext(AppContext);
+  const isAdmin = role === ROLES.ADMIN;
+
   const { t } = useContext(LocaleContext);
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [isScheduleLoading, setIsScheduleLoading] = useState(false);
@@ -90,10 +95,10 @@ function Schedule() {
   useEffect(() => {
     getSchedule();
 
-    if (isAdmin()) {
+    if (isAdmin) {
       getUsers();
     }
-  }, []);
+  }, [isAdmin]);
 
   const setPrevOrNextMonth = ({ isPrev } = {}) => {
     const prevMonthDate = new Date(
@@ -114,7 +119,7 @@ function Schedule() {
   return (
     <div className="schedule-wrapper _mt-3">
       <Louder visible={isScheduleLoading || isUsersLoading} />
-      {isAdmin() && (
+      {isAdmin && (
         <EmployeeTabs
           users={filteredUsersByRole}
           selectedRole={selectedRole}
@@ -147,7 +152,7 @@ function Schedule() {
           <thead>
             <tr key="header">
               <th className="text-center">
-                {(!isAdmin() || selectedEmployee) && (
+                {(!isAdmin || selectedEmployee) && (
                   <>
                     <button
                       className="btn btn-info rounded-pill"
@@ -186,7 +191,7 @@ function Schedule() {
           </thead>
           <tbody>
             {Array.from({ length: daysInMonth }).map((day, index) =>
-              isAdmin() && !selectedEmployee ? (
+              isAdmin && !selectedEmployee ? (
                 <ScheduleDayRowAll
                   date={getRowDate(currentMonth, index)}
                   schedule={schedule}

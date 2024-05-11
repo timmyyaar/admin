@@ -96,9 +96,9 @@ const AdminControls = ({
   ].includes(order.title);
 
   return (
-    <div className="d-flex admin-controls _gap-4 _w-full">
-      <div className="_w-full d-flex align-items-center">
-        <span className="_mr-2">{t("admin_assignee")}:</span>
+    <>
+      <div className="admin-controls _gap-4 _w-full">
+        <span>{t("admin_assignee")}:</span>
         <Select
           isMulti
           isDisabled={isAssignLoading.includes(order.id)}
@@ -114,9 +114,7 @@ const AdminControls = ({
             }
           }}
         />
-      </div>
-      <div className="_w-full d-flex align-items-center">
-        <span className="_mr-2">{t("admin_status")}:</span>
+        <span>{t("admin_status")}:</span>
         <Select
           isDisabled={
             isStatusLoading.includes(order.id) ||
@@ -140,8 +138,10 @@ const AdminControls = ({
           options={statusOptions}
         />
       </div>
-      {assignError && <span className="text-danger _mt-3">{assignError}</span>}
-    </div>
+      {assignError.length > 0 && (
+        <span className="text-danger _mt-3">{assignError}</span>
+      )}
+    </>
   );
 };
 export default AdminControls;

@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import AddUserModal from "./AddUserModal";
-import { getUserEmail, request } from "../../utils";
+import { request } from "../../utils";
 import { Louder } from "../../components/Louder";
 import ChangePasswordModal from "./ChangePasswordModal";
 import DeleteUserModal from "./DeleteUserModal";
@@ -8,8 +8,13 @@ import { ROLES } from "../../constants";
 import { ReactComponent as StarIcon } from "../../assets/icons/star.svg";
 import UserRatingPopover from "./UserRatingPopover/UserRatingPopover";
 import EditUserModal from "./EditUserModal";
+import { AppContext } from "../../contexts";
 
 const Users = () => {
+  const {
+    userData: { email: myEmail },
+  } = useContext(AppContext);
+
   const [users, setUsers] = useState([]);
   const [isUsersLoading, setIsUsersLoading] = useState(false);
   const [isAddNewModalOpened, setIsAddNewModalOpened] = useState(false);
@@ -78,7 +83,7 @@ const Users = () => {
               ️{user.first_name} {user.last_name}
             </h5>
             <div className="_ml-auto d-flex">
-              {getUserEmail() !== user.email &&
+              {myEmail !== user.email &&
                 [ROLES.CLEANER, ROLES.CLEANER_DRY].includes(user.role) && (
                   <div className="position-relative">
                     <button
@@ -105,7 +110,7 @@ const Users = () => {
                     )}
                   </div>
                 )}
-              {getUserEmail() !== user.email && (
+              {myEmail !== user.email && (
                 <button
                   className="btn btn-secondary _ml-3"
                   onClick={() => setUpdatingUser(user)}
@@ -113,7 +118,7 @@ const Users = () => {
                   Edit user
                 </button>
               )}
-              {getUserEmail() !== user.email && (
+              {myEmail !== user.email && (
                 <button
                   className="btn btn-warning _ml-3"
                   onClick={() => setUpdatingPasswordUser(user)}
@@ -121,7 +126,7 @@ const Users = () => {
                   Change password
                 </button>
               )}
-              {getUserEmail() !== user.email && (
+              {myEmail !== user.email && (
                 <button
                   type="button"
                   title="Delete user"

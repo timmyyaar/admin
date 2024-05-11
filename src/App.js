@@ -10,8 +10,8 @@ import { PromoPage } from "./pages/Promo";
 import { OrderPage } from "./pages/Order";
 import { ReviewsPage } from "./pages/Reviews";
 import Login from "./pages/Login";
-import { USER_DATA_LOCAL_STORAGE_KEY } from "./constants";
-import { isAdmin, logOut, request } from "./utils";
+import { ROLES, USER_DATA_LOCAL_STORAGE_KEY } from "./constants";
+import { logOut, request } from "./utils";
 import Users from "./pages/Users";
 import EventEmitter from "./eventEmitter";
 import { useLocales } from "./hooks/useLocales";
@@ -23,6 +23,7 @@ import Blogs from "./pages/Blogs";
 import OrdersSummary from "./pages/OrdersSummary";
 import Incomes from "./pages/Incomes";
 import Prices from "./pages/Prices";
+import { Louder } from "./components/Louder";
 
 const LOCALE_LOCAL_STORAGE_KEY = "locale";
 
@@ -38,7 +39,11 @@ function App() {
       ? selectedLocale
       : "en"
   );
+  const [userData, setUserData] = useState(null);
   const [isLocalesLoading, setIsLocalesLoading] = useState(true);
+  const [isUserDataLoading, setIsUserDataLoading] = useState(false);
+
+  const isAdmin = userData?.role === ROLES.ADMIN;
 
   const { t } = useLocales(locales, locale);
 
@@ -50,7 +55,9 @@ function App() {
 
   const getLocales = async () => {
     try {
-      const localesResponse = await request({ url: "locales" });
+      const localesResponse = await request({
+        url: "locales",
+      });
 
       setLocales(localesResponse.locales);
     } finally {
@@ -64,6 +71,7 @@ function App() {
 
   const onLogOut = () => {
     logOut();
+    setUserData(null);
 
     setIsLoggedIn(false);
   };
@@ -73,6 +81,24 @@ function App() {
       setIsLoggedIn(true);
     }
   }, [localStorageUserData]);
+
+  const getUserData = async () => {
+    try {
+      setIsUserDataLoading(true);
+
+      const userDataResponse = await request({ url: "users/my-user" });
+
+      setUserData(userDataResponse);
+    } finally {
+      setIsUserDataLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      getUserData();
+    }
+  }, [isLoggedIn]);
 
   useEffect(() => {
     EventEmitter.on("logOut", () => {
@@ -86,59 +112,68 @@ function App() {
     };
   }, []);
 
-  return isLocalesLoading ? null : (
-    <AppContext.Provider value={{ onLogOut }}>
-      <LocaleContext.Provider value={{ t, locale }}>
-        <div className="App">
-          {localStorageUserData || isLoggedIn ? (
-            <BrowserRouter>
-              <Header
-                onLogOut={onLogOut}
-                locale={locale}
-                setLocale={onLocaleChange}
-              />
-              <main className="container app-container">
-                <Routes>
-                  <Route path="/" element={<Navigate to="/order" replace />} />
-                  <Route path="/order" element={<OrderPage />} />
-                  <Route path="/documents" element={<Documents />} />
-                  <Route path="/schedule" element={<Schedule />} />
-                  {isAdmin() && (
-                    <>
-                      <Route path="/locales" element={<LocalesPage />} />
+  return (
+    <>
+      {isLocalesLoading || isUserDataLoading ? (
+        <Louder visible={isLocalesLoading || isUserDataLoading} />
+      ) : (
+        <AppContext.Provider value={{ onLogOut, userData }}>
+          <LocaleContext.Provider value={{ t, locale }}>
+            <div className="App">
+              {userData ? (
+                <BrowserRouter>
+                  <Header
+                    onLogOut={onLogOut}
+                    locale={locale}
+                    setLocale={onLocaleChange}
+                  />
+                  <main className="container app-container">
+                    <Routes>
                       <Route
-                        path="/orders-summary"
-                        element={<OrdersSummary />}
+                        path="/"
+                        element={<Navigate to="/order" replace />}
                       />
-                      <Route path="/incomes" element={<Incomes />} />
-                      <Route path="/career" element={<CareerPage />} />
-                      <Route path="/gift" element={<GiftPage />} />
-                      <Route path="/promo" element={<PromoPage />} />
-                      <Route
-                        path="/subscription"
-                        element={<OrderPage subscription />}
-                      />
-                      <Route path="/reviews" element={<ReviewsPage />} />
-                      <Route path="/users" element={<Users />} />
-                      <Route path="/discounts" element={<Discounts />} />
-                      <Route path="/clients" element={<Clients />} />
-                      <Route path="/blogs" element={<Blogs />} />
-                      <Route path="/prices" element={<Prices />} />}
-                    </>
-                  )}
-                </Routes>
-              </main>
-            </BrowserRouter>
-          ) : (
-            <Login
-              setIsLoggedIn={setIsLoggedIn}
-              locale={locale}
-              setLocale={onLocaleChange}
-            />
-          )}
-        </div>
-      </LocaleContext.Provider>
-    </AppContext.Provider>
+                      <Route path="/order" element={<OrderPage />} />
+                      <Route path="/documents" element={<Documents />} />
+                      <Route path="/schedule" element={<Schedule />} />
+                      {isAdmin && (
+                        <>
+                          <Route path="/locales" element={<LocalesPage />} />
+                          <Route
+                            path="/orders-summary"
+                            element={<OrdersSummary />}
+                          />
+                          <Route path="/incomes" element={<Incomes />} />
+                          <Route path="/career" element={<CareerPage />} />
+                          <Route path="/gift" element={<GiftPage />} />
+                          <Route path="/promo" element={<PromoPage />} />
+                          <Route
+                            path="/subscription"
+                            element={<OrderPage subscription />}
+                          />
+                          <Route path="/reviews" element={<ReviewsPage />} />
+                          <Route path="/users" element={<Users />} />
+                          <Route path="/discounts" element={<Discounts />} />
+                          <Route path="/clients" element={<Clients />} />
+                          <Route path="/blogs" element={<Blogs />} />
+                          <Route path="/prices" element={<Prices />} />}
+                        </>
+                      )}
+                    </Routes>
+                  </main>
+                </BrowserRouter>
+              ) : (
+                <Login
+                  setIsLoggedIn={setIsLoggedIn}
+                  locale={locale}
+                  setLocale={onLocaleChange}
+                />
+              )}
+            </div>
+          </LocaleContext.Provider>
+        </AppContext.Provider>
+      )}
+    </>
   );
 }
 

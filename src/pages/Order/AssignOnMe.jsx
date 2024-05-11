@@ -1,8 +1,12 @@
-import { getUserId, request } from "../../utils";
+import { request } from "../../utils";
 import React, { useContext, useState } from "react";
-import { LocaleContext } from "../../contexts";
+import { AppContext, LocaleContext } from "../../contexts";
 
 const AssignOnMe = ({ order, setOrders }) => {
+  const {
+    userData: { id: myUserId },
+  } = useContext(AppContext);
+
   const { t } = useContext(LocaleContext);
 
   const [isAssignOnMeLoading, setIsAssignOnMeLoading] = useState(false);
@@ -33,7 +37,7 @@ const AssignOnMe = ({ order, setOrders }) => {
   };
 
   return (
-    <div className="d-flex align-items-center">
+    <div className="d-flex align-items-center cleaner-controls">
       {assignError && (
         <small className="text-danger _mr-2">
           {assignError.includes("vacuum")
@@ -42,10 +46,10 @@ const AssignOnMe = ({ order, setOrders }) => {
         </small>
       )}
       <button
-        className={`btn btn-primary width-max-content ${
+        className={`btn btn-sm btn-primary width-max-content ${
           isAssignOnMeLoading ? "loading" : ""
         }`}
-        onClick={() => assignOnMe(order.id, getUserId())}
+        onClick={() => assignOnMe(order.id, myUserId)}
         disabled={isAssignOnMeLoading}
       >
         {t("admin_assign_order_on_me_button_title")}
