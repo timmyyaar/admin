@@ -4,7 +4,7 @@ import {
   getFloatOneDigit,
   request,
 } from "../../utils";
-import { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { ORDER_STATUS, ROLES } from "../../constants";
 
 import "./style.scss";
@@ -23,6 +23,7 @@ function OrdersSummary() {
   const [fromDate, setFromDate] = useState(null);
   const [toDate, setToDate] = useState(null);
   const [cleanersFilter, setCleanersFilter] = useState([]);
+  const [invoiceLoadingIds, setInvoiceLoadingIds] = useState([]);
 
   const { t } = useContext(LocaleContext);
 
@@ -58,6 +59,28 @@ function OrdersSummary() {
     getOrders();
     getUsers();
   }, []);
+
+  const onInvoiceStatusUpdate = async (id, isPaid) => {
+    setInvoiceLoadingIds((prev) => [...prev, id]);
+
+    try {
+      const updatedOrder = await request({
+        url: `order/${id}/invoice-status`,
+        method: "PATCH",
+        body: { isPaid },
+      });
+
+      setOrders((prev) =>
+        prev.map((order) =>
+          updatedOrder.id === order.id ? updatedOrder : order
+        )
+      );
+    } finally {
+      setInvoiceLoadingIds((prev) =>
+        prev.filter((loadingId) => loadingId !== id)
+      );
+    }
+  };
 
   const filteredOrders = orders
     .filter(({ status }) => status === ORDER_STATUS.DONE.value)
@@ -124,6 +147,7 @@ function OrdersSummary() {
             <th className="text-center">Cleaner reward</th>
             <th className="text-center">Extra expenses</th>
             <th className="text-center">Invoice</th>
+            <th className="text-center">Is invoice paid</th>
             <th className="text-center">Cleaners</th>
           </tr>
         </thead>
@@ -191,6 +215,25 @@ function OrdersSummary() {
                   )}
                 </td>
                 <td className="text-center align-middle">
+                  <div className="form-check d-flex justify-content-center">
+                    <input
+                      type="checkbox"
+                      className="form-check-input _cursor-pointer"
+                      name={`${order.id}`}
+                      id={`${order.id}`}
+                      onChange={() =>
+                        onInvoiceStatusUpdate(order.id, !order.is_invoice_paid)
+                      }
+                      checked={order.is_invoice_paid}
+                      disabled={invoiceLoadingIds.includes(order.id)}
+                    />
+                    <label
+                      className="form-check-label _cursor-pointer"
+                      htmlFor={`${order.id}`}
+                    />
+                  </div>
+                </td>
+                <td className="text-center align-middle">
                   {orderCleaners.length > 0
                     ? orderCleaners.length < order.cleaners_count
                       ? `${orderCleaners.join(", ")}, ${
@@ -214,6 +257,25 @@ function OrdersSummary() {
               >
                 {invoiceForPeriodOneDigit}
               </span>
+            </td>
+            <td className="text-center align-middle">
+              <div className="form-check d-flex justify-content-center">
+                <input
+                  type="checkbox"
+                  className="form-check-input _cursor-pointer"
+                  name="invoice_summary"
+                  id="invoice_summary"
+                  onChange={() => {}}
+                  checked={filteredOrders.every(
+                    ({ is_invoice_paid }) => is_invoice_paid
+                  )}
+                  disabled
+                />
+                <label
+                  className="form-check-label _cursor-pointer"
+                  htmlFor="invoice_summary"
+                />
+              </div>
             </td>
             <td />
           </tr>

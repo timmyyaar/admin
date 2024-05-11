@@ -84,7 +84,6 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
   const [ownCheckList, setOwnCheckList] = useState(
     order.own_check_list || false
   );
-  console.log(ESTIMATE_REGEXP.test(estimate))
   const [cleanersCount, setCleanersCount] = useState(order.cleaners_count || 0);
   const [aggregator, setAggregator] = useState(
     order.aggregator

@@ -114,26 +114,22 @@ export const request = async ({
 export const getDateObjectFromString = (string) => {
   const dateArray = string.split("/");
 
-  const day = dateArray[0];
-  const month = dateArray[1];
-  const year = dateArray[2];
+  const day = +dateArray[0];
+  const month = +dateArray[1];
+  const year = +dateArray[2];
 
-  return new Date(`${year}-${month}-${day}`);
+  return new Date(year, month - 1, day);
 };
 
 export const getDateTimeObjectFromString = (string) => {
-  const dateString = string.match(/([^\s]+)/)[0];
-  const timeString = string.slice(-5);
+  const dateAndTime = string.split(" ");
+  const dateString = dateAndTime[0];
+  const timeString = dateAndTime[1];
 
-  const endTimeDay = dateString.match(/.+?(?=\/)/)[0];
-  const endTimeMonth = dateString.slice(-7, -5);
-  const endTimeYear = dateString.slice(-4);
-  const endTimeHours = timeString.slice(-5, -3);
-  const endTimeMinutes = timeString.slice(-2);
+  const [day, month, year] = dateString.split("/");
+  const [hours, minutes] = timeString.split(":");
 
-  const providedDateString = `${endTimeYear}-${endTimeMonth}-${endTimeDay} ${endTimeHours}:${endTimeMinutes}`;
-
-  return new Date(providedDateString);
+  return new Date(+year, +month - 1, +day, +hours, +minutes);
 };
 
 export const getDateString = (date) => {
@@ -168,29 +164,26 @@ export const getDateTimeString = (date) => {
 };
 
 export const getTimeRemaining = (endTime) => {
-  const dateString = endTime.match(/([^\s]+)/)[0];
-  const timeString = endTime.slice(-5);
+  const dateAndTime = endTime.split(" ");
+  const dateString = dateAndTime[0];
+  const timeString = dateAndTime[1];
 
-  const endTimeDay = dateString.match(/.+?(?=\/)/)[0];
-  const endTimeMonth = dateString.slice(-7, -5);
-  const endTimeYear = dateString.slice(-4);
-  const endTimeHours = timeString.slice(-5, -3);
-  const endTimeMinutes = timeString.slice(-2);
+  const [day, month, year] = dateString.split("/");
+  const [hours, minutes] = timeString.split(":");
 
-  const providedDateString = `${endTimeYear}/${endTimeMonth}/${endTimeDay} ${endTimeHours}:${endTimeMinutes}`;
-
-  const total = new Date(providedDateString) - new Date();
-  const seconds = Math.floor((total / 1000) % 60);
-  const minutes = Math.floor((total / 1000 / 60) % 60);
-  const hours = Math.floor((total / (1000 * 60 * 60)) % 24);
-  const days = Math.floor(total / (1000 * 60 * 60 * 24));
+  const totalLeft =
+    new Date(+year, +month - 1, +day, +hours, +minutes) - new Date();
+  const secondsLeft = Math.floor((totalLeft / 1000) % 60);
+  const minutesLeft = Math.floor((totalLeft / 1000 / 60) % 60);
+  const hoursLeft = Math.floor((totalLeft / (1000 * 60 * 60)) % 24);
+  const daysLeft = Math.floor(totalLeft / (1000 * 60 * 60 * 24));
 
   return {
-    total,
-    days,
-    hours,
-    minutes,
-    seconds,
+    total: totalLeft,
+    days: daysLeft,
+    hours: hoursLeft,
+    minutes: minutesLeft,
+    seconds: secondsLeft,
   };
 };
 

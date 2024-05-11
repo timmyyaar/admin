@@ -45,8 +45,8 @@ function Payment({ order, setOrders, t }) {
 
   const generatePaymentLink = (payment_intent) => {
     return process.env.REACT_APP_MODE === "staging"
-      ? `https://www.takeutime.pl/${locale}/payment/${payment_intent}`
-      : `https://www.staging.takeutime.pl/payment/${payment_intent}`;
+      ? `https://www.staging.takeutime.pl/${locale}/payment/${payment_intent}`
+      : `https://www.takeutime.pl/payment/${payment_intent}`;
   };
 
   const onPaymentClick = async () => {
