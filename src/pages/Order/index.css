@@ -8,6 +8,16 @@
   grid-template-columns: max-content 1fr max-content 1fr max-content 1fr;
 }
 
+.admin-controls {
+  display: inline-grid;
+  grid-template-columns: max-content 1fr max-content 1fr;
+  align-items: center;
+}
+
+.cleaner-controls {
+  justify-content: end;
+}
+
 @media screen and (max-width: 950px) {
   .filters-wrapper {
     display: grid;
@@ -23,7 +33,21 @@
   }
 
   .admin-controls {
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: max-content auto;
+    align-items: center;
+  }
+
+  .cleaner-controls {
+    justify-content: center;
+  }
+
+  .refuse-error {
+    font-size: 12px;
+  }
+
+  .admin-buttons {
+    width: 100%;
   }
 
   .order-wrapper {

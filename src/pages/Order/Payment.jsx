@@ -1,14 +1,19 @@
 import React, { useContext, useState } from "react";
-import { isAdmin, request } from "../../utils";
+import { request } from "../../utils";
 import {
   getPaymentColorDependsOnStatus,
   getPaymentTextDependsOnStatus,
 } from "./utils";
-import { PAYMENT_STATUS } from "../../constants";
+import { PAYMENT_STATUS, ROLES } from "../../constants";
 import Modal from "../../components/common/Modal";
-import { LocaleContext } from "../../contexts";
+import { AppContext, LocaleContext } from "../../contexts";
 
 function Payment({ order, setOrders, t }) {
+  const {
+    userData: { role },
+  } = useContext(AppContext);
+  const isAdmin = role === ROLES.ADMIN;
+
   const { locale } = useContext(LocaleContext);
   const [paymentLink, setPaymentLink] = useState("");
   const [wasCopied, setWasCopied] = useState(false);
@@ -99,11 +104,11 @@ function Payment({ order, setOrders, t }) {
       )}
       <p
         className={`card-text font-weight-semi-bold ${
-          isAdmin() && order.payment_status && order.onlinepayment
+          isAdmin && order.payment_status && order.onlinepayment
             ? getPaymentColorDependsOnStatus(order.payment_status)
             : ""
         } ${
-          isAdmin() && canGeneratePaymentLink
+          isAdmin && canGeneratePaymentLink
             ? "opacity-70-on-hover _cursor-pointer"
             : ""
         }`}
@@ -115,7 +120,7 @@ function Payment({ order, setOrders, t }) {
           ? `${t("admin_order_online")}`
           : `${t("admin_order_cash")}`}
         <span>
-          {isAdmin() &&
+          {isAdmin &&
             order.onlinepayment &&
             order.payment_status &&
             ` (${t(getPaymentTextDependsOnStatus(order.payment_status))})`}

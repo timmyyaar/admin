@@ -8,17 +8,13 @@ import { Louder } from "../../components/Louder";
 import {
   getDateTimeObjectFromString,
   getTimeRemaining,
-  getUserId,
-  isAdmin,
-  isCleaner,
-  isDryCleaner,
   request,
 } from "../../utils";
 import { ORDER_STATUS, ROLES } from "../../constants";
 import Filters from "./Filters";
 import AdminControls from "./AdminControls";
 import CleanerControls from "./CleanerControls";
-import { LocaleContext } from "../../contexts";
+import { AppContext, LocaleContext } from "../../contexts";
 import Price from "./Price";
 import AdminButtons from "./AdminButtons";
 import NewClientMessage from "./NewClientMessage";
@@ -53,6 +49,13 @@ const getSubServiceWithoutVacuumCleaner = (subService) => {
 };
 
 export const OrderPage = ({ subscription = false }) => {
+  const {
+    userData: { role, id: myUserId },
+  } = useContext(AppContext);
+  const isAdmin = role === ROLES.ADMIN;
+  const isCleaner = role === ROLES.CLEANER;
+  const isDryCleaner = role === ROLES.CLEANER_DRY;
+
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(false);
   const [cleaners, setCleaners] = useState([]);
@@ -123,13 +126,13 @@ export const OrderPage = ({ subscription = false }) => {
   };
 
   useEffect(() => {
-    if (isAdmin()) {
+    if (isAdmin) {
       getUsers();
       getSchedule();
     } else {
       setIsUsersLoading(false);
     }
-  }, []);
+  }, [isAdmin]);
 
   const onChangeOrderStatus = async (id, status, checkList) => {
     try {
@@ -157,7 +160,7 @@ export const OrderPage = ({ subscription = false }) => {
     }
   };
 
-  const filteredOrders = isAdmin()
+  const filteredOrders = isAdmin
     ? orders
         .filter(({ title }) => {
           if (orderTypeFilter === "All") {
@@ -186,11 +189,11 @@ export const OrderPage = ({ subscription = false }) => {
         })
     : orders
         .filter(({ title }) => {
-          if (isDryCleaner()) {
+          if (isDryCleaner) {
             return ["Dry cleaning", "Ozonation"].includes(title);
           }
 
-          if (isCleaner()) {
+          if (isCleaner) {
             return title !== "Dry cleaning" && title !== "Ozonation";
           }
 
@@ -202,7 +205,7 @@ export const OrderPage = ({ subscription = false }) => {
           if (statusFilter === "All") {
             return cleaner_id.length < cleaners_count
               ? status === ORDER_STATUS.APPROVED.value && leftTimeToOrder > 0
-              : cleaner_id.includes(getUserId());
+              : cleaner_id.includes(myUserId);
           }
 
           if (statusFilter === ORDER_STATUS.APPROVED.value) {
@@ -214,17 +217,17 @@ export const OrderPage = ({ subscription = false }) => {
           }
 
           if (statusFilter === "all-my-orders") {
-            return cleaner_id.includes(getUserId());
+            return cleaner_id.includes(myUserId);
           }
 
           if (statusFilter === "my-not-started-orders") {
             return (
-              cleaner_id.includes(getUserId()) &&
+              cleaner_id.includes(myUserId) &&
               status === ORDER_STATUS.APPROVED.value
             );
           }
 
-          return cleaner_id.includes(getUserId()) && status === statusFilter;
+          return cleaner_id.includes(myUserId) && status === statusFilter;
         });
 
   const filteredOrdersByDate = filteredOrders.filter(({ date }) => {
@@ -282,25 +285,11 @@ export const OrderPage = ({ subscription = false }) => {
                     onChangeOrderStatus={onChangeOrderStatus}
                   />
                 )}
-                <div
-                  className={`card-header _gap-4 d-flex justify-content-between align-items-center ${
-                    isAdmin() ? "order-header" : ""
-                  }`}
-                >
-                  <h5 className="card-title mb-0 min-width-max-content _mr-2 d-flex align-items-center justify-content-between order-title">
+                <div className="card-header order-header _gap-4 d-flex justify-content-between align-items-center">
+                  <h5 className="card-title mb-0 min-width-max-content _mr-2 d-flex align-items-center justify-content-center order-title">
                     <AggregatorId order={el} />
-                    {isAdmin() && (
-                      <div className="mobile-only">
-                        <AdminButtons
-                          t={t}
-                          setOrders={setOrders}
-                          order={el}
-                          onCheckListOpen={(id) => setShowCheckListId(id)}
-                        />
-                      </div>
-                    )}
                   </h5>
-                  {isAdmin() && !isUsersLoading && (
+                  {isAdmin && !isUsersLoading && (
                     <AdminControls
                       order={el}
                       isStatusLoading={isStatusLoading}
@@ -311,23 +300,23 @@ export const OrderPage = ({ subscription = false }) => {
                       schedule={schedule}
                     />
                   )}
-                  <CleanerControls
-                    order={el}
-                    isStatusLoading={isStatusLoading}
-                    onChangeOrderStatus={onChangeOrderStatus}
-                    setOrders={setOrders}
-                    onCheckListOpen={(id) => setShowCheckListId(id)}
-                    onCheckListEditOpen={(id) => setShowCheckListEditId(id)}
-                  />
-                  {isAdmin() && (
-                    <div className="mobile-none">
-                      <AdminButtons
-                        t={t}
-                        setOrders={setOrders}
-                        order={el}
-                        onCheckListOpen={(id) => setShowCheckListId(id)}
-                      />
-                    </div>
+                  {(isCleaner || isDryCleaner) && (
+                    <CleanerControls
+                      order={el}
+                      isStatusLoading={isStatusLoading}
+                      onChangeOrderStatus={onChangeOrderStatus}
+                      setOrders={setOrders}
+                      onCheckListOpen={(id) => setShowCheckListId(id)}
+                      onCheckListEditOpen={(id) => setShowCheckListEditId(id)}
+                    />
+                  )}
+                  {isAdmin && (
+                    <AdminButtons
+                      t={t}
+                      setOrders={setOrders}
+                      order={el}
+                      onCheckListOpen={(id) => setShowCheckListId(id)}
+                    />
                   )}
                 </div>
                 <div className="card-body d-flex position-relative order-wrapper">
@@ -349,18 +338,18 @@ export const OrderPage = ({ subscription = false }) => {
                           )}
                         </div>
                       )}
-                      {(isAdmin() ||
-                        (el.cleaner_id.includes(getUserId()) &&
+                      {(isAdmin ||
+                        (el.cleaner_id.includes(myUserId) &&
                           getTimeRemaining(el.date).days < 1)) && (
                         <>
                           <p>👤 {el.name}</p>
                           <p>📲 {el.number}</p>
                         </>
                       )}
-                      {isAdmin() && <p>📩 {el.email}</p>}
+                      {isAdmin && <p>📩 {el.email}</p>}
                       <p className="d-flex">
                         <span className="_mr-3">📆 {el.date}</span>
-                        {el.creation_date && isAdmin() && (
+                        {el.creation_date && isAdmin && (
                           <span>
                             ✍🏼 {t("admin_order_created")} {el.creation_date}
                           </span>
@@ -401,7 +390,7 @@ export const OrderPage = ({ subscription = false }) => {
                         <span className="_ml-1">
                           {el.reward || el.reward_original} zl
                         </span>
-                        {isAdmin() && Boolean(el.reward) && (
+                        {isAdmin && Boolean(el.reward) && (
                           <span className="_ml-1">
                             <span className="_mr-1">
                               ({t("admin_order_original_reward")}:

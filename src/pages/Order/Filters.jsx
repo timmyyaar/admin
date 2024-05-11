@@ -1,8 +1,8 @@
-import { getDateString, isAdmin } from "../../utils";
+import { getDateString } from "../../utils";
 import React, { useContext } from "react";
 import DatePicker from "react-datepicker";
-import { ORDER_STATUS, ORDER_TYPE } from "../../constants";
-import { LocaleContext } from "../../contexts";
+import { ORDER_STATUS, ORDER_TYPE, ROLES } from "../../constants";
+import { AppContext, LocaleContext } from "../../contexts";
 
 const CLEANER_STATUS_FILTER_OPTIONS = [
   { value: ORDER_STATUS.APPROVED.value, label: "Available orders" },
@@ -27,9 +27,14 @@ const Filters = ({
   dateFilter,
   setDateFilter,
 }) => {
+  const {
+    userData: { role },
+  } = useContext(AppContext);
+  const isAdmin = role === ROLES.ADMIN;
+
   const { t } = useContext(LocaleContext);
 
-  const statusFilterOptions = isAdmin()
+  const statusFilterOptions = isAdmin
     ? ADMIN_STATUS_FILTER_OPTIONS
     : CLEANER_STATUS_FILTER_OPTIONS;
 
@@ -90,7 +95,7 @@ const Filters = ({
           </option>
         ))}
       </select>
-      {isAdmin() && (
+      {isAdmin && (
         <>
           <span>{t("admin_assignee_filter_title")}:</span>
           <select
