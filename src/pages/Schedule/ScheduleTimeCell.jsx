@@ -1,7 +1,8 @@
 import React, { useContext, useState } from "react";
 import ScheduleTimeModal from "./ScheduleTimeModal";
-import { capitalizeFirstLetter, getTimeRemaining, isAdmin } from "../../utils";
-import { LocaleContext } from "../../contexts";
+import { capitalizeFirstLetter, getTimeRemaining } from "../../utils";
+import { AppContext, LocaleContext } from "../../contexts";
+import { ROLES } from "../../constants";
 
 function ScheduleTimeCell({
   existingSchedule,
@@ -12,10 +13,15 @@ function ScheduleTimeCell({
   maxTime,
   date,
 }) {
+  const {
+    userData: { role },
+  } = useContext(AppContext);
+  const isAdmin = role === ROLES.ADMIN;
+
   const { t } = useContext(LocaleContext);
   const [isTimeModalOpened, setIsTimeModalOpened] = useState(false);
   const remainingTimeTillDate = getTimeRemaining(`${date} 00:00`);
-  const isCellDisabled = remainingTimeTillDate.days < (isAdmin() ? -1 : 3);
+  const isCellDisabled = remainingTimeTillDate.days < (isAdmin ? -1 : 3);
 
   const onClickTableCell = () => {
     if (!isLoading && !isCellDisabled) {
@@ -31,9 +37,9 @@ function ScheduleTimeCell({
     existingSchedule[`is${capitalizeFirstLetter(periodName)}Order`];
 
   const cellClassName = isPeriodAdditionAvailable
-    ? `${isOrderPeriod ? "order-time disabled-row" : "partial-available-time"} ${
-        isCellDisabled ? "disabled-row" : ""
-      }`
+    ? `${
+        isOrderPeriod ? "order-time disabled-row" : "partial-available-time"
+      } ${isCellDisabled ? "disabled-row" : ""}`
     : isPeriodAvailable
     ? `available-time  ${isCellDisabled ? "disabled-row" : ""}`
     : `${isOrderPeriod ? "order-time disabled-row" : "not-available-time"} ${

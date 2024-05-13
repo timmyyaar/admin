@@ -1,11 +1,11 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { isAdmin, isCleaner, isDryCleaner, request } from "../../utils";
 
 import "./index.scss";
-import { LocaleContext } from "../../contexts";
+import { AppContext, LocaleContext } from "../../contexts";
 import LocaleSelect from "../LocaleSelect/LocaleSelect";
 import useClickOutside from "../../hooks/useClickOutside";
+import { ROLES } from "../../constants";
 
 const CLEANER_NAVIGATION = [
   { to: "/order", title: "Orders" },
@@ -30,25 +30,17 @@ const ADMIN_NAVIGATION = [
 ];
 
 export const Header = ({ onLogOut, locale, setLocale }) => {
+  const {
+    userData: { role, rating },
+  } = useContext(AppContext);
+  const isAdmin = role === ROLES.ADMIN;
+
   const { t } = useContext(LocaleContext);
   const [showMenu, setShowMenu] = useState(false);
-  const [myUser, setMyUser] = useState(null);
 
   const { pathname } = useLocation();
 
-  const getMyUser = async () => {
-    const myUserResponse = await request({ url: "users/my-user" });
-
-    setMyUser(myUserResponse);
-  };
-
-  useEffect(() => {
-    if (isCleaner() || isDryCleaner()) {
-      getMyUser();
-    }
-  }, []);
-
-  const navigation = isAdmin()
+  const navigation = isAdmin
     ? [...CLEANER_NAVIGATION, ...ADMIN_NAVIGATION]
     : CLEANER_NAVIGATION;
 
@@ -102,13 +94,13 @@ export const Header = ({ onLogOut, locale, setLocale }) => {
       </div>
       <div className="ml-auto d-flex align-items-center">
         <LocaleSelect locale={locale} setLocale={setLocale} />
-        {(isCleaner() || isDryCleaner()) && myUser?.rating && (
+        {!isAdmin && rating && (
           <h3 className="_mb-0 min-width-max-content">
-            <span className="badge">⭐ {myUser.rating}</span>
+            <span className="badge">⭐ {rating}</span>
           </h3>
         )}
         <button
-          className={`btn btn-danger text-nowrap ${!myUser ? "_ml-3" : ""}`}
+          className={`btn btn-danger text-nowrap ${isAdmin ? "_ml-3" : ""}`}
           onClick={onLogOut}
         >
           {t("admin_log_out_button")}
