@@ -107,18 +107,20 @@ function OrdersSummary() {
         : true
     );
 
-  const invoiceForPeriod = filteredOrders.reduce((result, order) => {
-    const reward = order.reward || order.reward_original;
-    const companyEarning = getFloatOneDigit(
-      order.price - reward * order.cleaners_count
-    );
+  const invoiceForPeriod = filteredOrders
+    .filter(({ is_invoice_paid }) => !is_invoice_paid)
+    .reduce((result, order) => {
+      const reward = order.reward || order.reward_original;
+      const companyEarning = getFloatOneDigit(
+        order.price - reward * order.cleaners_count
+      );
 
-    const invoice = order.onlinepayment
-      ? -(reward + (order.extra_expenses || 0))
-      : companyEarning - (order.extra_expenses || 0);
+      const invoice = order.onlinepayment
+        ? -(reward + (order.extra_expenses || 0))
+        : companyEarning - (order.extra_expenses || 0);
 
-    return result + invoice;
-  }, 0);
+      return result + invoice;
+    }, 0);
   const invoiceForPeriodOneDigit = getFloatOneDigit(invoiceForPeriod);
 
   return (
@@ -252,7 +254,11 @@ function OrdersSummary() {
             <td className="text-center align-middle">
               <span
                 className={
-                  invoiceForPeriodOneDigit < 0 ? "text-danger" : "text-success"
+                  invoiceForPeriodOneDigit < 0
+                    ? "text-danger"
+                    : invoiceForPeriodOneDigit === 0
+                    ? "text-warning"
+                    : "text-success"
                 }
               >
                 {invoiceForPeriodOneDigit}

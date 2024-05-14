@@ -4,7 +4,7 @@ import {
   getPaymentColorDependsOnStatus,
   getPaymentTextDependsOnStatus,
 } from "./utils";
-import { PAYMENT_STATUS, ROLES } from "../../constants";
+import { ORDER_STATUS, PAYMENT_STATUS, ROLES } from "../../constants";
 import Modal from "../../components/common/Modal";
 import { AppContext, LocaleContext } from "../../contexts";
 
@@ -18,6 +18,7 @@ function Payment({ order, setOrders, t }) {
   const [paymentLink, setPaymentLink] = useState("");
   const [wasCopied, setWasCopied] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isApprovePaymentLoading, setIsApprovePaymentLoading] = useState(false);
 
   const isPendingOrFailedPayment = [
     PAYMENT_STATUS.PENDING,
@@ -70,6 +71,39 @@ function Payment({ order, setOrders, t }) {
     }
   };
 
+  const onApprovePayment = async () => {
+    if (isApprovePaymentLoading) {
+      return;
+    }
+
+    try {
+      setIsApprovePaymentLoading(true);
+
+      const updatedOrders = await request({
+        url: `order/${order.id}/approve-payment`,
+        method: "PUT",
+      });
+
+      setOrders((prev) =>
+        prev.map((prev) => {
+          const updatedOrder = updatedOrders.find(
+            (item) => item.id === prev.id
+          );
+
+          return updatedOrder || prev;
+        })
+      );
+    } catch (error) {
+    } finally {
+      setIsApprovePaymentLoading(false);
+    }
+  };
+
+  const isApprovePaymentVisible =
+    isAdmin &&
+    order.payment_status === PAYMENT_STATUS.WAITING_FOR_CONFIRMATION &&
+    order.status !== ORDER_STATUS.CREATED.value;
+
   return (
     <>
       {paymentLink && (
@@ -102,31 +136,44 @@ function Payment({ order, setOrders, t }) {
           </div>
         </Modal>
       )}
-      <p
-        className={`card-text font-weight-semi-bold ${
-          isAdmin && order.payment_status && order.onlinepayment
-            ? getPaymentColorDependsOnStatus(order.payment_status)
-            : ""
-        } ${
-          isAdmin && canGeneratePaymentLink
-            ? "opacity-70-on-hover _cursor-pointer"
-            : ""
-        }`}
-        onClick={onPaymentClick}
-      >
-        <span className="_mr-1">{order.onlinepayment ? "💳" : "💲"}</span>
-        <span className="_mr-1">{t("admin_order_payment")}:</span>
-        {order.onlinepayment
-          ? `${t("admin_order_online")}`
-          : `${t("admin_order_cash")}`}
-        <span>
-          {isAdmin &&
-            order.onlinepayment &&
-            order.payment_status &&
-            ` (${t(getPaymentTextDependsOnStatus(order.payment_status))})`}
-          {isLoading && <div className="loader" />}
-        </span>
-      </p>
+      <div className="d-flex align-items-center _mb-4">
+        <div
+          className={`card-text font-weight-semi-bold ${
+            isAdmin && order.payment_status && order.onlinepayment
+              ? getPaymentColorDependsOnStatus(order.payment_status)
+              : ""
+          } ${
+            isAdmin && canGeneratePaymentLink
+              ? "opacity-70-on-hover _cursor-pointer"
+              : ""
+          }`}
+          onClick={onPaymentClick}
+        >
+          <span className="_mr-1">{order.onlinepayment ? "💳" : "💲"}</span>
+          <span className="_mr-1">{t("admin_order_payment")}:</span>
+          {order.onlinepayment
+            ? `${t("admin_order_online")}`
+            : `${t("admin_order_cash")}`}
+          <span>
+            {isAdmin &&
+              order.onlinepayment &&
+              order.payment_status &&
+              ` (${t(getPaymentTextDependsOnStatus(order.payment_status))})`}
+            {isLoading && <div className="loader" />}
+          </span>
+        </div>
+        {isApprovePaymentVisible && (
+          <button
+            className={`btn btn-sm btn-success _ml-2 whitespace-nowrap ${
+              isApprovePaymentLoading ? "loading" : ""
+            }`}
+            onClick={onApprovePayment}
+            disabled={isApprovePaymentLoading}
+          >
+            Approve
+          </button>
+        )}
+      </div>
     </>
   );
 }

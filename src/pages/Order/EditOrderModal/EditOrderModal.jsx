@@ -241,7 +241,7 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
       onClose={onClose}
       actionButtonText={t("admin_order_edit_update_order")}
       onActionButtonClick={onUpdateOrder}
-      isActionButtonDisabled={!isOrderValid || isUpdateLoading}
+      isActionButtonDisabled={!isOrderValid || isUpdateLoading || isPricesLoading}
       isLoading={isUpdateLoading}
       isInitialDataLoading={isPricesLoading}
     >
