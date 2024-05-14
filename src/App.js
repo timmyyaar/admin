@@ -82,6 +82,14 @@ function App() {
     }
   }, [localStorageUserData]);
 
+  useEffect(() => {
+    document.body.classList.add("custom-scroll");
+
+    return () => {
+      document.body.classList.remove("custom-scroll");
+    };
+  }, []);
+
   const getUserData = async () => {
     try {
       setIsUserDataLoading(true);
