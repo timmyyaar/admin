@@ -19,7 +19,7 @@ export const CareerPage = () => {
       try {
         setDeleteLoadingIds((prev) => [...prev, id]);
 
-        await request({ url: `career/${id}`, method: "DELETE" });
+        await request({ url: `careers/${id}`, method: "DELETE" });
 
         setCareers((prev) => prev.filter((career) => career.id !== id));
       } catch (error) {
