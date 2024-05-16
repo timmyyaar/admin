@@ -67,7 +67,30 @@ function Payment({ order, setOrders, t }) {
 
       setPaymentLink(generatePaymentLink(payment_intent));
     } else if (isPendingOrFailedPayment) {
-      setPaymentLink(generatePaymentLink(order.payment_intent));
+      try {
+        setIsLoading(true);
+
+        const { isSynced, updatedOrders } = await request({
+          url: `order/${order.id}/sync-payment`,
+          method: "PUT",
+        });
+
+        if (isSynced) {
+          setPaymentLink(generatePaymentLink(order.payment_intent));
+        } else {
+          setOrders((prev) =>
+            prev.map((prev) => {
+              const updatedOrder = updatedOrders.find(
+                (item) => item.id === prev.id
+              );
+
+              return updatedOrder || prev;
+            })
+          );
+        }
+      } finally {
+        setIsLoading(false);
+      }
     }
   };
 
