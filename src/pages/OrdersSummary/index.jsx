@@ -249,7 +249,7 @@ function OrdersSummary() {
           })}
           <tr>
             <td colSpan="9" className="text-end align-middle">
-              Total for period:
+              Total for period ({filteredOrders.length} orders):
             </td>
             <td className="text-center align-middle">
               <span

@@ -11,7 +11,7 @@ import {
   request,
 } from "../../utils";
 import { ORDER_STATUS, ROLES } from "../../constants";
-import Filters from "./Filters";
+import Filters, { PASSED_BUT_NOT_DONE_ORDER } from "./Filters";
 import AdminControls from "./AdminControls";
 import CleanerControls from "./CleanerControls";
 import { AppContext, LocaleContext } from "../../contexts";
@@ -22,6 +22,7 @@ import NumberOfCleaners from "./NumberOfCleaners/NumberOfCleaners";
 import Note from "./Note";
 import CheckListModal from "./CleckListModal";
 import {
+  getIsOrderPassedButNotDone,
   getSubServiceWithBalcony,
   getSubServiceWithCarpet,
   getTranslatedServices,
@@ -180,9 +181,13 @@ export const OrderPage = ({ subscription = false }) => {
 
           return cleaner_id.includes(+assigneeFilter);
         })
-        .filter(({ status }) => {
+        .filter(({ status, date }) => {
           if (statusFilter === "All") {
             return true;
+          }
+
+          if (statusFilter === PASSED_BUT_NOT_DONE_ORDER) {
+            return getIsOrderPassedButNotDone({ status, date });
           }
 
           return status === statusFilter;
