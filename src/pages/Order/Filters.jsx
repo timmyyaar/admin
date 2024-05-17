@@ -12,7 +12,12 @@ const CLEANER_STATUS_FILTER_OPTIONS = [
   { value: ORDER_STATUS.DONE.value, label: "My completed orders" },
 ];
 
-const ADMIN_STATUS_FILTER_OPTIONS = Object.values(ORDER_STATUS);
+export const PASSED_BUT_NOT_DONE_ORDER = "passed-but-not-done";
+
+const ADMIN_STATUS_FILTER_OPTIONS = [
+  ...Object.values(ORDER_STATUS),
+  { value: PASSED_BUT_NOT_DONE_ORDER, label: "Passed but not done" },
+];
 
 const ORDER_TYPE_OPTIONS = Object.values(ORDER_TYPE);
 
@@ -88,7 +93,13 @@ const Filters = ({
           {t("admin_all_option")}
         </option>
         {statusFilterOptions.map(({ value, label }) => (
-          <option key={value} value={value}>
+          <option
+            key={value}
+            value={value}
+            className={`${
+              value === PASSED_BUT_NOT_DONE_ORDER ? "text-danger" : ""
+            }`}
+          >
             {t(
               `admin_order_${label.toLowerCase().replaceAll(" ", "_")}_option`
             )}

@@ -1,6 +1,7 @@
 import React from "react";
 import { ReactComponent as TakeYourTimeIcon } from "../../assets/icons/aggregators/take-your-time.svg";
 import { AGGREGATOR_OPTIONS } from "./constants";
+import { getIsOrderPassedButNotDone } from "./utils";
 
 function AggregatorId({ order }) {
   const aggregator = AGGREGATOR_OPTIONS.find(
@@ -25,7 +26,11 @@ function AggregatorId({ order }) {
       ) : (
         <TakeYourTimeIcon width="24" height="24" className="_mr-2" />
       )}
-      {order.id}
+      <span
+        className={`${getIsOrderPassedButNotDone(order) ? "text-danger" : ""}`}
+      >
+        {order.id}
+      </span>
     </div>
   );
 }

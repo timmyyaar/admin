@@ -48,23 +48,40 @@ function Clients() {
           setClients={setClients}
         />
       )}
-      <button
-        className="btn btn-sm btn-primary mb-3"
-        onClick={() => setIsModalOpened(true)}
-      >
-        Add new client
-      </button>
-      <div className="overflow-x-auto">
+      <div className="_flex _items-center _mb-3 _gap-4">
+        <button
+          className="btn btn-sm btn-primary"
+          onClick={() => setIsModalOpened(true)}
+        >
+          Add new client
+        </button>
+        <span>Total clients count: {clients.length}</span>
+      </div>
+      <div className="overflow-x-auto custom-scroll">
         <table className="table table-dark">
           <thead>
             <tr>
-              <th className="position-sticky top-0 whitespace-nowrap"><div className="d-flex">👤 Name</div></th>
-              <th className="position-sticky top-0 whitespace-nowrap">📅 Order date</th>
-              <th className="position-sticky top-0 whitespace-nowrap">✍🏼 Created</th>
-              <th className="position-sticky top-0 whitespace-nowrap">📍 Address</th>
-              <th className="position-sticky top-0 whitespace-nowrap">📧 Email</th>
-              <th className="position-sticky top-0 whitespace-nowrap">📱 Phone</th>
-              <th className="position-sticky top-0 whitespace-nowrap">📷 Instagram</th>
+              <th className="position-sticky top-0 whitespace-nowrap">
+                <div className="d-flex">👤 Name</div>
+              </th>
+              <th className="position-sticky top-0 whitespace-nowrap">
+                📅 Order date
+              </th>
+              <th className="position-sticky top-0 whitespace-nowrap">
+                ✍🏼 Created
+              </th>
+              <th className="position-sticky top-0 whitespace-nowrap">
+                📍 Address
+              </th>
+              <th className="position-sticky top-0 whitespace-nowrap">
+                📧 Email
+              </th>
+              <th className="position-sticky top-0 whitespace-nowrap">
+                📱 Phone
+              </th>
+              <th className="position-sticky top-0 whitespace-nowrap">
+                📷 Instagram
+              </th>
               <th className="position-sticky top-0" />
             </tr>
           </thead>
