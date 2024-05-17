@@ -3,7 +3,7 @@ import {
   getDateTimeObjectFromString,
   getTimeUnitWithPrefix,
 } from "../../utils";
-import { BRACKETS_REGEX, PAYMENT_STATUS } from "../../constants";
+import { BRACKETS_REGEX, ORDER_STATUS, PAYMENT_STATUS } from "../../constants";
 
 export const getEstimateInTimeFormat = (estimate) => {
   const estimateArray = estimate.split(", ");
@@ -269,3 +269,7 @@ export const getPaymentTextDependsOnStatus = (paymentStatus) => {
       return "";
   }
 };
+
+export const getIsOrderPassedButNotDone = ({ status, date }) =>
+  ![ORDER_STATUS.DONE.value, ORDER_STATUS.CLOSED.value].includes(status) &&
+  new Date() > getDateTimeObjectFromString(date);
