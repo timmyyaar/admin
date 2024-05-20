@@ -11,6 +11,7 @@ const CLEANER_NAVIGATION = [
   { to: "/order", title: "Orders" },
   { to: "/documents", title: "Documents" },
   { to: "/schedule", title: "Schedule" },
+  { to: "/payments", title: "Payments" },
 ];
 
 const ADMIN_NAVIGATION = [

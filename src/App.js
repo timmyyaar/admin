@@ -24,6 +24,7 @@ import OrdersSummary from "./pages/OrdersSummary";
 import Incomes from "./pages/Incomes";
 import Prices from "./pages/Prices";
 import { Louder } from "./components/Louder";
+import Payments from "./pages/Payments";
 
 const LOCALE_LOCAL_STORAGE_KEY = "locale";
 
@@ -144,6 +145,7 @@ function App() {
                       <Route path="/order" element={<OrderPage />} />
                       <Route path="/documents" element={<Documents />} />
                       <Route path="/schedule" element={<Schedule />} />
+                      <Route path="/payments" element={<Payments />} />
                       {isAdmin && (
                         <>
                           <Route path="/locales" element={<LocalesPage />} />
