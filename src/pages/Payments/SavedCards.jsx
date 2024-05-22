@@ -45,7 +45,7 @@ function SavedCards({
     try {
       setDetachCardLoadingIds((prev) => [...prev, id]);
 
-      await request({ url: `/payment-methods/${id}/detach`, method: "PATCH" });
+      await request({ url: `payment-methods/${id}/detach`, method: "PATCH" });
 
       setSavedCards((prev) => prev.filter((savedCard) => savedCard.id !== id));
 
