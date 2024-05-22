@@ -10,18 +10,18 @@ import Filters from "./Filters";
 import { CARD_PAYMENT_METHOD } from "./constants";
 
 const getLastPaymentPeriod = () => {
-  const lastFriday = new Date();
+  const lastTuesday = new Date();
 
-  lastFriday.setDate(lastFriday.getDate() - ((lastFriday.getDay() + 2) % 7));
-  lastFriday.setHours(0, 0, 0, 0);
+  lastTuesday.setDate(lastTuesday.getDate() - ((lastTuesday.getDay() + 2) % 7));
+  lastTuesday.setHours(0, 0, 0, 0);
 
-  const prevFriday = new Date(
-    new Date(lastFriday).setDate(lastFriday.getDate() - 7)
+  const prevTuesday = new Date(
+    new Date(lastTuesday).setDate(lastTuesday.getDate() - 7)
   );
 
   return {
-    lastFriday: getDateTimeString(lastFriday),
-    prevFriday: getDateTimeString(prevFriday),
+    lastTuesday: getDateTimeString(lastTuesday),
+    prevTuesday: getDateTimeString(prevTuesday),
   };
 };
 
@@ -80,8 +80,8 @@ function Payments() {
 
       const existingLastWeekPayment = myPaymentsResponse.find(
         ({ period_start, period_end }) =>
-          period_start === lastPeriodDates.prevFriday &&
-          period_end === lastPeriodDates.lastFriday
+          period_start === lastPeriodDates.prevTuesday &&
+          period_end === lastPeriodDates.lastTuesday
       );
 
       if (existingLastWeekPayment) {
@@ -163,8 +163,8 @@ function Payments() {
       {notFinishedOrdersError && (
         <h5 className="_mb-3 text-danger">
           Please, finish all orders for the period (
-          {getDateWithoutTimeString(lastPaymentPeriod.prevFriday)} -{" "}
-          {getDateWithoutTimeString(lastPaymentPeriod.lastFriday)}) to generate
+          {getDateWithoutTimeString(lastPaymentPeriod.prevTuesday)} -{" "}
+          {getDateWithoutTimeString(lastPaymentPeriod.lastTuesday)}) to generate
           payment!
         </h5>
       )}
