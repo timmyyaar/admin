@@ -1,3 +1,8 @@
+import { useContext, useState } from "react";
+import Modal from "../../components/common/Modal";
+import { request } from "../../utils";
+import { LocaleContext } from "../../contexts";
+
 import americanExpressIcon from "../../assets/icons/card-brands/american-express.svg";
 import visaIcon from "../../assets/icons/card-brands/visa.svg";
 import mastercardIcon from "../../assets/icons/card-brands/mastercard.svg";
@@ -8,9 +13,7 @@ import dinersIcon from "../../assets/icons/card-brands/diners.svg";
 import unknownIcon from "../../assets/icons/card-brands/unknown.svg";
 
 import { ReactComponent as TrashIcon } from "../../assets/icons/trash.svg";
-import { useState } from "react";
-import Modal from "../../components/common/Modal";
-import { request } from "../../utils";
+import { ReactComponent as StarIcon } from "../../assets/icons/star.svg";
 
 const IMAGE_BY_BRAND = {
   visa: visaIcon,
@@ -28,8 +31,11 @@ function SavedCards({
   setSelectedCard,
   setSavedCards,
 }) {
+  const { t } = useContext(LocaleContext);
+
   const [removingIds, setRemovingIds] = useState([]);
   const [detachCardLoadingIds, setDetachCardLoadingIds] = useState([]);
+  const [loadingFavouriteId, setLoadingFavouriteId] = useState("");
 
   const onDetachCard = async (id) => {
     if (detachCardLoadingIds.includes(id)) {
@@ -51,10 +57,61 @@ function SavedCards({
     }
   };
 
+  const setPaymentMethodAsFavourite = async (event, id) => {
+    event.stopPropagation();
+
+    if (loadingFavouriteId) {
+      return;
+    }
+
+    const currentFavouriteCard = savedCards.find(
+      (card) => card.metadata.isFavourite === "true"
+    );
+
+    try {
+      setLoadingFavouriteId(id);
+
+      if (currentFavouriteCard) {
+        await request({
+          url: `payment-methods/${currentFavouriteCard.id}`,
+          method: "PUT",
+          body: { metadata: null },
+        });
+
+        setSavedCards((prev) =>
+          prev.map((card) =>
+            card.id === currentFavouriteCard.id
+              ? { ...card, metadata: { isFavourite: "false" } }
+              : card
+          )
+        );
+      }
+
+      if (currentFavouriteCard?.id !== id) {
+        await request({
+          url: `payment-methods/${id}`,
+          method: "PUT",
+          body: { metadata: { isFavourite: "true" } },
+        });
+
+        setSavedCards((prev) =>
+          prev.map((card) =>
+            card.id === id
+              ? { ...card, metadata: { isFavourite: "true" } }
+              : card
+          )
+        );
+      }
+    } catch (error) {
+    } finally {
+      setLoadingFavouriteId("");
+    }
+  };
+
   return (
     <div className="_flex _flex-col _gap-4">
-      {savedCards.map(({ id, card }) => (
-        <div className="_flex _items-center">
+      {savedCards.map(({ id, card, metadata: { isFavourite } }) => (
+        <div className="_flex _items-center" key={id}>
           <div
             className={`_flex _w-full _items-center saved-card _cursor-pointer font-weight-semi-bold ${
               selectedCard === id ? "selected" : ""
@@ -70,6 +127,17 @@ function SavedCards({
             <span className="_ml-auto">
               {card.exp_month}/{card.exp_year}
             </span>
+            <StarIcon
+              className={`favourite-card-icon _ml-2 ${
+                loadingFavouriteId && loadingFavouriteId !== id
+                  ? "disabled"
+                  : isFavourite === "true" || loadingFavouriteId === id
+                  ? "favourite"
+                  : ""
+              }`}
+              title="Mark as favourite"
+              onClick={(event) => setPaymentMethodAsFavourite(event, id)}
+            />
           </div>
           <div
             className="_p-3 _pr-0 _flex _items-center _justify-center remove-card-icon _cursor-pointer"
@@ -82,7 +150,7 @@ function SavedCards({
                 minHeight={false}
                 wrapperClassName="remove-confirmation-modal-wrapper"
                 isActionButtonDanger
-                actionButtonText="Detach"
+                actionButtonText={t("detach")}
                 onClose={() =>
                   setRemovingIds(removingIds.filter((item) => item !== id))
                 }
@@ -90,9 +158,7 @@ function SavedCards({
                 isLoading={detachCardLoadingIds.includes(id)}
                 isActionButtonDisabled={detachCardLoadingIds.includes(id)}
               >
-                <h6 className="text-center">
-                  Are you sure you want to detach card?
-                </h6>
+                <h6 className="text-center">{t("detach_card_confirmation")}</h6>
               </Modal>
             )}
           </div>

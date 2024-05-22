@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useContext } from "react";
 import { PAYMENT_METHOD_TABS } from "./constants";
+import { LocaleContext } from "../../contexts";
 
 function PaymentTabs({
   paymentMethodTab,
@@ -7,20 +8,26 @@ function PaymentTabs({
   setSelectedCard,
   savedCards,
 }) {
+  const { t } = useContext(LocaleContext);
+
   return (
     <ul className="nav nav-pills nav-fill _mb-5">
-      <a
+      <li
         className={`nav-link nav-link-payment _cursor-pointer ${
           paymentMethodTab === PAYMENT_METHOD_TABS.SAVED_CARDS ? "active" : ""
         }`}
         onClick={() => {
           setPaymentMethodTab(PAYMENT_METHOD_TABS.SAVED_CARDS);
-          setSelectedCard(savedCards[0].id);
+          const favouriteCard = savedCards.find(
+            (card) => card.metadata.isFavourite === "true"
+          );
+
+          setSelectedCard(favouriteCard?.id || savedCards[0].id);
         }}
       >
-        {PAYMENT_METHOD_TABS.SAVED_CARDS}
-      </a>
-      <a
+        {t("saved_cards")}
+      </li>
+      <li
         className={`nav-link nav-link-payment _cursor-pointer ${
           paymentMethodTab === PAYMENT_METHOD_TABS.NEW_PAYMENT_METHOD
             ? "active"
@@ -31,8 +38,8 @@ function PaymentTabs({
           setSelectedCard("");
         }}
       >
-        {PAYMENT_METHOD_TABS.NEW_PAYMENT_METHOD}
-      </a>
+        {t("new_payment_method")}
+      </li>
     </ul>
   );
 }

@@ -64,6 +64,8 @@ function Payments() {
     if (!isAdmin) {
       getMyPaymentMethods();
     }
+
+    //eslint-disable-next-line
   }, []);
 
   const getMyPayments = async () => {
@@ -122,6 +124,8 @@ function Payments() {
     } else {
       getMyPayments();
     }
+
+    //eslint-disable-next-line
   }, []);
 
   const lastPaymentPeriod = getLastPaymentPeriod();
@@ -164,9 +168,10 @@ function Payments() {
           payment!
         </h5>
       )}
-      <div className="accordion _mb-3">
+      <div className="accordion accordion-wrapper _mb-3">
         {filteredPayments.map((payment) => (
           <Payment
+            key={payment.id}
             payment={payment}
             setPayments={setPayments}
             savedCards={savedCards}

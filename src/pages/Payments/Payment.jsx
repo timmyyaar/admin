@@ -123,12 +123,12 @@ function Payment({
                   <>
                     {!is_paid ? (
                       amount <= 0 ? (
-                        <button
+                        <div
                           className="pay-button btn btn-primary font-weight-semi-bold btn-sm _mr-3"
                           onClick={onConfirmPayoutClick}
                         >
                           {t("confirm")}
-                        </button>
+                        </div>
                       ) : (
                         <PayButton
                           id={id}
@@ -191,7 +191,7 @@ function Payment({
                     <CalendarIcon width="20" height="20" className="_mr-2" />
                     {order.date}
                   </p>
-                  <p className="card-text">
+                  <p className="card-text _flex _items-center">
                     <GeoIcon width="20" height="20" className="_mr-2" />
                     {order.address
                       .replace("Street", t("admin_order_street"))

@@ -34,7 +34,12 @@ function PaymentModal({
       : PAYMENT_METHOD_TABS.NEW_PAYMENT_METHOD
   );
   const [isCardPaymentSelected, setIsCardPaymentSelected] = useState(false);
-  const [selectedCard, setSelectedCard] = useState(savedCards[0]?.id || "");
+
+  const [selectedCard, setSelectedCard] = useState(
+    savedCards.find((card) => card.metadata.isFavourite === "true")?.id ||
+      savedCards[0]?.id ||
+      ""
+  );
 
   const isNewPaymentMethodSelected =
     paymentMethodTab === PAYMENT_METHOD_TABS.NEW_PAYMENT_METHOD;
@@ -50,6 +55,8 @@ function PaymentModal({
     if (savedCards.length === 0 && !isNewPaymentMethodSelected) {
       setPaymentMethodTab(PAYMENT_METHOD_TABS.NEW_PAYMENT_METHOD);
     }
+
+    //eslint-disable-next-line
   }, [savedCards.length]);
 
   const onPayClick = async () => {
@@ -94,6 +101,7 @@ function PaymentModal({
       errorMessage={error}
       actionButtonText={`${t("pay")} ${amount} ${t("zl")}`}
       isActionButtonDisabled={isPayButtonDisabled}
+      isCancelButtonDisabled={isPaymentLoading}
       isLoading={isPaymentLoading}
       onActionButtonClick={onPayClick}
       wrapperClassName="payment-modal-wrapper"
@@ -136,7 +144,7 @@ function PaymentModal({
                 htmlFor="future-usage"
                 className="form-check-label _cursor-pointer"
               >
-                Save this card for future usage
+                {t("save_this_card_for_future")}
               </label>
             </div>
           )}

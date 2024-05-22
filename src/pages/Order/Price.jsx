@@ -3,6 +3,7 @@ import { AppContext } from "../../contexts";
 import { ROLES } from "../../constants";
 
 import { ReactComponent as PriceIcon } from "../../assets/icons/price.svg";
+import { ReactComponent as DiscountIcon } from "../../assets/icons/discount.svg";
 
 function Price({
   t,
@@ -31,7 +32,8 @@ function Price({
           </p>
           {price !== price_original && (
             <p className="card-text _flex _items-center">
-              💸 {t("admin_order_price_with_discount")}: {price} zl
+              <DiscountIcon width="20" height="20" className="_mr-2" />{" "}
+              {t("admin_order_price_with_discount")}: {price} zl
               {promo ? ` (${promo})` : null}
               {price !== total_service_price &&
                 `, ${t(

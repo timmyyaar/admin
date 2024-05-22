@@ -59,18 +59,17 @@ function PayButton({
 
   return (
     <>
-      <button
+      <div
         className={`pay-button btn btn-primary font-weight-semi-bold btn-sm _mr-3 ${
-          isCheckStatusLoading ? "loading" : ""
+          isCheckStatusLoading ? "loading disabled-button-primary" : ""
         }`}
-        disabled={isCheckStatusLoading}
         onClick={checkPaymentIntentStatus}
       >
         {t("pay_or_check")}
         {isFailed && (
           <span className="text-warning _ml-1">(Payment error occurred)</span>
         )}
-      </button>
+      </div>
       {clientSecret && isPaymentModalOpened && Boolean(paymentIntentId) && (
         <PaymentWrapper
           clientSecret={clientSecret}

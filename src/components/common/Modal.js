@@ -22,6 +22,7 @@ function Modal({
   infoMessage,
   isInitialDataLoading,
   wrapperClassName,
+  isCancelButtonDisabled = false,
 }) {
   const { t } = useContext(LocaleContext);
   const ref = useRef();
@@ -80,7 +81,12 @@ function Modal({
                 <div className="d-flex justify-content-end _ml-auto">
                   <button
                     className="btn btn-secondary _mr-3 font-weight-semi-bold"
-                    onClick={onClose}
+                    disabled={isCancelButtonDisabled}
+                    onClick={(event) => {
+                      if (!isCancelButtonDisabled) {
+                        onClose(event);
+                      }
+                    }}
                   >
                     {t("admin_cancel")}
                   </button>
@@ -89,7 +95,11 @@ function Modal({
                       isActionButtonDanger ? "btn-danger" : "btn-primary"
                     } ${isLoading ? "loading" : ""}`}
                     disabled={isActionButtonDisabled}
-                    onClick={onActionButtonClick}
+                    onClick={(event) => {
+                      if (!isActionButtonDisabled) {
+                        onActionButtonClick(event);
+                      }
+                    }}
                   >
                     {actionButtonText || t("admin_add")}
                   </button>
@@ -99,7 +109,10 @@ function Modal({
           </div>
         )}
       </div>
-      <div className="modal-backdrop show" />
+      <div
+        className="modal-backdrop show"
+        onClick={(event) => event.stopPropagation()}
+      />
     </>,
     document.body
   );

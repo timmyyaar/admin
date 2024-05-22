@@ -38,6 +38,10 @@ import { ReactComponent as MailIcon } from "../../assets/icons/mail.svg";
 import { ReactComponent as VacuumCleanerIcon } from "../../assets/icons/vacuum-cleaner.svg";
 import { ReactComponent as DurationIcon } from "../../assets/icons/duration.svg";
 import { ReactComponent as NumberIcon } from "../../assets/icons/number.svg";
+import { ReactComponent as HandDrawIcon } from "../../assets/icons/hand-draw.svg";
+import { ReactComponent as BroomIcon } from "../../assets/icons/broom.svg";
+import { ReactComponent as CommentIcon } from "../../assets/icons/comment-dots.svg";
+import { ReactComponent as FeedbackIcon } from "../../assets/icons/feedback.svg";
 
 export const ORDER_STATUS_OPTIONS = Object.values(ORDER_STATUS);
 
@@ -390,9 +394,14 @@ export const OrderPage = ({ subscription = false }) => {
                           {el.date}
                         </span>
                         {el.creation_date && isAdmin && (
-                          <span>
-                            ✍🏼 {t("admin_order_created")} {el.creation_date}
-                          </span>
+                          <div className="_flex _items-center">
+                            <HandDrawIcon
+                              width="20"
+                              height="20"
+                              className="_mr-2"
+                            />
+                            {t("admin_order_created")} {el.creation_date}
+                          </div>
                         )}
                       </p>
                       <p
@@ -421,7 +430,8 @@ export const OrderPage = ({ subscription = false }) => {
                       )}
                       {el.requestpreviouscleaner ? (
                         <p className="card-text _flex _items-center">
-                          🧹 {t("admin_order_previous_cleaner")}
+                          <BroomIcon width="20" height="20" className="_mr-2" />
+                          {t("admin_order_previous_cleaner")}
                         </p>
                       ) : null}
                       <Price t={t} {...el} />
@@ -490,7 +500,12 @@ export const OrderPage = ({ subscription = false }) => {
                       </p>
                       {el.additional_information && (
                         <p className="card-text font-weight-semi-bold">
-                          💬 {t("admin_order_additional_information")}:
+                          <CommentIcon
+                            width="20"
+                            height="20"
+                            className="_mr-2"
+                          />
+                          {t("admin_order_additional_information")}:
                           <span className="_ml-1">
                             {el.additional_information}
                           </span>
@@ -500,7 +515,12 @@ export const OrderPage = ({ subscription = false }) => {
                         el.feedback &&
                         el.feedback !== "-" && (
                           <p className="card-text font-weight-semi-bold">
-                            📝 {t("feedback")}:
+                            <FeedbackIcon
+                              width="20"
+                              height="20"
+                              className="_mr-2"
+                            />
+                            {t("feedback")}:
                             <span className="_ml-1">{el.feedback}</span>
                           </p>
                         )}

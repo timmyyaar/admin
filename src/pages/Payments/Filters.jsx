@@ -4,6 +4,7 @@ import { request } from "../../utils";
 import { getDateWithoutTimeString } from "./index";
 import { ROLES } from "../../constants";
 import { LocaleContext } from "../../contexts";
+import { Louder } from "../../components/Louder";
 
 function Filters({
   selectedEmployeeId,
@@ -65,22 +66,27 @@ function Filters({
   );
 
   return (
-    <div className="filters-wrapper _mt-3 _mb-6">
-      <span>{t("Employee")}:</span>
-      <Select
-        options={users}
-        value={employeeValue || null}
-        onChange={(option) => setSelectedEmployeeId(option?.value || null)}
-        isClearable
-      />
-      <span>{t("time_period")}:</span>
-      <Select
-        options={timePeriodsOptions}
-        value={timePeriodValue || null}
-        onChange={(option) => setSelectedTimePeriod(option?.value || null)}
-        isClearable
-      />
-    </div>
+    <>
+      <Louder visible={isUsersLoading} />
+      <div className="filters-wrapper _mt-3 _mb-6">
+        <span>{t("Employee")}:</span>
+        <Select
+          placeholder={t("select_placeholder")}
+          options={users}
+          value={employeeValue || null}
+          onChange={(option) => setSelectedEmployeeId(option?.value || null)}
+          isClearable
+        />
+        <span>{t("time_period")}:</span>
+        <Select
+          placeholder={t("select_placeholder")}
+          options={timePeriodsOptions}
+          value={timePeriodValue || null}
+          onChange={(option) => setSelectedTimePeriod(option?.value || null)}
+          isClearable
+        />
+      </div>
+    </>
   );
 }
 
