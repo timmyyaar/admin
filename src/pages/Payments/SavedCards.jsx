@@ -135,7 +135,7 @@ function SavedCards({
                   ? "favourite"
                   : ""
               }`}
-              title="Mark as favourite"
+              title={t("mark_as_favourite")}
               onClick={(event) => setPaymentMethodAsFavourite(event, id)}
             />
           </div>
