@@ -181,54 +181,61 @@ function Payment({
           data-bs-parent="#accordionExample"
         >
           <div className="accordion-body">
-            {orders?.map((order) => (
-              <div className="card _mb-3" key={order.id}>
-                <div className="card-header order-header _gap-4 d-flex justify-content-between align-items-center">
-                  <AggregatorId order={order} />
+            {orders?.length > 0 ? (
+              orders.map((order) => (
+                <div className="card _mb-3" key={order.id}>
+                  <div className="card-header order-header _gap-4 d-flex justify-content-between align-items-center">
+                    <AggregatorId order={order} />
+                  </div>
+                  <div className="card-body">
+                    <p className="card-text _flex _items-center">
+                      <CalendarIcon width="20" height="20" className="_mr-2" />
+                      {order.date}
+                    </p>
+                    <p className="card-text _flex _items-center">
+                      <GeoIcon width="20" height="20" className="_mr-2" />
+                      {order.address
+                        .replace("Street", t("admin_order_street"))
+                        .replace("House", t("admin_order_house"))
+                        .replace(
+                          "Private house",
+                          t("admin_order_private_house")
+                        )
+                        .replace("Apartment", t("admin_order_apartment"))
+                        .replace("Postcode", t("admin_order_postcode"))
+                        .replace("Entrance", t("admin_order_entrance"))
+                        .replace("Door phone", t("admin_order_door_phone"))}
+                    </p>
+                    <p className="card-text _flex _items-center">
+                      <PriceIcon width="20" height="20" className="_mr-2" />
+                      {t("admin_order_price")}: {order.price} zl
+                    </p>
+                    <p className="card-text _flex _items-center">
+                      <RewardIcon width="20" height="20" className="_mr-2" />
+                      {t("admin_order_your_reward")}:
+                      <span className="_ml-1">
+                        {order.reward || order.reward_original} zl
+                      </span>
+                    </p>
+                    <p className="card-text _flex _items-center">
+                      <span className="_mr-2">
+                        {order.onlinepayment ? (
+                          <CardIcon width="20" height="20" />
+                        ) : (
+                          <PaymentIcon width="20" height="20" />
+                        )}
+                      </span>
+                      <span className="_mr-2">{t("admin_order_payment")}:</span>
+                      {order.onlinepayment
+                        ? `${t("admin_order_online")}`
+                        : `${t("admin_order_cash")}`}
+                    </p>
+                  </div>
                 </div>
-                <div className="card-body">
-                  <p className="card-text _flex _items-center">
-                    <CalendarIcon width="20" height="20" className="_mr-2" />
-                    {order.date}
-                  </p>
-                  <p className="card-text _flex _items-center">
-                    <GeoIcon width="20" height="20" className="_mr-2" />
-                    {order.address
-                      .replace("Street", t("admin_order_street"))
-                      .replace("House", t("admin_order_house"))
-                      .replace("Private house", t("admin_order_private_house"))
-                      .replace("Apartment", t("admin_order_apartment"))
-                      .replace("Postcode", t("admin_order_postcode"))
-                      .replace("Entrance", t("admin_order_entrance"))
-                      .replace("Door phone", t("admin_order_door_phone"))}
-                  </p>
-                  <p className="card-text _flex _items-center">
-                    <PriceIcon width="20" height="20" className="_mr-2" />
-                    {t("admin_order_price")}: {order.price} zl
-                  </p>
-                  <p className="card-text _flex _items-center">
-                    <RewardIcon width="20" height="20" className="_mr-2" />
-                    {t("admin_order_your_reward")}:
-                    <span className="_ml-1">
-                      {order.reward || order.reward_original} zl
-                    </span>
-                  </p>
-                  <p className="card-text _flex _items-center">
-                    <span className="_mr-2">
-                      {order.onlinepayment ? (
-                        <CardIcon width="20" height="20" />
-                      ) : (
-                        <PaymentIcon width="20" height="20" />
-                      )}
-                    </span>
-                    <span className="_mr-2">{t("admin_order_payment")}:</span>
-                    {order.onlinepayment
-                      ? `${t("admin_order_online")}`
-                      : `${t("admin_order_cash")}`}
-                  </p>
-                </div>
-              </div>
-            ))}
+              ))
+            ) : (
+              <div>{t("no_orders_were_done_for_this_period")}</div>
+            )}
           </div>
         </div>
       </div>

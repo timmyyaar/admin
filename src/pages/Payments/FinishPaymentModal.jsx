@@ -45,7 +45,7 @@ function FinishPaymentModal({ id, amount, onClose, setPayments }) {
       errorMessage={finishPaymentError ? t("unexpected_error") : ""}
     >
       <div className="font-weight-semi-bold text-center">
-        {t("payment_amount_correct_confirmation")}({amount} {t("zl")})
+        {t("payment_amount_correct_confirmation")} ({amount} {t("zl")})
       </div>
     </Modal>
   );
