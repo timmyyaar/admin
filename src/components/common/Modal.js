@@ -21,6 +21,8 @@ function Modal({
   minHeight = true,
   infoMessage,
   isInitialDataLoading,
+  wrapperClassName,
+  isCancelButtonDisabled = false,
 }) {
   const { t } = useContext(LocaleContext);
   const ref = useRef();
@@ -41,9 +43,10 @@ function Modal({
   return createPortal(
     <>
       <div
+        onClick={(event) => event.stopPropagation()}
         className={`custom-modal bg-body border d-flex flex-column ${
           minHeight ? "min-height-50-vh" : ""
-        }`}
+        } ${wrapperClassName || ""}`}
         ref={ref}
       >
         {showHeader && (
@@ -69,22 +72,34 @@ function Modal({
               customFooter
             ) : (
               <>
-                {isInitialDataLoading && <div className="loader" /> }
+                {isInitialDataLoading && <div className="loader" />}
                 {errorMessage ? (
                   <span className="text-danger _mr-2">{errorMessage}</span>
                 ) : infoMessage ? (
                   <span className="text-info _mr-2">{infoMessage}</span>
                 ) : null}
                 <div className="d-flex justify-content-end _ml-auto">
-                  <button className="btn btn-secondary _mr-3" onClick={onClose}>
+                  <button
+                    className="btn btn-secondary _mr-3 font-weight-semi-bold"
+                    disabled={isCancelButtonDisabled}
+                    onClick={(event) => {
+                      if (!isCancelButtonDisabled) {
+                        onClose(event);
+                      }
+                    }}
+                  >
                     {t("admin_cancel")}
                   </button>
                   <button
-                    className={`d-flex align-items-center btn ${
+                    className={`d-flex align-items-center btn font-weight-semi-bold ${
                       isActionButtonDanger ? "btn-danger" : "btn-primary"
                     } ${isLoading ? "loading" : ""}`}
                     disabled={isActionButtonDisabled}
-                    onClick={onActionButtonClick}
+                    onClick={(event) => {
+                      if (!isActionButtonDisabled) {
+                        onActionButtonClick(event);
+                      }
+                    }}
                   >
                     {actionButtonText || t("admin_add")}
                   </button>
@@ -94,7 +109,10 @@ function Modal({
           </div>
         )}
       </div>
-      <div className="modal-backdrop show" />
+      <div
+        className="modal-backdrop show"
+        onClick={(event) => event.stopPropagation()}
+      />
     </>,
     document.body
   );

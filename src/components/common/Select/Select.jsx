@@ -97,6 +97,7 @@ export const DARK_SELECT_STYLES = {
       boxShadow: state.isFocused ? `0 0 0 1px red;` : "none",
     }),
   }),
+  menu: (provided) => ({ ...provided, zIndex: 100 }),
 };
 
 function Select(props) {

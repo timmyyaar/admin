@@ -294,3 +294,9 @@ code {
     opacity: 70%;
   }
 }
+
+.disabled-button-primary {
+  color: #fff;
+  opacity: 0.65;
+  pointer-events: none;
+}

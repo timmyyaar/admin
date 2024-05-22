@@ -2,6 +2,9 @@ import React, { useContext } from "react";
 import { AppContext } from "../../contexts";
 import { ROLES } from "../../constants";
 
+import { ReactComponent as PriceIcon } from "../../assets/icons/price.svg";
+import { ReactComponent as DiscountIcon } from "../../assets/icons/discount.svg";
+
 function Price({
   t,
   price,
@@ -19,16 +22,18 @@ function Price({
     <>
       {isAdmin ? (
         <>
-          <p className="card-text">
-            💵 {t("admin_order_price")}: {price_original} zl
+          <p className="card-text _flex _items-center">
+            <PriceIcon width="20" height="20" className="_mr-2" />
+            {t("admin_order_price")}: {price_original} zl
             {price_original !== total_service_price_original &&
               `, ${t(
                 "admin_order_total_price"
               )}: ${total_service_price_original} zl`}
           </p>
           {price !== price_original && (
-            <p className="card-text">
-              💸 {t("admin_order_price_with_discount")}: {price} zl
+            <p className="card-text _flex _items-center">
+              <DiscountIcon width="20" height="20" className="_mr-2" />{" "}
+              {t("admin_order_price_with_discount")}: {price} zl
               {promo ? ` (${promo})` : null}
               {price !== total_service_price &&
                 `, ${t(
@@ -39,8 +44,9 @@ function Price({
         </>
       ) : (
         <>
-          <p className="card-text">
-            💵 {t("admin_order_price")}: {price} zl
+          <p className="card-text _flex _items-center">
+            <PriceIcon width="20" height="20" className="_mr-2" />
+            {t("admin_order_price")}: {price} zl
             {price !== total_service_price &&
               `, ${t("admin_order_total_price")}: ${total_service_price} zl`}
           </p>

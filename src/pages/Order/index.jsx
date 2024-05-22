@@ -30,6 +30,19 @@ import {
 import Payment from "./Payment";
 import AggregatorId from "./AggregatorId";
 
+import { ReactComponent as CalendarIcon } from "../../assets/icons/calendar.svg";
+import { ReactComponent as RewardIcon } from "../../assets/icons/reward.svg";
+import { ReactComponent as GeoIcon } from "../../assets/icons/geo.svg";
+import { ReactComponent as ClientIcon } from "../../assets/icons/client.svg";
+import { ReactComponent as MailIcon } from "../../assets/icons/mail.svg";
+import { ReactComponent as VacuumCleanerIcon } from "../../assets/icons/vacuum-cleaner.svg";
+import { ReactComponent as DurationIcon } from "../../assets/icons/duration.svg";
+import { ReactComponent as NumberIcon } from "../../assets/icons/number.svg";
+import { ReactComponent as HandDrawIcon } from "../../assets/icons/hand-draw.svg";
+import { ReactComponent as BroomIcon } from "../../assets/icons/broom.svg";
+import { ReactComponent as CommentIcon } from "../../assets/icons/comment-dots.svg";
+import { ReactComponent as FeedbackIcon } from "../../assets/icons/feedback.svg";
+
 export const ORDER_STATUS_OPTIONS = Object.values(ORDER_STATUS);
 
 const SHOW_VACUUM_CLEANER_TITLES = [
@@ -347,25 +360,56 @@ export const OrderPage = ({ subscription = false }) => {
                         (el.cleaner_id.includes(myUserId) &&
                           getTimeRemaining(el.date).days < 1)) && (
                         <>
-                          <p>👤 {el.name}</p>
-                          <p>📲 {el.number}</p>
+                          <p className="_flex _items-center">
+                            <ClientIcon
+                              width="20"
+                              height="20"
+                              className="_mr-2"
+                            />
+                            {el.name}
+                          </p>
+                          <p className="_flex _items-center">
+                            <NumberIcon
+                              width="20"
+                              height="20"
+                              className="_mr-2"
+                            />
+                            {el.number}
+                          </p>
                         </>
                       )}
-                      {isAdmin && <p>📩 {el.email}</p>}
+                      {isAdmin && (
+                        <p className="_flex _items-center">
+                          <MailIcon width="20" height="20" className="_mr-2" />
+                          {el.email}
+                        </p>
+                      )}
                       <p className="d-flex">
-                        <span className="_mr-3">📆 {el.date}</span>
+                        <span className="_mr-3 _flex _items-center">
+                          <CalendarIcon
+                            width="20"
+                            height="20"
+                            className="_mr-2"
+                          />
+                          {el.date}
+                        </span>
                         {el.creation_date && isAdmin && (
-                          <span>
-                            ✍🏼 {t("admin_order_created")} {el.creation_date}
-                          </span>
+                          <div className="_flex _items-center">
+                            <HandDrawIcon
+                              width="20"
+                              height="20"
+                              className="_mr-2"
+                            />
+                            {t("admin_order_created")} {el.creation_date}
+                          </div>
                         )}
                       </p>
                       <p
-                        className={`${
+                        className={`_flex _items-center ${
                           el.transportation_price > 0 ? "mb-0" : "mb-3"
                         }`}
                       >
-                        <span className="_mr-1">📍</span>
+                        <GeoIcon width="20" height="20" className="_mr-2" />
                         {el.address
                           .replace("Street", t("admin_order_street"))
                           .replace("House", t("admin_order_house"))
@@ -385,19 +429,21 @@ export const OrderPage = ({ subscription = false }) => {
                         </p>
                       )}
                       {el.requestpreviouscleaner ? (
-                        <p className="card-text">
-                          🧹 {t("admin_order_previous_cleaner")}
+                        <p className="card-text _flex _items-center">
+                          <BroomIcon width="20" height="20" className="_mr-2" />
+                          {t("admin_order_previous_cleaner")}
                         </p>
                       ) : null}
                       <Price t={t} {...el} />
-                      <p className="card-text">
-                        💰 {t("admin_order_your_reward")}:
+                      <p className="card-text _flex _items-center">
+                        <RewardIcon width="20" height="20" className="_mr-2" />
+                        {t("admin_order_your_reward")}:
                         <span className="_ml-1">
                           {el.reward || el.reward_original} zl
                         </span>
                         {isAdmin && Boolean(el.reward) && (
                           <span className="_ml-1">
-                            <span className="_mr-1">
+                            <span className="_mr-2">
                               ({t("admin_order_original_reward")}:
                             </span>
                             {el.reward_original} zl)
@@ -405,12 +451,21 @@ export const OrderPage = ({ subscription = false }) => {
                         )}
                       </p>
                       <Payment t={t} order={el} setOrders={setOrders} />
-                      <p className="card-text font-weight-semi-bold">
-                        ⏳ {t("admin_order_estimate")}: {el.estimate}
+                      <p className="card-text font-weight-semi-bold _flex _items-center">
+                        <DurationIcon
+                          width="20"
+                          height="20"
+                          className="_mr-2"
+                        />
+                        {t("admin_order_estimate")}: {el.estimate}
                       </p>
                       {SHOW_VACUUM_CLEANER_TITLES.includes(el.title) && (
-                        <p className="card-text _ml-2 font-weight-semi-bold">
-                          <span className="_mr-1">🔌</span>
+                        <p className="card-text _ml-2 font-weight-semi-bold _flex _items-center">
+                          <VacuumCleanerIcon
+                            width="20"
+                            height="20"
+                            className="_mr-2"
+                          />
                           {el.subservice.includes(
                             "Vacuum_cleaner_sub_service_summery "
                           )
@@ -445,7 +500,12 @@ export const OrderPage = ({ subscription = false }) => {
                       </p>
                       {el.additional_information && (
                         <p className="card-text font-weight-semi-bold">
-                          💬 {t("admin_order_additional_information")}:
+                          <CommentIcon
+                            width="20"
+                            height="20"
+                            className="_mr-2"
+                          />
+                          {t("admin_order_additional_information")}:
                           <span className="_ml-1">
                             {el.additional_information}
                           </span>
@@ -455,7 +515,12 @@ export const OrderPage = ({ subscription = false }) => {
                         el.feedback &&
                         el.feedback !== "-" && (
                           <p className="card-text font-weight-semi-bold">
-                            📝 {t("feedback")}:
+                            <FeedbackIcon
+                              width="20"
+                              height="20"
+                              className="_mr-2"
+                            />
+                            {t("feedback")}:
                             <span className="_ml-1">{el.feedback}</span>
                           </p>
                         )}
