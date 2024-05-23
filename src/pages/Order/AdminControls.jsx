@@ -3,8 +3,9 @@ import React, { useContext, useEffect, useState } from "react";
 import { ORDER_STATUS_OPTIONS } from "./index";
 import { LocaleContext } from "../../contexts";
 import Select from "../../components/common/Select/Select";
-import { request } from "../../utils";
+import { getDateString, request } from "../../utils";
 import { getFilteredCleanersForOrder } from "./utils";
+import Modal from "../../components/common/Modal";
 
 const AdminControls = ({
   order,
@@ -20,6 +21,8 @@ const AdminControls = ({
   const [assignedValue, setAssignedValue] = useState([]);
   const [assignError, setAssignError] = useState([]);
   const [isAssignLoading, setIsAssignOrderLoading] = useState([]);
+  const [showProgressConfirmation, setShowProgressConfirmation] =
+    useState(false);
 
   useEffect(() => {
     const updatedAssignedValue = order.cleaner_id.map((id) => {
@@ -95,8 +98,42 @@ const AdminControls = ({
     ORDER_TYPE.OZONATION,
   ].includes(order.title);
 
+  const onStatusChange = (option) => {
+    const needToShowCheckList =
+      option.value === ORDER_STATUS.DONE.value &&
+      order.check_list &&
+      !isDryCleaningOrOzonation;
+    const needToShowProgressConfirmation =
+      option.value === ORDER_STATUS.IN_PROGRESS.value &&
+      getDateString(new Date()) !== order.date.split(" ")[0];
+
+    if (needToShowCheckList) {
+      setShowCheckListEditId(order.id);
+    } else if (needToShowProgressConfirmation) {
+      setShowProgressConfirmation(true);
+    } else {
+      onChangeOrderStatus(order.id, option.value);
+    }
+  };
+
   return (
     <>
+      {showProgressConfirmation && (
+        <Modal
+          onClose={() => setShowProgressConfirmation(false)}
+          actionButtonText={t("start_progress")}
+          onActionButtonClick={async () => {
+            await onChangeOrderStatus(order.id, ORDER_STATUS.IN_PROGRESS.value);
+
+            setShowProgressConfirmation(false);
+          }}
+          isLoading={isStatusLoading.includes(order.id)}
+          isActionButtonDisabled={isStatusLoading.includes(order.id)}
+          minHeight={false}
+        >
+          <h5 className="text-center">{t("this_order_date_is_not_today")}</h5>
+        </Modal>
+      )}
       <div className="admin-controls _gap-4 _w-full">
         <span>{t("admin_assignee")}:</span>
         <Select
@@ -124,17 +161,7 @@ const AdminControls = ({
           value={ORDER_STATUS_OPTIONS.find(
             ({ value }) => value === order.status
           )}
-          onChange={(option) => {
-            if (
-              option.value === ORDER_STATUS.DONE.value &&
-              order.check_list &&
-              !isDryCleaningOrOzonation
-            ) {
-              setShowCheckListEditId(order.id);
-            } else {
-              onChangeOrderStatus(order.id, option.value);
-            }
-          }}
+          onChange={onStatusChange}
           options={statusOptions}
         />
       </div>
