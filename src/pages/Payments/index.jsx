@@ -12,7 +12,7 @@ import { CARD_PAYMENT_METHOD } from "./constants";
 const getLastPaymentPeriod = () => {
   const lastTuesday = new Date();
 
-  lastTuesday.setDate(lastTuesday.getDate() - ((lastTuesday.getDay() + 2) % 7));
+  lastTuesday.setDate(lastTuesday.getDate() - ((lastTuesday.getDay() + 5) % 7));
   lastTuesday.setHours(0, 0, 0, 0);
 
   const prevTuesday = new Date(
