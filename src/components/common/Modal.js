@@ -91,7 +91,7 @@ function Modal({
                     {t("admin_cancel")}
                   </button>
                   <button
-                    className={`d-flex align-items-center btn font-weight-semi-bold ${
+                    className={`d-flex whitespace-nowrap align-items-center btn font-weight-semi-bold ${
                       isActionButtonDanger ? "btn-danger" : "btn-primary"
                     } ${isLoading ? "loading" : ""}`}
                     disabled={isActionButtonDisabled}

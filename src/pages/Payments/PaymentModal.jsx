@@ -71,7 +71,7 @@ function PaymentModal({
       if (stripe && elements) {
         if (isNewPaymentMethodSelected && saveForFutureUsage) {
           await request({
-            url: `/payment-intent/${paymentIntentId}/setup-future-usage`,
+            url: `payment-intent/${paymentIntentId}/setup-future-usage`,
             method: "PATCH",
             body: { setupFutureUsage: "off_session" },
           });
