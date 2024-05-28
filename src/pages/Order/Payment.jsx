@@ -8,6 +8,9 @@ import { ORDER_STATUS, PAYMENT_STATUS, ROLES } from "../../constants";
 import Modal from "../../components/common/Modal";
 import { AppContext, LocaleContext } from "../../contexts";
 
+import { ReactComponent as PaymentIcon } from "../../assets/icons/payment.svg";
+import { ReactComponent as CardIcon } from "../../assets/icons/card.svg";
+
 function Payment({ order, setOrders, t }) {
   const {
     userData: { role },
@@ -172,7 +175,11 @@ function Payment({ order, setOrders, t }) {
           }`}
           onClick={onPaymentClick}
         >
-          <span className="_mr-1">{order.onlinepayment ? "💳" : "💲"}</span>
+          {order.onlinepayment ? (
+            <CardIcon width="20px" height="20px" className="_mr-2" />
+          ) : (
+            <PaymentIcon width="20px" height="20px" className="_mr-2" />
+          )}
           <span className="_mr-1">{t("admin_order_payment")}:</span>
           {order.onlinepayment
             ? `${t("admin_order_online")}`
