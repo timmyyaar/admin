@@ -159,7 +159,7 @@ function Payment({
                       amount > 0 ? "text-danger" : "text-success"
                     }`}
                   >
-                    {amount}
+                    {Math.abs(amount)} {t('zl')}
                   </span>
                   ,
                 </div>
