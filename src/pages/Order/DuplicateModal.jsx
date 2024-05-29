@@ -65,7 +65,7 @@ function DuplicateModal({ t, onClose, order, setOrders }) {
       isLoading={isDuplicateLoading}
       isActionButtonDisabled={isDuplicateLoading || !isDuplicateEnabled}
       errorMessage={duplicateError}
-      actionButtonText="Duplicate"
+      actionButtonText={t("admin_order_duplicate")}
       onActionButtonClick={duplicateOrder}
     >
       <h5 className="mb-4 text-center">

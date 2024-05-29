@@ -3,9 +3,9 @@ import { LocaleContext } from "../../contexts";
 
 const mainLocales = {
   en: "English",
-  ru: "Russian",
-  pl: "Polish",
-  ua: "Ukrainian",
+  ru: "Русский",
+  pl: "Polski",
+  ua: "Україньска",
 };
 
 const localesOptions = Object.entries(mainLocales).map(([value, label]) => ({

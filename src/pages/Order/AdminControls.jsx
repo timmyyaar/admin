@@ -116,6 +116,20 @@ const AdminControls = ({
     }
   };
 
+  const orderStatusValue = ORDER_STATUS_OPTIONS.find(
+    ({ value }) => value === order.status
+  );
+  const translatedOrderStatusValue = orderStatusValue
+    ? {
+        ...orderStatusValue,
+        label: t(
+          `admin_order_${orderStatusValue.label
+            .toLowerCase()
+            .replaceAll(" ", "_")}_option`
+        ),
+      }
+    : null;
+
   return (
     <>
       {showProgressConfirmation && (
@@ -137,6 +151,7 @@ const AdminControls = ({
       <div className="admin-controls _gap-4 _w-full">
         <span>{t("admin_assignee")}:</span>
         <Select
+          placeholder={`${t("select_placeholder")}...`}
           isMulti
           isDisabled={isAssignLoading.includes(order.id)}
           options={cleanersOptions}
@@ -158,9 +173,7 @@ const AdminControls = ({
             isAssignLoading.includes(order.id)
           }
           isLoading={isStatusLoading.includes(order.id)}
-          value={ORDER_STATUS_OPTIONS.find(
-            ({ value }) => value === order.status
-          )}
+          value={translatedOrderStatusValue}
           onChange={onStatusChange}
           options={statusOptions}
         />

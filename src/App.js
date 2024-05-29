@@ -34,36 +34,22 @@ function App() {
   const selectedLocale = localStorage.getItem(LOCALE_LOCAL_STORAGE_KEY);
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [locales, setLocales] = useState([]);
   const [locale, setLocale] = useState(
     selectedLocale && availableLocales.includes(selectedLocale)
       ? selectedLocale
       : "en"
   );
   const [userData, setUserData] = useState(null);
-  const [isLocalesLoading, setIsLocalesLoading] = useState(true);
-  const [isUserDataLoading, setIsUserDataLoading] = useState(false);
+  const [isUserDataLoading, setIsUserDataLoading] = useState(true);
 
   const isAdmin = userData?.role === ROLES.ADMIN;
 
-  const { t } = useLocales(locales, locale);
+  const { t } = useLocales(locale);
 
   const onLocaleChange = (updatedLocale) => {
     setLocale(updatedLocale);
 
     localStorage.setItem(LOCALE_LOCAL_STORAGE_KEY, updatedLocale);
-  };
-
-  const getLocales = async () => {
-    try {
-      const localesResponse = await request({
-        url: "locales",
-      });
-
-      setLocales(localesResponse.locales);
-    } finally {
-      setIsLocalesLoading(false);
-    }
   };
 
   const localStorageUserData = localStorage.getItem(
@@ -114,8 +100,6 @@ function App() {
       onLogOut();
     });
 
-    getLocales();
-
     return () => {
       EventEmitter.off("logOut");
     };
@@ -123,8 +107,8 @@ function App() {
 
   return (
     <>
-      {isLocalesLoading || isUserDataLoading ? (
-        <Louder visible={isLocalesLoading || isUserDataLoading} />
+      {isUserDataLoading ? (
+        <Louder visible={isUserDataLoading} />
       ) : (
         <AppContext.Provider value={{ onLogOut, userData }}>
           <LocaleContext.Provider value={{ t, locale }}>
