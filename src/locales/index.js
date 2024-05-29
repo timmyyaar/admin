@@ -1,20 +1,15 @@
 import i18next from "i18next";
+import enLocales from "./translations/en.json";
+import plLocales from "./translations/pl.json";
+import ruLocales from "./translations/ru.json";
+import uaLocales from "./translations/ua.json";
 
-const getLocales = (locales, lang) => {
-  if (!locales) return {};
-
-  return locales.reduce((acc, locale) => {
-    if (locale.locale === lang) acc[locale.key] = locale.value;
-    return acc;
-  }, {});
-};
-
-export const initI18n = (locales) => {
+export const initI18n = () => {
   const resources = {
-    en: { translation: getLocales(locales, "en") },
-    pl: { translation: getLocales(locales, "pl") },
-    ru: { translation: getLocales(locales, "ru") },
-    ua: { translation: getLocales(locales, "ua") },
+    en: { translation: enLocales },
+    pl: { translation: plLocales },
+    ru: { translation: ruLocales },
+    ua: { translation: uaLocales },
   };
 
   return (lng) => {
