@@ -372,5 +372,8 @@
   "mark_as_favourite": "Mark as favourite",
   "no_orders_were_done_for_this_period": "No orders were done for this period",
   "start_progress": "Start progress",
-  "this_order_date_is_not_today": "This order date is not today. Are you sure you want to start progress?"
+  "this_order_date_is_not_today": "This order date is not today. Are you sure you want to start progress?",
+  "order_mark_as_paid_confirmation": "Are you sure you want to mark this order as paid",
+  "mark_as_paid": "Mark as paid",
+  "approve": "Approve"
 }

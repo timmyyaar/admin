@@ -11,6 +11,7 @@ import { ReactComponent as RewardIcon } from "../../assets/icons/reward.svg";
 import { ReactComponent as PaymentIcon } from "../../assets/icons/payment.svg";
 import { ReactComponent as GeoIcon } from "../../assets/icons/geo.svg";
 import { ReactComponent as CardIcon } from "../../assets/icons/card.svg";
+import AmountToPay from "./AmountToPay";
 
 function Payment({
   payment: {
@@ -38,6 +39,7 @@ function Payment({
 
   const [isPaymentExpanded, setIsPaymentExpanded] = useState(false);
   const [isPaymentExpandLoading, setIsPaymentExpandLoading] = useState(false);
+  const [isUpdateAmountLoading, setIsUpdateAmountLoading] = useState(false);
   const [isFinishPaymentModalOpened, setIsFinishPaymentModalOpened] =
     useState(false);
 
@@ -74,6 +76,13 @@ function Payment({
       setIsFinishPaymentModalOpened(true);
     }
   };
+
+  const updateAmount = (updatedAmount) =>
+    setPayments((prev) =>
+      prev.map((item) =>
+        item.id === id ? { ...item, amount: updatedAmount } : item
+      )
+    );
 
   return (
     <>
@@ -152,22 +161,22 @@ function Payment({
                     )}
                   </>
                 )}
-                <div className="_mr-2 _flex _items-end">
-                  {t("amount_to_pay")}:
-                  <span
-                    className={`_ml-1 font-weight-bold amount ${
-                      amount > 0 ? "text-danger" : "text-success"
-                    }`}
-                  >
-                    {Math.abs(amount)} {t("zl")}
-                  </span>
-                  ,
-                </div>
+                <AmountToPay
+                  id={id}
+                  amount={amount}
+                  updateAmount={updateAmount}
+                  t={t}
+                  is_paid={is_paid}
+                  isUpdateAmountLoading={isUpdateAmountLoading}
+                  setIsUpdateAmountLoading={setIsUpdateAmountLoading}
+                />
                 <span>
                   {capitalizeFirstLetter(t("period"))}: {period_start} -{" "}
                   {period_end}
                 </span>
-                {isPaymentExpandLoading && <div className="ml-auto loader" />}
+                {(isPaymentExpandLoading || isUpdateAmountLoading) && (
+                  <div className="ml-auto loader" />
+                )}
               </div>
             </div>
           </button>

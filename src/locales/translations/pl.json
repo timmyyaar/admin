@@ -372,5 +372,8 @@
   "mark_as_favourite": "Oznacz jako ulubione",
   "no_orders_were_done_for_this_period": "W tym okresie nie wykonano żadnych zamówień",
   "start_progress": "Rozpocznij postęp",
-  "this_order_date_is_not_today": "Data zamówienia nie przypada dzisiaj. Czy na pewno chcesz rozpocząć postęp?"
+  "this_order_date_is_not_today": "Data zamówienia nie przypada dzisiaj. Czy na pewno chcesz rozpocząć postęp?",
+  "order_mark_as_paid_confirmation": "Czy na pewno chcesz oznaczyć to zamówienie jako opłacone",
+  "mark_as_paid": "Oznacz jako płatne",
+  "approve": "Zatwierdzić"
 }

@@ -22,14 +22,21 @@ function Payment({ order, setOrders, t }) {
   const [wasCopied, setWasCopied] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isApprovePaymentLoading, setIsApprovePaymentLoading] = useState(false);
+  const [isMarkAsPaidModalOpened, setIsMarkAsPaidModalOpened] = useState(false);
+  const [isMarkAsPaidLoading, setIsMarkAsPaidLoading] = useState(false);
 
+  const isPendingPayment =
+    order.onlinepayment &&
+    (!order.payment_status || order.payment_status === PAYMENT_STATUS.PENDING);
   const isPendingOrFailedPayment = [
     PAYMENT_STATUS.PENDING,
     PAYMENT_STATUS.FAILED,
   ].includes(order.payment_status);
 
   const canGeneratePaymentLink =
-    order.onlinepayment && (!order.payment_intent || isPendingOrFailedPayment);
+    order.onlinepayment &&
+    ((!order.payment_intent && !order.payment_status) ||
+      isPendingOrFailedPayment);
 
   const createOrderPaymentIntent = async () => {
     setIsLoading(true);
@@ -125,6 +132,31 @@ function Payment({ order, setOrders, t }) {
     }
   };
 
+  const markOrderAsPaid = async () => {
+    setIsMarkAsPaidLoading(true);
+
+    try {
+      const updatedOrders = await request({
+        url: `order/${order.id}/mark-as-paid`,
+        method: "PUT",
+      });
+
+      setOrders((prev) =>
+        prev.map((prev) => {
+          const updatedOrder = updatedOrders.find(
+            (item) => item.id === prev.id
+          );
+
+          return updatedOrder || prev;
+        })
+      );
+
+      setIsMarkAsPaidModalOpened(false);
+    } finally {
+      setIsMarkAsPaidLoading(false);
+    }
+  };
+
   const isApprovePaymentVisible =
     isAdmin &&
     order.payment_status === PAYMENT_STATUS.WAITING_FOR_CONFIRMATION &&
@@ -192,6 +224,28 @@ function Payment({ order, setOrders, t }) {
             {isLoading && <div className="loader" />}
           </span>
         </div>
+        {isPendingPayment && (
+          <button
+            className="btn btn-sm btn-success _ml-2 whitespace-nowrap"
+            onClick={() => setIsMarkAsPaidModalOpened(true)}
+          >
+            {t("mark_as_paid")}
+          </button>
+        )}
+        {isMarkAsPaidModalOpened && (
+          <Modal
+            onClose={() => setIsMarkAsPaidModalOpened(false)}
+            minHeight={false}
+            actionButtonText={t("confirm")}
+            onActionButtonClick={markOrderAsPaid}
+            isActionButtonDisabled={isMarkAsPaidLoading}
+            isLoading={isMarkAsPaidLoading}
+          >
+            <h5 className="text-center">
+              {t("order_mark_as_paid_confirmation")} ({order.id})?
+            </h5>
+          </Modal>
+        )}
         {isApprovePaymentVisible && (
           <button
             className={`btn btn-sm btn-success _ml-2 whitespace-nowrap ${
@@ -200,7 +254,7 @@ function Payment({ order, setOrders, t }) {
             onClick={onApprovePayment}
             disabled={isApprovePaymentLoading}
           >
-            Approve
+            {t("approve")}
           </button>
         )}
       </div>
