@@ -1,7 +1,7 @@
 import { request } from "../../utils";
-import {useContext, useState} from "react";
+import { useContext, useState } from "react";
 import Modal from "../../components/common/Modal";
-import {LocaleContext} from "../../contexts";
+import { LocaleContext } from "../../contexts";
 
 function DocumentItem({
   id,
@@ -51,7 +51,7 @@ function DocumentItem({
           onActionButtonClick={() => deleteDocument(id, item.url)}
           actionButtonText="Delete"
         >
-          {t('admin_documents_delete_confirmation')} ({item.pathname})
+          {t("admin_documents_delete_confirmation")} ({item.pathname})
         </Modal>
       )}
       <div className="d-flex flex-column bg-white text-black pdf-preview py-2 px-3 justify-content-center">

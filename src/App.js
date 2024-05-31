@@ -10,7 +10,7 @@ import { PromoPage } from "./pages/Promo";
 import { OrderPage } from "./pages/Order";
 import { ReviewsPage } from "./pages/Reviews";
 import Login from "./pages/Login";
-import { ROLES, USER_DATA_LOCAL_STORAGE_KEY } from "./constants";
+import { ROLES } from "./constants";
 import { logOut, request } from "./utils";
 import Users from "./pages/Users";
 import EventEmitter from "./eventEmitter";
@@ -33,20 +33,17 @@ const availableLocales = ["en", "pl", "ru", "ua"];
 function App() {
   const selectedLocale = localStorage.getItem(LOCALE_LOCAL_STORAGE_KEY);
 
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [locales, setLocales] = useState([]);
   const [locale, setLocale] = useState(
     selectedLocale && availableLocales.includes(selectedLocale)
       ? selectedLocale
       : "en"
   );
   const [userData, setUserData] = useState(null);
-  const [isLocalesLoading, setIsLocalesLoading] = useState(true);
-  const [isUserDataLoading, setIsUserDataLoading] = useState(false);
+  const [isUserDataLoading, setIsUserDataLoading] = useState(true);
 
   const isAdmin = userData?.role === ROLES.ADMIN;
 
-  const { t } = useLocales(locales, locale);
+  const { t } = useLocales(locale);
 
   const onLocaleChange = (updatedLocale) => {
     setLocale(updatedLocale);
@@ -54,34 +51,11 @@ function App() {
     localStorage.setItem(LOCALE_LOCAL_STORAGE_KEY, updatedLocale);
   };
 
-  const getLocales = async () => {
-    try {
-      const localesResponse = await request({
-        url: "locales",
-      });
+  const onLogOut = async () => {
+    await logOut();
 
-      setLocales(localesResponse.locales);
-    } finally {
-      setIsLocalesLoading(false);
-    }
-  };
-
-  const localStorageUserData = localStorage.getItem(
-    USER_DATA_LOCAL_STORAGE_KEY
-  );
-
-  const onLogOut = () => {
-    logOut();
     setUserData(null);
-
-    setIsLoggedIn(false);
   };
-
-  useEffect(() => {
-    if (localStorageUserData) {
-      setIsLoggedIn(true);
-    }
-  }, [localStorageUserData]);
 
   useEffect(() => {
     document.body.classList.add("custom-scroll");
@@ -93,28 +67,24 @@ function App() {
 
   const getUserData = async () => {
     try {
-      setIsUserDataLoading(true);
-
       const userDataResponse = await request({ url: "users/my-user" });
 
-      setUserData(userDataResponse);
+      if (!userDataResponse.error) {
+        setUserData(userDataResponse);
+      }
     } finally {
       setIsUserDataLoading(false);
     }
   };
 
   useEffect(() => {
-    if (isLoggedIn) {
-      getUserData();
-    }
-  }, [isLoggedIn]);
+    getUserData();
+  }, []);
 
   useEffect(() => {
     EventEmitter.on("logOut", () => {
       onLogOut();
     });
-
-    getLocales();
 
     return () => {
       EventEmitter.off("logOut");
@@ -123,8 +93,8 @@ function App() {
 
   return (
     <>
-      {isLocalesLoading || isUserDataLoading ? (
-        <Louder visible={isLocalesLoading || isUserDataLoading} />
+      {isUserDataLoading ? (
+        <Louder visible={isUserDataLoading} />
       ) : (
         <AppContext.Provider value={{ onLogOut, userData }}>
           <LocaleContext.Provider value={{ t, locale }}>
@@ -174,7 +144,7 @@ function App() {
                 </BrowserRouter>
               ) : (
                 <Login
-                  setIsLoggedIn={setIsLoggedIn}
+                  getUserData={getUserData}
                   locale={locale}
                   setLocale={onLocaleChange}
                 />
