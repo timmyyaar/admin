@@ -1,13 +1,11 @@
-import Cookies from "js-cookie";
-import {
-  AUTH_TOKEN_COOKIE_KEY,
-  USER_DATA_LOCAL_STORAGE_KEY,
-} from "./constants";
 import EventEmitter from "./eventEmitter";
 
-export const logOut = () => {
-  localStorage.removeItem(USER_DATA_LOCAL_STORAGE_KEY);
-  Cookies.remove(AUTH_TOKEN_COOKIE_KEY);
+export const logOut = async () => {
+  await fetch(process.env.REACT_APP_API_URL + `/api/logout`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    credentials: "include",
+  });
 };
 
 export const getFloatOneDigit = (number) => Number(number.toFixed(1));

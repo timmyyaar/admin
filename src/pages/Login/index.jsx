@@ -1,12 +1,11 @@
 import React, { useContext, useState } from "react";
 import { login } from "./action";
-import { USER_DATA_LOCAL_STORAGE_KEY } from "../../constants";
 
 import "./Login.css";
 import { LocaleContext } from "../../contexts";
 import LocaleSelect from "../../components/LocaleSelect/LocaleSelect";
 
-const Login = ({ setIsLoggedIn, locale, setLocale }) => {
+const Login = ({ getUserData, locale, setLocale }) => {
   const { t } = useContext(LocaleContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -21,14 +20,8 @@ const Login = ({ setIsLoggedIn, locale, setLocale }) => {
       setIsLoginLoading(true);
       setLoginError("");
 
-      const userData = await login({ email, password });
-
-      localStorage.setItem(
-        USER_DATA_LOCAL_STORAGE_KEY,
-        JSON.stringify(userData)
-      );
-
-      setIsLoggedIn(true);
+      await login({ email, password });
+      await getUserData();
     } catch (error) {
       setLoginError(error.message);
     } finally {
