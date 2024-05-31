@@ -38,10 +38,6 @@ export const ORDER_TYPE_ADDITIONAL = {
   WINDOW: "Window cleaning",
 };
 
-export const USER_DATA_LOCAL_STORAGE_KEY = "userData";
-
-export const AUTH_TOKEN_COOKIE_KEY = "authToken";
-
 export const BRACKETS_REGEX = /\([^()]*\)/;
 
 export const POSITIVE_NUMBER_EMPTY_REGEX = /^(\s*|[1-9][0-9]*)+$/;
