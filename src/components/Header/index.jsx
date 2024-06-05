@@ -19,6 +19,7 @@ const ADMIN_NAVIGATION = [
   { to: "/prices", title: "Prices" },
   { to: "/orders-summary", title: "Orders summary" },
   { to: "/incomes", title: "Incomes" },
+  { to: "/statistics", title: "Statistics" },
   { to: "/career", title: "Career" },
   { to: "/gift", title: "Gifts" },
   { to: "/promo", title: "Promo Codes" },

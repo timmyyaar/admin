@@ -29,6 +29,7 @@ function DeleteModal({ onClose, id, setBlogs }) {
       isActionButtonDanger
       isLoading={isDeleteLoading}
       isActionButtonDisabled={isDeleteLoading}
+      minHeight={false}
     >
       <h5 className="mb-4 text-center">
         Are you sure you want to delete blog?
