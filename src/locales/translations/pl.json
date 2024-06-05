@@ -376,5 +376,6 @@
   "order_mark_as_paid_confirmation": "Czy na pewno chcesz oznaczyć to zamówienie jako opłacone",
   "mark_as_paid": "Oznacz jako płatne",
   "approve": "Zatwierdzić",
-  "feedback": "Informacja zwrotna"
+  "feedback": "Informacja zwrotna",
+  "admin_statistics_header": "Statystyka"
 }

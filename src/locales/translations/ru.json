@@ -375,5 +375,6 @@
   "order_mark_as_paid_confirmation": "Вы уверены, что хотите пометить этот заказ как оплаченный",
   "mark_as_paid": "Отметить как оплаченное",
   "approve": "Утвердить",
-  "feedback": "Обратная связь"
+  "feedback": "Обратная связь",
+  "admin_statistics_header": "Статистика"
 }
