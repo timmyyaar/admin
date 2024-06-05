@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import {
   getDateTimeObjectFromString,
   getFloatOneDigit,
@@ -7,6 +7,7 @@ import {
 import { ORDER_TYPE, ORDER_TYPE_ADDITIONAL } from "../../constants";
 import { Louder } from "../../components/Louder";
 import Filters from "./Filters";
+import { LocaleContext } from "../../contexts";
 
 const PHONE_BREAKPOINT = 1024;
 
@@ -29,6 +30,8 @@ const COLORS_BY_TYPE = {
 };
 
 function Statistics() {
+  const { t } = useContext(LocaleContext);
+
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [orders, setOrders] = useState([]);
   const [isOrdersLoading, setIsOrdersLoading] = useState(false);
@@ -182,7 +185,7 @@ function Statistics() {
               className="_p-2 _w-full _border _border-solid _border-white _font-semibold _shadow-md"
               style={{ backgroundColor: COLORS_BY_TYPE[type] }}
             >
-              {type} - {percents}%
+              {t(type)} - {percents}%
             </div>
           ))}
         </div>
