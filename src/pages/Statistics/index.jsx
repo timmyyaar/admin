@@ -193,7 +193,7 @@ function Statistics() {
             width={windowWidth > PHONE_BREAKPOINT ? 500 : 350}
             height={windowWidth > PHONE_BREAKPOINT ? 500 : 350}
           />
-          <div className="_flex _flex-col _gap-4 _mb-6 lg:_mb-6">
+          <div className="_flex _flex-col _gap-4 _mb-6">
             {chartData.map(({ type, percents }) => (
               <div
                 className="_p-2 _w-full _border _border-solid _border-white _font-semibold _shadow-md"
