@@ -377,5 +377,6 @@
   "mark_as_paid": "Позначити як оплачений",
   "approve": "Затвердити",
   "feedback": "Зворотній зв'язок",
-  "admin_statistics_header": "Статистика"
+  "admin_statistics_header": "Статистика",
+  "show_only_completed_orders": "Показувати лише виконані замовлення"
 }

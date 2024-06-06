@@ -377,5 +377,6 @@
   "mark_as_paid": "Oznacz jako płatne",
   "approve": "Zatwierdzić",
   "feedback": "Informacja zwrotna",
-  "admin_statistics_header": "Statystyka"
+  "admin_statistics_header": "Statystyka",
+  "show_only_completed_orders": "Pokaż tylko zrealizowane zamówienia"
 }

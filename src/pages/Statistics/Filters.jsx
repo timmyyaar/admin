@@ -54,7 +54,7 @@ function Filters({
           htmlFor="only_active"
           className="form-check-label _cursor-pointer"
         >
-          Show only completed orders
+          {t("show_only_completed_orders")}
         </label>
       </div>
     </div>
