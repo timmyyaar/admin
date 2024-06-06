@@ -1,0 +1,14 @@
+.clients-page {
+  .order-info-popover {
+    position: absolute;
+    background-color: #212529;
+    top: 120%;
+    right: 0;
+    display: flex;
+    z-index: 1;
+  }
+
+  .table-column-active {
+    background-color: #323539 !important;
+  }
+}
