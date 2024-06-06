@@ -376,5 +376,8 @@
   "order_mark_as_paid_confirmation": "Are you sure you want to mark this order as paid",
   "mark_as_paid": "Mark as paid",
   "approve": "Approve",
-  "feedback": "Feedback"
+  "feedback": "Feedback",
+  "admin_statistics_header": "Statistics",
+  "show_only_completed_orders": "Show only completed orders",
+  "orders_genitive": "orders"
 }

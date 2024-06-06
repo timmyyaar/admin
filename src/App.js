@@ -25,6 +25,7 @@ import Incomes from "./pages/Incomes";
 import Prices from "./pages/Prices";
 import { Louder } from "./components/Louder";
 import Payments from "./pages/Payments";
+import Statistics from "./pages/Statistics";
 
 const LOCALE_LOCAL_STORAGE_KEY = "locale";
 
@@ -124,6 +125,7 @@ function App() {
                             element={<OrdersSummary />}
                           />
                           <Route path="/incomes" element={<Incomes />} />
+                          <Route path="/statistics" element={<Statistics />} />
                           <Route path="/career" element={<CareerPage />} />
                           <Route path="/gift" element={<GiftPage />} />
                           <Route path="/promo" element={<PromoPage />} />
