@@ -378,5 +378,6 @@
   "approve": "Zatwierdzić",
   "feedback": "Informacja zwrotna",
   "admin_statistics_header": "Statystyka",
-  "show_only_completed_orders": "Pokaż tylko zrealizowane zamówienia"
+  "show_only_completed_orders": "Pokaż tylko zrealizowane zamówienia",
+  "orders_genitive": "zamówień"
 }
