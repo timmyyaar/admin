@@ -4,10 +4,16 @@ import {
   getFloatOneDigit,
   request,
 } from "../../utils";
-import { ORDER_TYPE, ORDER_TYPE_ADDITIONAL } from "../../constants";
+import {
+  ORDER_STATUS,
+  ORDER_TYPE,
+  ORDER_TYPE_ADDITIONAL,
+} from "../../constants";
 import { Louder } from "../../components/Louder";
 import Filters from "./Filters";
 import { LocaleContext } from "../../contexts";
+
+import "./style.scss";
 
 const PHONE_BREAKPOINT = 1024;
 
@@ -37,6 +43,7 @@ function Statistics() {
   const [isOrdersLoading, setIsOrdersLoading] = useState(false);
   const [dateFrom, setDateFrom] = useState(null);
   const [dateTo, setDateTo] = useState(null);
+  const [isOnlyCompleted, setIsOnlyCompleted] = useState(false);
   const canvasRef = useRef(null);
 
   const getOrders = async () => {
@@ -51,23 +58,27 @@ function Statistics() {
     }
   };
 
-  const currentPeriodOrders = orders.filter(({ date }) => {
-    const dateObject = getDateTimeObjectFromString(date);
+  const currentPeriodOrders = orders
+    .filter(({ date }) => {
+      const dateObject = getDateTimeObjectFromString(date);
 
-    if (dateFrom && dateTo) {
-      return dateObject >= dateFrom && dateObject <= dateTo;
-    }
+      if (dateFrom && dateTo) {
+        return dateObject >= dateFrom && dateObject <= dateTo;
+      }
 
-    if (dateFrom) {
-      return dateObject >= dateFrom;
-    }
+      if (dateFrom) {
+        return dateObject >= dateFrom;
+      }
 
-    if (dateTo) {
-      return dateObject <= dateTo;
-    }
+      if (dateTo) {
+        return dateObject <= dateTo;
+      }
 
-    return true;
-  });
+      return true;
+    })
+    .filter(({ status }) =>
+      isOnlyCompleted ? status === ORDER_STATUS.DONE.value : true
+    );
 
   const ordersWithoutSubscription = currentPeriodOrders.filter(
     ({ title }) => title !== ORDER_TYPE_ADDITIONAL.SUBSCRIPTION
@@ -165,32 +176,40 @@ function Statistics() {
   }, [chartData, windowWidth]);
 
   return (
-    <>
+    <div className="statistics-page">
       <Louder visible={isOrdersLoading} />
       <Filters
         dateFrom={dateFrom}
         setDateFrom={setDateFrom}
         dateTo={dateTo}
         setDateTo={setDateTo}
+        isOnlyCompleted={isOnlyCompleted}
+        setIsOnlyCompleted={setIsOnlyCompleted}
       />
-      <div className="_flex _flex-col lg:_flex-row _gap-8 _items-center lg:_items-start">
-        <canvas
-          ref={canvasRef}
-          width={windowWidth > PHONE_BREAKPOINT ? 500 : 350}
-          height={windowWidth > PHONE_BREAKPOINT ? 500 : 350}
-        />
-        <div className="_flex _flex-col _gap-4">
-          {chartData.map(({ type, percents }) => (
-            <div
-              className="_p-2 _w-full _border _border-solid _border-white _font-semibold _shadow-md"
-              style={{ backgroundColor: COLORS_BY_TYPE[type] }}
-            >
-              {t(type)} - {percents}%
-            </div>
-          ))}
+      {chartData.length > 0 ? (
+        <div className="_flex _flex-col lg:_flex-row _gap-8 _items-center lg:_items-start">
+          <canvas
+            ref={canvasRef}
+            width={windowWidth > PHONE_BREAKPOINT ? 500 : 350}
+            height={windowWidth > PHONE_BREAKPOINT ? 500 : 350}
+          />
+          <div className="_flex _flex-col _gap-4">
+            {chartData.map(({ type, percents }) => (
+              <div
+                className="_p-2 _w-full _border _border-solid _border-white _font-semibold _shadow-md"
+                style={{ backgroundColor: COLORS_BY_TYPE[type] }}
+              >
+                {t(type)} - {percents}%
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
-    </>
+      ) : (
+        <span className="text-danger">
+          There are no orders matching the selected filters.
+        </span>
+      )}
+    </div>
   );
 }
 
