@@ -61,8 +61,15 @@ function Index({ clientName, clientPhone }) {
             </div>
           ) : clientOrdersCountByType.length > 0 ? (
             <div>
+              <div className="_font-bold _mb-2">
+                <span className="_mr-1">Total:</span>
+                {clientOrdersCountByType.reduce(
+                  (result, { count }) => +count,
+                  0
+                )}
+              </div>
               {clientOrdersCountByType.map(({ type, count }) => (
-                <div className="_font-semibold">
+                <div>
                   {t(type)} - {count}
                 </div>
               ))}
