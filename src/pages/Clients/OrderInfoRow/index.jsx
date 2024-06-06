@@ -70,7 +70,7 @@ function Index({ clientName, clientPhone }) {
               </div>
               {clientOrdersCountByType.map(({ type, count }) => (
                 <div>
-                  {t(type)} - {count}
+                  {t(type)}: {count}
                 </div>
               ))}
             </div>
