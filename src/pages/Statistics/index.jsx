@@ -43,7 +43,7 @@ function Statistics() {
     try {
       setIsOrdersLoading(true);
 
-      const ordersResponse = await request({ url: "/order" });
+      const ordersResponse = await request({ url: "order" });
 
       setOrders(ordersResponse);
     } finally {
