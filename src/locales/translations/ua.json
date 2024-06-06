@@ -378,5 +378,6 @@
   "approve": "Затвердити",
   "feedback": "Зворотній зв'язок",
   "admin_statistics_header": "Статистика",
-  "show_only_completed_orders": "Показувати лише виконані замовлення"
+  "show_only_completed_orders": "Показувати лише виконані замовлення",
+  "orders_genitive": "замовлень"
 }

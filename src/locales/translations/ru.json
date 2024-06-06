@@ -377,5 +377,6 @@
   "approve": "Утвердить",
   "feedback": "Обратная связь",
   "admin_statistics_header": "Статистика",
-  "show_only_completed_orders": "Показать только выполненные заказы"
+  "show_only_completed_orders": "Показать только выполненные заказы",
+  "orders_genitive": "заказов"
 }

@@ -86,18 +86,21 @@ function Statistics() {
   const ordersTypes = [
     ...new Set(ordersWithoutSubscription.map(({ title }) => title)),
   ];
-  const chartData = ordersTypes.map((type) => {
-    const ordersByType = ordersWithoutSubscription.filter(
-      ({ title }) => title === type
-    );
+  const chartData = ordersTypes
+    .map((type) => {
+      const ordersByType = ordersWithoutSubscription.filter(
+        ({ title }) => title === type
+      );
 
-    return {
-      type,
-      percents: getFloatOneDigit(
-        (ordersByType.length / ordersWithoutSubscription.length) * 100
-      ),
-    };
-  });
+      return {
+        type,
+        percents: getFloatOneDigit(
+          (ordersByType.length / ordersWithoutSubscription.length) * 100
+        ),
+        count: ordersByType.length,
+      };
+    })
+    .toSorted((prev, next) => next.count - prev.count);
 
   const renderChart = () => {
     if (!canvasRef.current) {
@@ -194,12 +197,12 @@ function Statistics() {
             height={windowWidth > PHONE_BREAKPOINT ? 500 : 350}
           />
           <div className="_flex _flex-col _gap-4 _mb-6">
-            {chartData.map(({ type, percents }) => (
+            {chartData.map(({ type, percents, count }) => (
               <div
                 className="_p-2 _w-full _border _border-solid _border-white _font-semibold _shadow-md"
                 style={{ backgroundColor: COLORS_BY_TYPE[type] }}
               >
-                {t(type)} - {percents}%
+                {t(type)} - {percents}% ({count} {t("orders")})
               </div>
             ))}
           </div>
