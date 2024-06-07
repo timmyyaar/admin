@@ -5,6 +5,9 @@ import "./Login.scss";
 import { LocaleContext } from "../../contexts";
 import LocaleSelect from "../../components/LocaleSelect/LocaleSelect";
 
+import { ReactComponent as PasswordShowedIcon } from "../../assets/icons/eye.svg";
+import { ReactComponent as PasswordHiddenIcon } from "../../assets/icons/eye-crossed.svg";
+
 const Login = ({ getUserData, locale, setLocale }) => {
   const { t } = useContext(LocaleContext);
   const [email, setEmail] = useState("");
@@ -80,7 +83,11 @@ const Login = ({ getUserData, locale, setLocale }) => {
                  _justify-center _cursor-pointer _w-12 _h-full _right-0`}
                 onClick={() => setShowPassword(!showPassword)}
               >
-                &#128065;
+                {showPassword ? (
+                  <PasswordShowedIcon className="_w-4 _h-4" />
+                ) : (
+                  <PasswordHiddenIcon className="_w-4 _h-4" />
+                )}
               </div>
             </div>
           </div>
