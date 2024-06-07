@@ -47,3 +47,64 @@
     }
   }
 }
+
+@property --gradX {
+  syntax: "<percentage>";
+  initial-value: 0%;
+  inherits: true;
+}
+
+@property --gradY {
+  syntax: "<percentage>";
+  initial-value: 0%;
+  inherits: true;
+}
+
+.border-loading {
+  position: relative;
+  border-radius: 6px;
+}
+
+.border-loading::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border: 2px solid transparent;
+  border-radius: 6px;
+
+  background: radial-gradient(
+      ellipse at var(--gradX) var(--gradY),
+      #fff,
+      #fff 10%,
+      transparent 40%
+    )
+    border-box;
+  -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+
+  animation: borderRadial 3s linear infinite forwards;
+}
+
+@keyframes borderRadial {
+  0% {
+    --gradX: 0%;
+    --gradY: 0%;
+  }
+  25% {
+    --gradX: 100%;
+    --gradY: 0%;
+  }
+  50% {
+    --gradX: 100%;
+    --gradY: 100%;
+  }
+  75% {
+    --gradX: 0%;
+    --gradY: 100%;
+  }
+  100% {
+    --gradX: 0%;
+    --gradY: 0%;
+  }
+}

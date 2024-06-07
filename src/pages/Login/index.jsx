@@ -92,8 +92,10 @@ const Login = ({ getUserData, locale, setLocale }) => {
             </div>
           </div>
           <button
-            className={`btn btn-primary _mt-12 _w-64 _text-center ${
-              isLoginLoading ? "loading" : ""
+            className={`btn btn-primary _flex _items-center _justify-center _mt-12 _w-64 ${
+              isLoginLoading
+                ? "loading border-loading"
+                : ""
             }`}
             disabled={!email || !password || isLoginLoading}
             type="submit"
