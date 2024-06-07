@@ -38,9 +38,6 @@ code {
 }
 
 .centered {
-  min-height: 50vh;
-  min-width: 50vw;
-  z-index: 10000;
   position: fixed;
   top: 50%;
   left: 50%;
@@ -310,4 +307,8 @@ code {
   padding: 0;
   font-weight: bold;
   color: green;
+}
+
+._text-primary {
+  color: #2b8afc;
 }

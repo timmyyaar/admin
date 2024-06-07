@@ -379,5 +379,7 @@
   "feedback": "Informacja zwrotna",
   "admin_statistics_header": "Statystyka",
   "show_only_completed_orders": "Pokaż tylko zrealizowane zamówienia",
-  "orders_genitive": "zamówień"
+  "orders_genitive": "zamówień",
+  "nice_to_see_you_in": "Miło cię widzieć w",
+  "log_in_to_your_account": "Zaloguj się na swoje konto"
 }

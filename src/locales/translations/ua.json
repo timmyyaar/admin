@@ -379,5 +379,7 @@
   "feedback": "Зворотній зв'язок",
   "admin_statistics_header": "Статистика",
   "show_only_completed_orders": "Показувати лише виконані замовлення",
-  "orders_genitive": "замовлень"
+  "orders_genitive": "замовлень",
+  "nice_to_see_you_in": "Радий бачити вас у",
+  "log_in_to_your_account": "Увійдіть у свій обліковий запис"
 }

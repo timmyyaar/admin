@@ -246,7 +246,19 @@ export const OrderPage = ({ subscription = false }) => {
           }
 
           return cleaner_id.includes(myUserId) && status === statusFilter;
-        });
+        })
+        .toSorted((prev, next) =>
+          [
+            "all-my-orders",
+            "my-not-started-orders",
+            ORDER_STATUS.IN_PROGRESS.value,
+            ORDER_STATUS.DONE.value,
+          ].includes(statusFilter)
+            ? getDateTimeObjectFromString(next.date) -
+              getDateTimeObjectFromString(prev.date)
+            : getDateTimeObjectFromString(next.creation_date) -
+              getDateTimeObjectFromString(prev.creation_date)
+        );
 
   const filteredOrdersByDate = filteredOrders.filter(({ date }) => {
     const dateObject = getDateTimeObjectFromString(date);
