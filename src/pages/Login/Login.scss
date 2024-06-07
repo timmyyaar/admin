@@ -66,24 +66,27 @@
 }
 
 .border-loading::before {
-  content: "";
-  position: absolute;
-  inset: -1px;
-  border: 2px solid transparent;
-  border-radius: 6px;
+  @media screen and (min-width: 1024px) {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    border: 2px solid transparent;
+    border-radius: 6px;
 
-  background: radial-gradient(
-      ellipse at var(--gradX) var(--gradY),
-      #fff,
-      #fff 10%,
-      transparent 40%
-    )
-    border-box;
-  -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
+    background: radial-gradient(
+        ellipse at var(--gradX) var(--gradY),
+        #fff,
+        #fff 10%,
+        transparent 40%
+      )
+      border-box;
+    -webkit-mask: linear-gradient(#fff 0 0) padding-box,
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
 
-  animation: borderRadial 3s linear infinite forwards;
+    animation: borderRadial 3s linear infinite forwards;
+  }
 }
 
 @keyframes borderRadial {
