@@ -31,7 +31,6 @@ export const ORDER_TYPE_ADDITIONAL = {
   DEEP: "Deep",
   MOVE: "Move in/out",
   AFTER_PARTY: "After party",
-  LAST_MINUTE: "In a last minute",
   WHILE_SICK: "While sickness",
   AIRBNB: "Airbnb",
   POST_CONSTRUCTION: "Post-construction",
