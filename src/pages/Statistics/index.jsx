@@ -1,5 +1,6 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import {
+  getDateObjectFromString,
   getDateTimeObjectFromString,
   getFloatOneDigit,
   request,
@@ -59,7 +60,7 @@ function Statistics() {
 
   const currentPeriodOrders = orders
     .filter(({ date }) => {
-      const dateObject = getDateTimeObjectFromString(date);
+      const dateObject = getDateObjectFromString(date.split(" ")[0]);
 
       if (dateFrom && dateTo) {
         return dateObject >= dateFrom && dateObject <= dateTo;
