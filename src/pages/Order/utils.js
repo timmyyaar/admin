@@ -174,7 +174,6 @@ const SHOW_CORRIDOR_TITLES = [
   "Deep",
   "Eco cleaning",
   "Move in/out",
-  "In a last minute",
   "After party",
   "While sickness",
   "Airbnb",
