@@ -45,9 +45,6 @@ export const getPriceFromCounterByService = (
     case "After party":
       return getDefaultCounterPrice(counter, prices, "afterParty");
 
-    case "In a last minute":
-      return getDefaultCounterPrice(counter, prices, "lastMinute");
-
     case "While sickness":
       return getDefaultCounterPrice(counter, prices, "whileSickness");
 

@@ -55,7 +55,6 @@ const SHOW_VACUUM_CLEANER_TITLES = [
   "Deep kitchen",
   "After party",
   "Airbnb",
-  "In a last minute",
 ];
 
 const getSubServiceWithoutVacuumCleaner = (subService) => {
