@@ -224,7 +224,7 @@ function Payment({ order, setOrders, t }) {
             {isLoading && <div className="loader" />}
           </span>
         </div>
-        {isPendingPayment && (
+        {isPendingPayment && isAdmin && (
           <button
             className="btn btn-sm btn-success _ml-2 whitespace-nowrap"
             onClick={() => setIsMarkAsPaidModalOpened(true)}
