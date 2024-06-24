@@ -1,6 +1,6 @@
 .statistics-page {
   .filters-wrapper {
-    grid-template-columns: max-content 20% max-content 20% max-content;
+    grid-template-columns: max-content 1fr max-content 1fr max-content 1fr max-content;
 
     @media screen and (max-width: 1024px) {
       grid-template-columns: max-content 1fr;

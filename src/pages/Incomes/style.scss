@@ -2,3 +2,14 @@
   border-top-width: 3px !important;
   border-top-color: white;
 }
+
+.incomes-filters-wrapper {
+  width: 100%;
+  display: inline-grid;
+  grid-template-columns: max-content 1fr max-content 1fr max-content 1fr;
+
+  @media screen and (max-width: 950px) {
+    display: grid;
+    grid-template-columns: max-content auto;
+  }
+}

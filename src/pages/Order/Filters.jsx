@@ -1,7 +1,12 @@
 import { getDateString } from "../../utils";
 import React, { useContext } from "react";
 import DatePicker from "react-datepicker";
-import { CITIES, ORDER_STATUS, ORDER_TYPE, ROLES } from "../../constants";
+import {
+  CITIES_OPTIONS,
+  ORDER_STATUS,
+  ORDER_TYPE,
+  ROLES,
+} from "../../constants";
 import { AppContext, LocaleContext } from "../../contexts";
 import Select from "../../components/common/Select/Select";
 
@@ -21,11 +26,6 @@ const ADMIN_STATUS_FILTER_OPTIONS = [
 ];
 
 const ORDER_TYPE_OPTIONS = Object.values(ORDER_TYPE);
-
-const CITIES_OPTIONS = Object.values(CITIES).map((city) => ({
-  value: city,
-  label: city,
-}));
 
 const Filters = ({
   statusFilter,

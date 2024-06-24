@@ -72,3 +72,8 @@ export const CITIES = {
   KRAKOW: "Krakow",
   WARSAW: "Warsaw",
 };
+
+export const CITIES_OPTIONS = Object.values(CITIES).map((city) => ({
+  value: city,
+  label: city,
+}));

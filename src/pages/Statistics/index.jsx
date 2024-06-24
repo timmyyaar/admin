@@ -43,6 +43,7 @@ function Statistics() {
   const [dateFrom, setDateFrom] = useState(null);
   const [dateTo, setDateTo] = useState(null);
   const [isOnlyCompleted, setIsOnlyCompleted] = useState(false);
+  const [citiesFilter, setCitiesFilter] = useState([]);
   const canvasRef = useRef(null);
 
   const getOrders = async () => {
@@ -76,11 +77,14 @@ function Statistics() {
       return true;
     })
     .filter(({ status }) =>
-      isOnlyCompleted ? status === ORDER_STATUS.DONE.value : true
+      isOnlyCompleted ? status === ORDER_STATUS.DONE.value : true,
+    )
+    .filter(({ main_city }) =>
+      citiesFilter.length > 0 ? citiesFilter.includes(main_city) : true,
     );
 
   const ordersWithoutSubscription = currentPeriodOrders.filter(
-    ({ title }) => title !== ORDER_TYPE_ADDITIONAL.SUBSCRIPTION
+    ({ title }) => title !== ORDER_TYPE_ADDITIONAL.SUBSCRIPTION,
   );
   const ordersTypes = [
     ...new Set(ordersWithoutSubscription.map(({ title }) => title)),
@@ -88,13 +92,13 @@ function Statistics() {
   const chartData = ordersTypes
     .map((type) => {
       const ordersByType = ordersWithoutSubscription.filter(
-        ({ title }) => title === type
+        ({ title }) => title === type,
       );
 
       return {
         type,
         percents: getFloatOneDigit(
-          (ordersByType.length / ordersWithoutSubscription.length) * 100
+          (ordersByType.length / ordersWithoutSubscription.length) * 100,
         ),
         count: ordersByType.length,
       };
@@ -119,7 +123,7 @@ function Statistics() {
 
     const totalPercents = chartData.reduce(
       (result, item) => result + item.percents,
-      0
+      0,
     );
 
     const radiusDividerForPercents =
@@ -148,7 +152,7 @@ function Statistics() {
       ctx.fillText(
         `${item.percents}%`,
         width + Math.cos(mid) * (radius / radiusDividerForPercents),
-        height + Math.sin(mid) * (radius / radiusDividerForPercents)
+        height + Math.sin(mid) * (radius / radiusDividerForPercents),
       );
       lastEnd += Math.PI * 2 * (item.percents / totalPercents);
     }
@@ -187,6 +191,8 @@ function Statistics() {
         setDateTo={setDateTo}
         isOnlyCompleted={isOnlyCompleted}
         setIsOnlyCompleted={setIsOnlyCompleted}
+        citiesFilter={citiesFilter}
+        setCitiesFilter={setCitiesFilter}
       />
       {chartData.length > 0 ? (
         <div className="_flex _flex-col lg:_flex-row _gap-8 _items-center lg:_items-start">

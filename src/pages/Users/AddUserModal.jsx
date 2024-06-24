@@ -1,14 +1,14 @@
 import Modal from "../../components/common/Modal";
 import React, { useContext, useState } from "react";
-import { CITIES, EMAIL_REGEX, ROLES, ROLES_OPTIONS } from "../../constants";
+import {
+  CITIES_OPTIONS,
+  EMAIL_REGEX,
+  ROLES,
+  ROLES_OPTIONS,
+} from "../../constants";
 import { request } from "../../utils";
 import Select from "../../components/common/Select/Select";
 import { AppContext } from "../../contexts";
-
-const CITIES_OPTIONS = Object.values(CITIES).map((city) => ({
-  value: city,
-  label: city,
-}));
 
 const AddUserModal = ({ onClose, setUsers }) => {
   const {
