@@ -33,7 +33,7 @@ function Payments() {
     userData: { role, email, firstName, lastName, customerId },
   } = useContext(AppContext);
   const { t } = useContext(LocaleContext);
-  const isAdmin = role === ROLES.ADMIN;
+  const isAdmin = [ROLES.ADMIN, ROLES.SUPERVISOR].includes(role);
 
   const [payments, setPayments] = useState([]);
   const [notFinishedOrdersError, setNotFinishedOrdersError] = useState(false);

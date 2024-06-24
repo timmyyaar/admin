@@ -377,5 +377,6 @@
   "show_only_completed_orders": "Показать только выполненные заказы",
   "orders_genitive": "заказов",
   "nice_to_see_you_in": "Приятно вас видеть в",
-  "log_in_to_your_account": "Войдите в свой аккаунт"
+  "log_in_to_your_account": "Войдите в свой аккаунт",
+  "admin_cities_filter_title": "Города"
 }

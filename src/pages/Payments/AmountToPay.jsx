@@ -15,7 +15,7 @@ function AmountToPay({
   const {
     userData: { role },
   } = useContext(AppContext);
-  const isAdmin = role === ROLES.ADMIN;
+  const isAdmin = [ROLES.ADMIN, ROLES.SUPERVISOR].includes(role);
 
   const [isAmountUpdating, setIsAmountUpdating] = useState(false);
   const [updatingAmount, setUpdatingAmount] = useState("");

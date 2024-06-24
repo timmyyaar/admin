@@ -63,9 +63,9 @@ const getSubServiceWithoutVacuumCleaner = (subService) => {
 
 export const OrderPage = ({ subscription = false }) => {
   const {
-    userData: { role, id: myUserId },
+    userData: { role, id: myUserId, cities },
   } = useContext(AppContext);
-  const isAdmin = role === ROLES.ADMIN;
+  const isAdmin = [ROLES.ADMIN, ROLES.SUPERVISOR].includes(role);
   const isCleaner = role === ROLES.CLEANER;
   const isDryCleaner = role === ROLES.CLEANER_DRY;
 
@@ -81,6 +81,7 @@ export const OrderPage = ({ subscription = false }) => {
     fromDate: null,
     toDate: null,
   });
+  const [citiesFilter, setCitiesFilter] = useState([]);
   const [showCheckListId, setShowCheckListId] = useState(null);
   const [showCheckListEditId, setShowCheckListEditId] = useState(null);
   const [isScheduleLoading, setIsScheduleLoading] = useState(false);
@@ -96,8 +97,8 @@ export const OrderPage = ({ subscription = false }) => {
 
       setOrders(
         ordersResponse.filter(({ title }) =>
-          subscription ? title === "Subscription" : title !== "Subscription"
-        )
+          subscription ? title === "Subscription" : title !== "Subscription",
+        ),
       );
     } finally {
       setLoading(false);
@@ -117,7 +118,7 @@ export const OrderPage = ({ subscription = false }) => {
       const usersResponse = await request({ url: "users" });
 
       const cleanersResponse = usersResponse.filter(({ role }) =>
-        [ROLES.CLEANER, ROLES.CLEANER_DRY].includes(role)
+        [ROLES.CLEANER, ROLES.CLEANER_DRY].includes(role),
       );
 
       setCleaners(cleanersResponse);
@@ -160,15 +161,15 @@ export const OrderPage = ({ subscription = false }) => {
       setOrders((prevOrders) =>
         prevOrders.map((prev) => {
           const updatedOrder = updatedOrders.find(
-            (item) => item.id === prev.id
+            (item) => item.id === prev.id,
           );
 
           return updatedOrder || prev;
-        })
+        }),
       );
     } finally {
       setIsStatusLoading((prevIsStatusLoading) =>
-        prevIsStatusLoading.filter((item) => item !== id)
+        prevIsStatusLoading.filter((item) => item !== id),
       );
     }
   };
@@ -256,7 +257,7 @@ export const OrderPage = ({ subscription = false }) => {
             ? getDateTimeObjectFromString(next.date) -
               getDateTimeObjectFromString(prev.date)
             : getDateTimeObjectFromString(next.creation_date) -
-              getDateTimeObjectFromString(prev.creation_date)
+              getDateTimeObjectFromString(prev.creation_date),
         );
 
   const filteredOrdersByDate = filteredOrders.filter(({ date }) => {
@@ -279,6 +280,16 @@ export const OrderPage = ({ subscription = false }) => {
     return true;
   });
 
+  const userCities = cities.split(",");
+
+  const filteredOrdersByCity = filteredOrdersByDate.filter(({ main_city }) => {
+    if (citiesFilter.length) {
+      return citiesFilter.includes(main_city);
+    }
+
+    return isAdmin ? true : userCities.includes(main_city);
+  });
+
   return (
     <div className="order-page">
       <Louder visible={loading || isUsersLoading || isScheduleLoading} />
@@ -292,10 +303,12 @@ export const OrderPage = ({ subscription = false }) => {
         setOrderTypeFilter={setOrderTypeFilter}
         dateFilter={dateFilter}
         setDateFilter={setDateFilter}
+        citiesFilter={citiesFilter}
+        setCitiesFilter={setCitiesFilter}
       />
       <div className="_mt-8">
-        {filteredOrdersByDate.length > 0
-          ? filteredOrdersByDate.map((el) => (
+        {filteredOrdersByCity.length > 0
+          ? filteredOrdersByCity.map((el) => (
               <div className="card _mb-3" key={el.id}>
                 {el.id === showCheckListId && (
                   <CheckListModal
@@ -426,7 +439,7 @@ export const OrderPage = ({ subscription = false }) => {
                           .replace("House", t("admin_order_house"))
                           .replace(
                             "Private house",
-                            t("admin_order_private_house")
+                            t("admin_order_private_house"),
                           )
                           .replace("Apartment", t("admin_order_apartment"))
                           .replace("Postcode", t("admin_order_postcode"))
@@ -478,7 +491,7 @@ export const OrderPage = ({ subscription = false }) => {
                             className="_mr-2"
                           />
                           {el.subservice.includes(
-                            "Vacuum_cleaner_sub_service_summery "
+                            "Vacuum_cleaner_sub_service_summery ",
                           )
                             ? t("admin_order_need_vacuum_cleaner")
                             : t("admin_order_have_vacuum_cleaner")}
@@ -497,16 +510,18 @@ export const OrderPage = ({ subscription = false }) => {
                             t,
                             getSubServiceWithCarpet(
                               getSubServiceWithBalcony(
-                                getSubServiceWithoutVacuumCleaner(el.subservice)
-                              )
-                            )
+                                getSubServiceWithoutVacuumCleaner(
+                                  el.subservice,
+                                ),
+                              ),
+                            ),
                           ),
                           "m2",
                           () => (
                             <>
                               m<sup>2</sup>
                             </>
-                          )
+                          ),
                         )}
                       </p>
                       {el.additional_information && (

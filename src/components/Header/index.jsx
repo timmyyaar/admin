@@ -16,10 +16,6 @@ const CLEANER_NAVIGATION = [
 
 const ADMIN_NAVIGATION = [
   { to: "/locales", title: "Locales" },
-  { to: "/prices", title: "Prices" },
-  { to: "/orders-summary", title: "Orders summary" },
-  { to: "/incomes", title: "Incomes" },
-  { to: "/statistics", title: "Statistics" },
   { to: "/career", title: "Career" },
   { to: "/gift", title: "Gifts" },
   { to: "/promo", title: "Promo Codes" },
@@ -31,20 +27,30 @@ const ADMIN_NAVIGATION = [
   { to: "/blogs", title: "Blogs" },
 ];
 
+const SUPERVISOR_NAVIGATION = [
+  { to: "/prices", title: "Prices" },
+  { to: "/orders-summary", title: "Orders summary" },
+  { to: "/incomes", title: "Incomes" },
+  { to: "/statistics", title: "Statistics" },
+];
+
 export const Header = ({ onLogOut, locale, setLocale }) => {
   const {
     userData: { role, rating },
   } = useContext(AppContext);
   const isAdmin = role === ROLES.ADMIN;
+  const isSupervisor = role === ROLES.SUPERVISOR;
 
   const { t } = useContext(LocaleContext);
   const [showMenu, setShowMenu] = useState(false);
 
   const { pathname } = useLocation();
 
-  const navigation = isAdmin
-    ? [...CLEANER_NAVIGATION, ...ADMIN_NAVIGATION]
-    : CLEANER_NAVIGATION;
+  const navigation = isSupervisor
+    ? [...CLEANER_NAVIGATION, ...SUPERVISOR_NAVIGATION, ...ADMIN_NAVIGATION]
+    : isAdmin
+      ? [...CLEANER_NAVIGATION, ...ADMIN_NAVIGATION]
+      : CLEANER_NAVIGATION;
 
   const menuRef = useRef();
   useClickOutside(menuRef, () => setShowMenu(false));
@@ -86,7 +92,7 @@ export const Header = ({ onLogOut, locale, setLocale }) => {
                   onClick={() => setShowMenu(false)}
                 >
                   {t(
-                    `admin_${nav.title.toLowerCase().replace(" ", "_")}_header`
+                    `admin_${nav.title.toLowerCase().replace(" ", "_")}_header`,
                   )}
                 </Link>
               </div>
