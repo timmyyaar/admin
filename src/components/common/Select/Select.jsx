@@ -7,8 +7,8 @@ export const DARK_SELECT_STYLES = {
     backgroundColor: state.isDisabled
       ? "#212529"
       : state.isSelected
-      ? "#495057"
-      : provided.backgroundColor,
+        ? "#495057"
+        : provided.backgroundColor,
   }),
   placeholder: (provided) => ({
     ...provided,
@@ -98,6 +98,7 @@ export const DARK_SELECT_STYLES = {
     }),
   }),
   menu: (provided) => ({ ...provided, zIndex: 100 }),
+  menuPortal: (provided) => ({ ...provided, zIndex: 10000 }),
 };
 
 function Select(props) {

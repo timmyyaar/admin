@@ -8,7 +8,7 @@ function ScheduleDayRow({ date, schedule, setSchedule, selectedEmployee, t }) {
   const {
     userData: { role },
   } = useContext(AppContext);
-  const isAdmin = role === ROLES.ADMIN;
+  const isAdmin = [ROLES.ADMIN, ROLES.SUPERVISOR].includes(role);
 
   const remainingTimeTillDate = getTimeRemaining(`${date} 00:00`);
   const isRowDisabled = remainingTimeTillDate.days < (isAdmin ? -1 : 3);

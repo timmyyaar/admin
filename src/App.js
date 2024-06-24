@@ -37,12 +37,13 @@ function App() {
   const [locale, setLocale] = useState(
     selectedLocale && availableLocales.includes(selectedLocale)
       ? selectedLocale
-      : "en"
+      : "en",
   );
   const [userData, setUserData] = useState(null);
   const [isUserDataLoading, setIsUserDataLoading] = useState(true);
 
   const isAdmin = userData?.role === ROLES.ADMIN;
+  const isSupervisor = userData?.role === ROLES.SUPERVISOR;
 
   const { t } = useLocales(locale);
 
@@ -117,15 +118,20 @@ function App() {
                       <Route path="/documents" element={<Documents />} />
                       <Route path="/schedule" element={<Schedule />} />
                       <Route path="/payments" element={<Payments />} />
-                      {isAdmin && (
+                      {isSupervisor && (
                         <>
-                          <Route path="/locales" element={<LocalesPage />} />
                           <Route
                             path="/orders-summary"
                             element={<OrdersSummary />}
                           />
                           <Route path="/incomes" element={<Incomes />} />
                           <Route path="/statistics" element={<Statistics />} />
+                          <Route path="/prices" element={<Prices />} />
+                        </>
+                      )}
+                      {(isAdmin || isSupervisor) && (
+                        <>
+                          <Route path="/locales" element={<LocalesPage />} />
                           <Route path="/career" element={<CareerPage />} />
                           <Route path="/gift" element={<GiftPage />} />
                           <Route path="/promo" element={<PromoPage />} />
@@ -138,7 +144,6 @@ function App() {
                           <Route path="/discounts" element={<Discounts />} />
                           <Route path="/clients" element={<Clients />} />
                           <Route path="/blogs" element={<Blogs />} />
-                          <Route path="/prices" element={<Prices />} />}
                         </>
                       )}
                     </Routes>

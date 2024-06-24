@@ -1,8 +1,9 @@
 import { getDateString } from "../../utils";
 import React, { useContext } from "react";
 import DatePicker from "react-datepicker";
-import { ORDER_STATUS, ORDER_TYPE, ROLES } from "../../constants";
+import { CITIES, ORDER_STATUS, ORDER_TYPE, ROLES } from "../../constants";
 import { AppContext, LocaleContext } from "../../contexts";
+import Select from "../../components/common/Select/Select";
 
 const CLEANER_STATUS_FILTER_OPTIONS = [
   { value: ORDER_STATUS.APPROVED.value, label: "Available orders" },
@@ -21,6 +22,11 @@ const ADMIN_STATUS_FILTER_OPTIONS = [
 
 const ORDER_TYPE_OPTIONS = Object.values(ORDER_TYPE);
 
+const CITIES_OPTIONS = Object.values(CITIES).map((city) => ({
+  value: city,
+  label: city,
+}));
+
 const Filters = ({
   statusFilter,
   setStatusFilter,
@@ -31,11 +37,13 @@ const Filters = ({
   setOrderTypeFilter,
   dateFilter,
   setDateFilter,
+  citiesFilter,
+  setCitiesFilter,
 }) => {
   const {
-    userData: { role },
+    userData: { role, cities },
   } = useContext(AppContext);
-  const isAdmin = role === ROLES.ADMIN;
+  const isAdmin = [ROLES.ADMIN, ROLES.SUPERVISOR].includes(role);
 
   const { t } = useContext(LocaleContext);
 
@@ -81,6 +89,12 @@ const Filters = ({
     return fromDate.getTime() < selectedDate.getTime();
   };
 
+  const userCities = cities.split(",");
+  const citiesFilterValue = citiesFilter.map((city) => ({
+    value: city,
+    label: city,
+  }));
+
   return (
     <div className="_items-center _gap-4 _mt-2 filters-wrapper">
       <label>{t("admin_order_status_filter_title")}:</label>
@@ -101,7 +115,7 @@ const Filters = ({
             }`}
           >
             {t(
-              `admin_order_${label.toLowerCase().replaceAll(" ", "_")}_option`
+              `admin_order_${label.toLowerCase().replaceAll(" ", "_")}_option`,
             )}
           </option>
         ))}
@@ -143,11 +157,29 @@ const Filters = ({
                 {t(
                   `admin_order_type_${orderType
                     .toLowerCase()
-                    .replaceAll(" ", "_")}_option`
+                    .replaceAll(" ", "_")}_option`,
                 )}
               </option>
             ))}
           </select>
+        </>
+      )}
+      {(isAdmin || userCities.length > 1) && (
+        <>
+          <span>{t("admin_cities_filter_title")}:</span>
+          <Select
+            placeholder={t("select_placeholder")}
+            isMulti
+            options={
+              isAdmin
+                ? CITIES_OPTIONS
+                : userCities.map((city) => ({ value: city, label: city }))
+            }
+            value={citiesFilterValue}
+            onChange={(options) =>
+              setCitiesFilter(options?.map(({ value }) => value) || [])
+            }
+          />
         </>
       )}
       <span>{t("admin_order_date_from_filter_title")}:</span>

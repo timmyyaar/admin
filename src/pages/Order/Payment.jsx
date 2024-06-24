@@ -15,7 +15,7 @@ function Payment({ order, setOrders, t }) {
   const {
     userData: { role },
   } = useContext(AppContext);
-  const isAdmin = role === ROLES.ADMIN;
+  const isAdmin = [ROLES.ADMIN, ROLES.SUPERVISOR].includes(role);
 
   const { locale } = useContext(LocaleContext);
   const [paymentLink, setPaymentLink] = useState("");
