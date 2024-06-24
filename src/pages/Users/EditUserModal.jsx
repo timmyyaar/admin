@@ -1,8 +1,9 @@
-import React, { useState } from "react";
-import {CITIES, ROLES, ROLES_OPTIONS} from "../../constants";
+import React, { useContext, useState } from "react";
+import { CITIES, ROLES, ROLES_OPTIONS } from "../../constants";
 import Select from "../../components/common/Select/Select";
 import Modal from "../../components/common/Modal";
 import { request } from "../../utils";
+import { AppContext } from "../../contexts";
 
 const CITIES_OPTIONS = Object.values(CITIES).map((city) => ({
   value: city,
@@ -10,6 +11,10 @@ const CITIES_OPTIONS = Object.values(CITIES).map((city) => ({
 }));
 
 function EditUserModal({ onClose, user, setUsers }) {
+  const {
+    userData: { role: userRole },
+  } = useContext(AppContext);
+
   const [role, setRole] = useState(user.role);
   const [firstName, setFirstName] = useState(user.first_name);
   const [lastName, setLastName] = useState(user.last_name);
@@ -79,7 +84,11 @@ function EditUserModal({ onClose, user, setUsers }) {
       <div className="_inline-grid _gap-4 _w-full grid-two-columns-max-auto align-items-center">
         <label className="_mr-2">Role:</label>
         <Select
-          options={ROLES_OPTIONS}
+          options={
+            userRole === ROLES.SUPERVISOR
+              ? ROLES_OPTIONS
+              : ROLES_OPTIONS.filter(({ value }) => value !== ROLES.SUPERVISOR)
+          }
           placeholder="Select role..."
           value={ROLES_OPTIONS.find((item) => item.value === role)}
           onChange={(option) => setRole(option.value)}

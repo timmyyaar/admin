@@ -379,5 +379,8 @@
   "orders_genitive": "zamówień",
   "nice_to_see_you_in": "Miło cię widzieć w",
   "log_in_to_your_account": "Zaloguj się na swoje konto",
-  "admin_cities_filter_title": "Miasta"
+  "admin_cities_filter_title": "Miasta",
+  "City": "Miasto",
+  "Krakow": "Kraków",
+  "Warsaw": "Warszawa"
 }

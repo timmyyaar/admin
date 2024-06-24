@@ -379,5 +379,8 @@
   "orders_genitive": "замовлень",
   "nice_to_see_you_in": "Радий бачити вас у",
   "log_in_to_your_account": "Увійдіть у свій обліковий запис",
-  "admin_cities_filter_title": "Міста"
+  "admin_cities_filter_title": "Міста",
+  "City": "Місто",
+  "Krakow": "Кракiв",
+  "Warsaw": "Варшава"
 }
