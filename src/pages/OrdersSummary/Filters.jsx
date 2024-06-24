@@ -2,6 +2,7 @@ import DatePicker from "react-datepicker";
 import React from "react";
 import { getDateString } from "../../utils";
 import Select from "../../components/common/Select/Select";
+import { CITIES_OPTIONS } from "../../constants";
 
 function Filters({
   t,
@@ -12,6 +13,8 @@ function Filters({
   cleaners,
   cleanersFilter,
   setCleanersFilter,
+  citiesFilter,
+  setCitiesFilter,
 }) {
   const filterPassedTimeFromDate = (time) => {
     const selectedDate = new Date(time);
@@ -50,8 +53,12 @@ function Filters({
     label: `${first_name} ${last_name}`,
   }));
   const cleanersFilterValue = cleanersFilter.map((id) =>
-    cleanersOptions.find(({ value }) => value === id)
+    cleanersOptions.find(({ value }) => value === id),
   );
+  const citiesFilterValue = citiesFilter.map((city) => ({
+    value: city,
+    label: city,
+  }));
 
   return (
     <div className="_mb-6">
@@ -95,6 +102,16 @@ function Filters({
           options={cleanersOptions}
           onChange={(options) =>
             setCleanersFilter(options ? options.map(({ value }) => value) : [])
+          }
+        />
+        <span>{t("admin_cities_filter_title")}:</span>
+        <Select
+          placeholder={t("select_placeholder")}
+          isMulti
+          options={CITIES_OPTIONS}
+          value={citiesFilterValue}
+          onChange={(options) =>
+            setCitiesFilter(options?.map(({ value }) => value) || [])
           }
         />
       </div>

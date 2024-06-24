@@ -12,7 +12,7 @@ import { Louder } from "../../components/Louder";
 import Select from "../../components/common/Select/Select";
 
 import "./style.scss";
-import { ORDER_STATUS } from "../../constants";
+import { CITIES_OPTIONS, ORDER_STATUS } from "../../constants";
 
 const getFirstDateOfMonth = (date = new Date()) =>
   new Date(date.getFullYear(), date.getMonth(), 1);
@@ -30,7 +30,7 @@ const getSpent = (orders) =>
   orders.reduce(
     (result, { reward, reward_original, extra_expenses }) =>
       result + ((reward || reward_original) + (extra_expenses || 0)),
-    0
+    0,
   );
 
 const hundredYears = Array(101)
@@ -45,6 +45,7 @@ function Incomes() {
   const [dateFrom, setDateFrom] = useState(getFirstDateOfMonth());
   const [dateTo, setDateTo] = useState(getEndOfDay());
   const [year, setYear] = useState(dateTo.getFullYear());
+  const [citiesFilter, setCitiesFilter] = useState([]);
 
   const getOrders = async () => {
     try {
@@ -63,12 +64,14 @@ function Incomes() {
   }, []);
 
   const datesBetweenRange = getDatesBetween(dateFrom, dateTo).map((date) =>
-    getDateString(date)
+    getDateString(date),
   );
 
-  const completedOrders = orders.filter(
-    ({ status }) => status === ORDER_STATUS.DONE.value
-  );
+  const completedOrders = orders
+    .filter(({ status }) => status === ORDER_STATUS.DONE.value)
+    .filter(({ main_city }) =>
+      citiesFilter.length > 0 ? citiesFilter.includes(main_city) : true,
+    );
 
   const currentPeriodOrders = completedOrders.filter(({ date }) => {
     const dateObject = getDateTimeObjectFromString(date);
@@ -88,14 +91,17 @@ function Incomes() {
   const yearRevenue = getRevenue(yearOrders);
   const spentMoneyYear = getSpent(yearOrders);
 
+  const citiesFilterValue = citiesFilter.map((city) => ({
+    value: city,
+    label: city,
+  }));
+
   return (
     <div>
       <Louder visible={isLoading} />
-      <div className="mb-3 d-flex align-items-center">
-        <span className="_mr-2">
-          {t("admin_order_date_from_filter_title")}:
-        </span>
-        <div className="_mr-3">
+      <div className="incomes-filters-wrapper _mb-4 _mt-2 lg:_mb-8 _gap-3 _items-center">
+        <span>{t("admin_order_date_from_filter_title")}:</span>
+        <div>
           <DatePicker
             selectsStart
             selected={dateFrom}
@@ -106,7 +112,7 @@ function Incomes() {
             endDate={dateTo}
           />
         </div>
-        <span className="_mr-2">{t("admin_order_date_to_filter_title")}:</span>
+        <span>{t("admin_order_date_to_filter_title")}:</span>
         <div>
           <DatePicker
             selectsEnd
@@ -118,6 +124,16 @@ function Incomes() {
             endDate={dateTo}
           />
         </div>
+        <span>{t("admin_cities_filter_title")}:</span>
+        <Select
+          placeholder={t("select_placeholder")}
+          isMulti
+          options={CITIES_OPTIONS}
+          value={citiesFilterValue}
+          onChange={(options) =>
+            setCitiesFilter(options?.map(({ value }) => value) || [])
+          }
+        />
       </div>
       <table className="table table-dark table-bordered">
         <thead>
@@ -133,7 +149,7 @@ function Incomes() {
           {datesBetweenRange.map((date) => {
             const ordersOnThisDay = completedOrders.filter(
               (order) =>
-                getDateString(getDateTimeObjectFromString(order.date)) === date
+                getDateString(getDateTimeObjectFromString(order.date)) === date,
             );
             const revenueOnThisDay = getRevenue(ordersOnThisDay);
             const spentMoneyThisDay = getSpent(ordersOnThisDay);
@@ -148,7 +164,7 @@ function Incomes() {
                 </td>
                 <td>
                   {getFloatOneDigit(
-                    revenueOnThisDay / (ordersOnThisDay.length || 1)
+                    revenueOnThisDay / (ordersOnThisDay.length || 1),
                   )}
                 </td>
               </tr>
@@ -165,7 +181,7 @@ function Incomes() {
             </td>
             <td className="align-middle">
               {getFloatOneDigit(
-                currentPeriodRevenue / (currentPeriodOrders.length || 1)
+                currentPeriodRevenue / (currentPeriodOrders.length || 1),
               )}
             </td>
           </tr>

@@ -153,6 +153,12 @@ const Users = () => {
                 {ROLES_OPTIONS.find(({ value }) => value === user.role).label}
               </span>
             </p>
+            <p>
+              Cities:
+              <span className="_font-bold _ml-2">
+                {user.cities.split(",").join(", ")}
+              </span>
+            </p>
             {[ROLES.CLEANER_DRY, ROLES.CLEANER].includes(user.role) && (
               <>
                 <p>⭐ Rating: {user.rating}</p>

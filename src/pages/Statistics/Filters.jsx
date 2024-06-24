@@ -1,6 +1,8 @@
 import DatePicker from "react-datepicker";
 import React, { useContext } from "react";
 import { LocaleContext } from "../../contexts";
+import Select from "../../components/common/Select/Select";
+import { CITIES_OPTIONS } from "../../constants";
 
 function Filters({
   dateFrom,
@@ -9,13 +11,20 @@ function Filters({
   setDateTo,
   isOnlyCompleted,
   setIsOnlyCompleted,
+  citiesFilter,
+  setCitiesFilter,
 }) {
   const { t } = useContext(LocaleContext);
 
+  const citiesFilterValue = citiesFilter.map((city) => ({
+    value: city,
+    label: city,
+  }));
+
   return (
-    <div className="filters-wrapper _inline-grid _mb-4 lg:_mb-8 _gap-3 _items-center lg:_flex-row">
-      <span className="_mr-2">{t("admin_order_date_from_filter_title")}:</span>
-      <div className="_mr-3">
+    <div className="filters-wrapper _inline-grid _mb-4 _mt-2 lg:_mb-8 _gap-3 _items-center">
+      <span>{t("admin_order_date_from_filter_title")}:</span>
+      <div>
         <DatePicker
           selectsStart
           selected={dateFrom}
@@ -27,7 +36,7 @@ function Filters({
           isClearable={dateFrom}
         />
       </div>
-      <span className="_mr-2">{t("admin_order_date_to_filter_title")}:</span>
+      <span>{t("admin_order_date_to_filter_title")}:</span>
       <div>
         <DatePicker
           selectsEnd
@@ -40,6 +49,16 @@ function Filters({
           isClearable={dateTo}
         />
       </div>
+      <span>{t("admin_cities_filter_title")}:</span>
+      <Select
+        placeholder={t("select_placeholder")}
+        isMulti
+        options={CITIES_OPTIONS}
+        value={citiesFilterValue}
+        onChange={(options) =>
+          setCitiesFilter(options?.map(({ value }) => value) || [])
+        }
+      />
       <div className="form-check _col-span-2 lg:_col-span-1">
         <input
           className="form-check-input _cursor-pointer"

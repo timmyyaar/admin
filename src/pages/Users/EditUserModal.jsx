@@ -1,14 +1,9 @@
 import React, { useContext, useState } from "react";
-import { CITIES, ROLES, ROLES_OPTIONS } from "../../constants";
+import { CITIES_OPTIONS, ROLES, ROLES_OPTIONS } from "../../constants";
 import Select from "../../components/common/Select/Select";
 import Modal from "../../components/common/Modal";
 import { request } from "../../utils";
 import { AppContext } from "../../contexts";
-
-const CITIES_OPTIONS = Object.values(CITIES).map((city) => ({
-  value: city,
-  label: city,
-}));
 
 function EditUserModal({ onClose, user, setUsers }) {
   const {
