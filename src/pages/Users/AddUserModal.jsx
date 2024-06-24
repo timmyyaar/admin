@@ -1,8 +1,9 @@
 import Modal from "../../components/common/Modal";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { CITIES, EMAIL_REGEX, ROLES, ROLES_OPTIONS } from "../../constants";
 import { request } from "../../utils";
 import Select from "../../components/common/Select/Select";
+import { AppContext } from "../../contexts";
 
 const CITIES_OPTIONS = Object.values(CITIES).map((city) => ({
   value: city,
@@ -10,6 +11,10 @@ const CITIES_OPTIONS = Object.values(CITIES).map((city) => ({
 }));
 
 const AddUserModal = ({ onClose, setUsers }) => {
+  const {
+    userData: { role: userRole },
+  } = useContext(AppContext);
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState(ROLES.ADMIN);
@@ -104,7 +109,11 @@ const AddUserModal = ({ onClose, setUsers }) => {
         />
         <label className="_mr-2">Role:</label>
         <Select
-          options={ROLES_OPTIONS}
+          options={
+            userRole === ROLES.SUPERVISOR
+              ? ROLES_OPTIONS
+              : ROLES_OPTIONS.filter(({ value }) => value !== ROLES.SUPERVISOR)
+          }
           value={roleValue}
           onChange={(option) => setRole(option.value)}
           menuPortalTarget={document.body}
