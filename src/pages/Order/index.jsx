@@ -434,7 +434,7 @@ export const OrderPage = ({ subscription = false }) => {
                         }`}
                       >
                         <GeoIcon width="20" height="20" className="_mr-2" />
-                        City: {t(el.main_city)},{" "}
+                        {t("City")}: {t(el.main_city)},{" "}
                         {el.address
                           .replace("Street", t("admin_order_street"))
                           .replace("House", t("admin_order_house"))
