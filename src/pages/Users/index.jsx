@@ -4,7 +4,7 @@ import { request } from "../../utils";
 import { Louder } from "../../components/Louder";
 import ChangePasswordModal from "./ChangePasswordModal";
 import DeleteUserModal from "./DeleteUserModal";
-import { ROLES } from "../../constants";
+import { ROLES, ROLES_OPTIONS } from "../../constants";
 import { ReactComponent as StarIcon } from "../../assets/icons/star.svg";
 import UserRatingPopover from "./UserRatingPopover/UserRatingPopover";
 import EditUserModal from "./EditUserModal";
@@ -12,7 +12,7 @@ import { AppContext } from "../../contexts";
 
 const Users = () => {
   const {
-    userData: { email: myEmail },
+    userData: { email: myEmail, role: userRole },
   } = useContext(AppContext);
 
   const [users, setUsers] = useState([]);
@@ -39,6 +39,10 @@ const Users = () => {
   useEffect(() => {
     getUsers();
   }, []);
+
+  const filteredUsers = users.filter(({ role }) =>
+    userRole !== ROLES.SUPERVISOR ? role !== ROLES.SUPERVISOR : true,
+  );
 
   return (
     <div className="mt-4">
@@ -76,7 +80,7 @@ const Users = () => {
           {...deletingUser}
         />
       )}
-      {users.map((user) => (
+      {filteredUsers.map((user) => (
         <div className="card mb-3" key={user.id}>
           <div className="card-header d-flex align-items-center">
             <h5 className="card-title mb-0 d-flex justify-content-start align-items-center">
@@ -145,7 +149,15 @@ const Users = () => {
             </p>
             <p>
               Role:
-              <span className="_font-bold _ml-2">{user.role}</span>
+              <span className="_font-bold _ml-2">
+                {ROLES_OPTIONS.find(({ value }) => value === user.role).label}
+              </span>
+            </p>
+            <p>
+              Cities:
+              <span className="_font-bold _ml-2">
+                {user.cities.split(",").join(", ")}
+              </span>
             </p>
             {[ROLES.CLEANER_DRY, ROLES.CLEANER].includes(user.role) && (
               <>

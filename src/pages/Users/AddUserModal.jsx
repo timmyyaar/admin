@@ -1,11 +1,20 @@
 import Modal from "../../components/common/Modal";
-import React, { useState } from "react";
-import { EMAIL_REGEX, ROLES } from "../../constants";
+import React, { useContext, useState } from "react";
+import {
+  CITIES_OPTIONS,
+  EMAIL_REGEX,
+  ROLES,
+  ROLES_OPTIONS,
+} from "../../constants";
 import { request } from "../../utils";
-
-const ROLES_OPTIONS = Object.values(ROLES);
+import Select from "../../components/common/Select/Select";
+import { AppContext } from "../../contexts";
 
 const AddUserModal = ({ onClose, setUsers }) => {
+  const {
+    userData: { role: userRole },
+  } = useContext(AppContext);
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState(ROLES.ADMIN);
@@ -13,6 +22,7 @@ const AddUserModal = ({ onClose, setUsers }) => {
   const [lastName, setLastName] = useState("");
   const [haveVacuumCleaner, setHaveVacuumCleaner] = useState(false);
   const [haveCar, setHaveCar] = useState(false);
+  const [cities, setCities] = useState([]);
   const [isCreateLoading, setIsCreateLoading] = useState(false);
   const [createError, setCreateError] = useState(null);
 
@@ -22,7 +32,8 @@ const AddUserModal = ({ onClose, setUsers }) => {
     password &&
     role &&
     firstName &&
-    lastName;
+    lastName &&
+    cities.length > 0;
 
   const showCheckboxes = [ROLES.CLEANER_DRY, ROLES.CLEANER].includes(role);
 
@@ -44,6 +55,7 @@ const AddUserModal = ({ onClose, setUsers }) => {
           role,
           firstName,
           lastName,
+          cities,
           ...(showCheckboxes && { haveVacuumCleaner, haveCar }),
         },
       });
@@ -58,6 +70,9 @@ const AddUserModal = ({ onClose, setUsers }) => {
       setIsCreateLoading(false);
     }
   };
+
+  const citiesValue = cities.map((city) => ({ value: city, label: city }));
+  const roleValue = ROLES_OPTIONS.find(({ value }) => role === value);
 
   return (
     <Modal
@@ -93,16 +108,26 @@ const AddUserModal = ({ onClose, setUsers }) => {
           onChange={({ target: { value } }) => setLastName(value)}
         />
         <label className="_mr-2">Role:</label>
-        <select
-          className="form-select"
-          onChange={({ target: { value } }) => setRole(value)}
-        >
-          {ROLES_OPTIONS.map((option) => (
-            <option selected={option === role} value={option}>
-              {option}
-            </option>
-          ))}
-        </select>
+        <Select
+          options={
+            userRole === ROLES.SUPERVISOR
+              ? ROLES_OPTIONS
+              : ROLES_OPTIONS.filter(({ value }) => value !== ROLES.SUPERVISOR)
+          }
+          value={roleValue}
+          onChange={(option) => setRole(option.value)}
+          menuPortalTarget={document.body}
+        />
+        <label className="_mr-2">Cities:</label>
+        <Select
+          isMulti
+          options={CITIES_OPTIONS}
+          value={citiesValue}
+          onChange={(options) =>
+            setCities(options?.map(({ value }) => value) || [])
+          }
+          menuPortalTarget={document.body}
+        />
       </div>
       {showCheckboxes && (
         <>

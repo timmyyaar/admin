@@ -35,7 +35,7 @@ function Payment({
   const {
     userData: { role },
   } = useContext(AppContext);
-  const isAdmin = role === ROLES.ADMIN;
+  const isAdmin = [ROLES.ADMIN, ROLES.SUPERVISOR].includes(role);
 
   const [isPaymentExpanded, setIsPaymentExpanded] = useState(false);
   const [isPaymentExpandLoading, setIsPaymentExpandLoading] = useState(false);

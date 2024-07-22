@@ -1,26 +1,27 @@
-import React, { useState } from "react";
-import { ROLES } from "../../constants";
+import React, { useContext, useState } from "react";
+import { CITIES_OPTIONS, ROLES, ROLES_OPTIONS } from "../../constants";
 import Select from "../../components/common/Select/Select";
 import Modal from "../../components/common/Modal";
 import { request } from "../../utils";
-
-const ROLES_OPTIONS = Object.values(ROLES).map((item) => ({
-  value: item,
-  label: item,
-}));
+import { AppContext } from "../../contexts";
 
 function EditUserModal({ onClose, user, setUsers }) {
+  const {
+    userData: { role: userRole },
+  } = useContext(AppContext);
+
   const [role, setRole] = useState(user.role);
   const [firstName, setFirstName] = useState(user.first_name);
   const [lastName, setLastName] = useState(user.last_name);
   const [hasVacuumCleaner, setHasVacuumCleaner] = useState(
-    user.have_vacuum_cleaner
+    user.have_vacuum_cleaner,
   );
   const [hasCar, setHasCar] = useState(user.have_car);
+  const [cities, setCities] = useState(user.cities.split(","));
   const [isEditUserLoading, setIsEditUserLoading] = useState(false);
   const [editUserError, setEditUserError] = useState("");
 
-  const isEditUserEnabled = firstName && lastName && role;
+  const isEditUserEnabled = firstName && lastName && role && cities.length > 0;
 
   const showCheckboxes = [ROLES.CLEANER_DRY, ROLES.CLEANER].includes(role);
 
@@ -39,6 +40,7 @@ function EditUserModal({ onClose, user, setUsers }) {
           role,
           firstName: firstName.trim(),
           lastName: lastName.trim(),
+          cities,
           ...(showCheckboxes && {
             haveVacuumCleaner: hasVacuumCleaner,
             haveCar: hasCar,
@@ -48,8 +50,8 @@ function EditUserModal({ onClose, user, setUsers }) {
 
       setUsers((prev) =>
         prev.map((prevUser) =>
-          prevUser.id === updatedUser.id ? updatedUser : prevUser
-        )
+          prevUser.id === updatedUser.id ? updatedUser : prevUser,
+        ),
       );
       onClose();
     } catch (error) {
@@ -58,6 +60,8 @@ function EditUserModal({ onClose, user, setUsers }) {
       setIsEditUserLoading(false);
     }
   };
+
+  const citiesValue = cities.map((item) => ({ value: item, label: item }));
 
   return (
     <Modal
@@ -75,7 +79,11 @@ function EditUserModal({ onClose, user, setUsers }) {
       <div className="_inline-grid _gap-4 _w-full grid-two-columns-max-auto align-items-center">
         <label className="_mr-2">Role:</label>
         <Select
-          options={ROLES_OPTIONS}
+          options={
+            userRole === ROLES.SUPERVISOR
+              ? ROLES_OPTIONS
+              : ROLES_OPTIONS.filter(({ value }) => value !== ROLES.SUPERVISOR)
+          }
           placeholder="Select role..."
           value={ROLES_OPTIONS.find((item) => item.value === role)}
           onChange={(option) => setRole(option.value)}
@@ -91,6 +99,16 @@ function EditUserModal({ onClose, user, setUsers }) {
           className="form-control"
           value={lastName}
           onChange={({ target: { value } }) => setLastName(value)}
+        />
+        <label className="_mr-2">Cities:</label>
+        <Select
+          isMulti
+          options={CITIES_OPTIONS}
+          value={citiesValue}
+          onChange={(options) =>
+            setCities(options?.map(({ value }) => value) || [])
+          }
+          menuPortalTarget={document.body}
         />
       </div>
       {showCheckboxes && (

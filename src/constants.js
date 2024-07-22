@@ -1,12 +1,23 @@
+import { capitalizeFirstLetter } from "./utils";
+
 export const EMAIL_REGEX =
   /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
 export const ROLES = {
+  SUPERVISOR: "supervisor",
   ADMIN: "admin",
   CLEANER: "cleaner",
   CLEANER_DRY: "cleaner_dry",
   CLIENT: "client",
 };
+
+export const ROLES_OPTIONS = Object.values(ROLES).map((role) => ({
+  value: role,
+  label: role
+    .split("_")
+    .map((item) => capitalizeFirstLetter(item))
+    .join(" "),
+}));
 
 export const ORDER_STATUS = {
   CREATED: { value: "created", label: "Created" },
@@ -56,3 +67,13 @@ export const PAYMENT_STATUS = {
   CONFIRMED: "confirmed",
   CANCELED: "canceled",
 };
+
+export const CITIES = {
+  KRAKOW: "Krakow",
+  WARSAW: "Warsaw",
+};
+
+export const CITIES_OPTIONS = Object.values(CITIES).map((city) => ({
+  value: city,
+  label: city,
+}));

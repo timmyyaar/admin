@@ -23,6 +23,7 @@ function OrdersSummary() {
   const [fromDate, setFromDate] = useState(null);
   const [toDate, setToDate] = useState(null);
   const [cleanersFilter, setCleanersFilter] = useState([]);
+  const [citiesFilter, setCitiesFilter] = useState([]);
 
   const { t } = useContext(LocaleContext);
 
@@ -45,7 +46,7 @@ function OrdersSummary() {
       const usersResponse = await request({ url: "users" });
 
       const cleanersResponse = usersResponse.filter(({ role }) =>
-        [ROLES.CLEANER, ROLES.CLEANER_DRY].includes(role)
+        [ROLES.CLEANER, ROLES.CLEANER_DRY].includes(role),
       );
 
       setCleaners(cleanersResponse);
@@ -81,7 +82,10 @@ function OrdersSummary() {
     .filter(({ cleaner_id }) =>
       cleanersFilter.length > 0
         ? cleaner_id.some((id) => cleanersFilter.includes(id))
-        : true
+        : true,
+    )
+    .filter(({ main_city }) =>
+      citiesFilter.length > 0 ? citiesFilter.includes(main_city) : true,
     );
 
   const invoiceForPeriod = filteredOrders
@@ -89,7 +93,7 @@ function OrdersSummary() {
     .reduce((result, order) => {
       const reward = order.reward || order.reward_original;
       const companyEarning = getFloatOneDigit(
-        order.price - reward * order.cleaners_count
+        order.price - reward * order.cleaners_count,
       );
 
       const invoice = order.onlinepayment
@@ -112,6 +116,8 @@ function OrdersSummary() {
         cleaners={cleaners}
         cleanersFilter={cleanersFilter}
         setCleanersFilter={setCleanersFilter}
+        citiesFilter={citiesFilter}
+        setCitiesFilter={setCitiesFilter}
       />
       <table className="table table-dark table-bordered">
         <thead>
@@ -133,13 +139,13 @@ function OrdersSummary() {
           {filteredOrders.map((order) => {
             const reward = order.reward || order.reward_original;
             const discountPercent = Math.round(
-              100 - (100 * order.price) / order.price_original
+              100 - (100 * order.price) / order.price_original,
             );
             const orderCleaners = cleaners
               .filter(({ id }) => order.cleaner_id.includes(id))
               .map((cleaner) => `${cleaner.first_name} ${cleaner.last_name}`);
             const companyEarning = getFloatOneDigit(
-              order.price - reward * order.cleaners_count
+              order.price - reward * order.cleaners_count,
             );
 
             return (
@@ -214,8 +220,8 @@ function OrdersSummary() {
                   invoiceForPeriodOneDigit < 0
                     ? "text-danger"
                     : invoiceForPeriodOneDigit === 0
-                    ? "text-warning"
-                    : "text-success"
+                      ? "text-warning"
+                      : "text-success"
                 }
               >
                 {invoiceForPeriodOneDigit}

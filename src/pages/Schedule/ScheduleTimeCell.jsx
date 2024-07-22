@@ -16,7 +16,7 @@ function ScheduleTimeCell({
   const {
     userData: { role },
   } = useContext(AppContext);
-  const isAdmin = role === ROLES.ADMIN;
+  const isAdmin = [ROLES.ADMIN, ROLES.SUPERVISOR].includes(role);
 
   const { t } = useContext(LocaleContext);
   const [isTimeModalOpened, setIsTimeModalOpened] = useState(false);
