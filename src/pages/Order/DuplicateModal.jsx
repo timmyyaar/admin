@@ -47,6 +47,7 @@ function DuplicateModal({ t, onClose, order, setOrders }) {
           mainServiceCleanersCount: order.cleaners_count,
           language: order.language,
           creationDate: getDateTimeString(new Date()),
+          mainCity: order.main_city,
         },
       });
 
