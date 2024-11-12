@@ -32,6 +32,7 @@ const SUPERVISOR_NAVIGATION = [
   { to: "/orders-summary", title: "Orders summary" },
   { to: "/incomes", title: "Incomes" },
   { to: "/statistics", title: "Statistics" },
+  { to: "/settings", title: "Settings" },
 ];
 
 export const Header = ({ onLogOut, locale, setLocale }) => {
