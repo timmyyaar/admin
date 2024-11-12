@@ -382,5 +382,6 @@
   "admin_cities_filter_title": "Miasta",
   "City": "Miasto",
   "Krakow": "Kraków",
-  "Warsaw": "Warszawa"
+  "Warsaw": "Warszawa",
+  "admin_settings_header": "Ustawienia"
 }

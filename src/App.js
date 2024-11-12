@@ -26,6 +26,7 @@ import Prices from "./pages/Prices";
 import { Louder } from "./components/Louder";
 import Payments from "./pages/Payments";
 import Statistics from "./pages/Statistics";
+import Settings from "./pages/Settings";
 
 const LOCALE_LOCAL_STORAGE_KEY = "locale";
 
@@ -127,6 +128,7 @@ function App() {
                           <Route path="/incomes" element={<Incomes />} />
                           <Route path="/statistics" element={<Statistics />} />
                           <Route path="/prices" element={<Prices />} />
+                          <Route path="/settings" element={<Settings />} />
                         </>
                       )}
                       {(isAdmin || isSupervisor) && (
