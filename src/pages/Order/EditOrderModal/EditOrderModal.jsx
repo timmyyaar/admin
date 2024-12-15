@@ -15,16 +15,20 @@ import {
   request,
 } from "../../../utils";
 import { LocaleContext } from "../../../contexts";
-import {
-  getEstimateInHoursMinutesFormat,
-  getEstimateInMinutes,
-} from "../utils";
 import DatePicker from "react-datepicker";
 import CounterEdit from "./CounterEdit";
 import SubServiceEdit from "./SubServicesEdit";
 import Select from "../../../components/common/Select/Select";
 import { AGGREGATOR_OPTIONS } from "../constants";
 import "./style.scss";
+import { getServiceEstimate } from "../estimateUtils";
+import {
+  getFieldsFromCounter,
+  getSelectedSubServices,
+  getSubServiceListByMainService,
+} from "./utils";
+import useFirstRender from "../../../hooks/useFirstRender";
+import { COUNTER_TYPE } from "./constants";
 
 const ESTIMATE_REGEXP = /^[0-9]+h, [0-9]+m$/;
 
@@ -60,20 +64,21 @@ const AggregatorSingleValue = (props) => (
 
 const EditOrderModal = ({ onClose, order, setOrders }) => {
   const { t } = useContext(LocaleContext);
+  const isFirstRender = useFirstRender();
 
   const [name, setName] = useState(order.name);
   const [number, setNumber] = useState(order.number);
   const [email, setEmail] = useState(order.email);
   const [date, setDate] = useState(getDateTimeObjectFromString(order.date));
   const [dateCreated] = useState(
-    getDateTimeObjectFromString(order.creation_date)
+    getDateTimeObjectFromString(order.creation_date),
   );
   const [address, setAddress] = useState(order.address);
   const [price, setPrice] = useState(order.price);
   const [totalPrice, setTotalPrice] = useState(order.total_service_price);
   const [priceOriginal, setPriceOriginal] = useState(order.price_original);
   const [totalPriceOriginal, setTotalPriceOriginal] = useState(
-    order.total_service_price_original
+    order.total_service_price_original,
   );
   const [onlinePayment, setOnlinePayment] = useState(order.onlinepayment);
   const [estimate, setEstimate] = useState(order.estimate || "");
@@ -82,19 +87,27 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
   const [note, setNote] = useState(order.note || "");
   const [reward, setReward] = useState(order.reward || "");
   const [ownCheckList, setOwnCheckList] = useState(
-    order.own_check_list || false
+    order.own_check_list || false,
   );
   const [cleanersCount, setCleanersCount] = useState(order.cleaners_count || 0);
   const [aggregator, setAggregator] = useState(
     order.aggregator
       ? AGGREGATOR_OPTIONS.find(({ value }) => order.aggregator === value)
-      : null
+      : null,
   );
   const [isUpdateLoading, setIsUpdateLoading] = useState(false);
   const [updateError, setUpdateError] = useState("");
 
   const [prices, setPrices] = useState({});
   const [isPricesLoading, setIsPricesLoading] = useState(false);
+
+  const isOriginalCounterSquareMeters = counter.includes("square_meters_total");
+
+  const [counterType, setCounterType] = useState(
+    isOriginalCounterSquareMeters
+      ? COUNTER_TYPE.SQUARE_METERS
+      : COUNTER_TYPE.DEFAULT,
+  );
 
   const getPrices = async () => {
     try {
@@ -105,8 +118,8 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
       setPrices(
         pricesResponse.reduce(
           (result, item) => ({ ...result, [item.key]: item.price }),
-          {}
-        )
+          {},
+        ),
       );
     } finally {
       setIsPricesLoading(false);
@@ -170,11 +183,11 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
       setOrders((prevOrders) =>
         prevOrders.map((prev) => {
           const updatedOrder = updatedOrders.find(
-            (item) => item.id === prev.id
+            (item) => item.id === prev.id,
           );
 
           return updatedOrder || prev;
-        })
+        }),
       );
       onClose();
     } catch (error) {
@@ -185,15 +198,11 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
   };
 
   const totalPriceDifference = getFloatOneDigit(
-    order.total_service_price - order.price
+    order.total_service_price - order.price,
   );
   const totalPriceOriginalDifference = getFloatOneDigit(
-    order.total_service_price_original - order.price_original
+    order.total_service_price_original - order.price_original,
   );
-
-  const initialEstimateInMinutes = getEstimateInMinutes(order.estimate);
-  const initialEstimateWithOneCleaner =
-    initialEstimateInMinutes * order.cleaners_count;
 
   const onCleanersCountChange = ({ target: { value } }) => {
     if (order.manual_cleaners_count) {
@@ -202,12 +211,6 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
 
     if (POSITIVE_NUMBER_EMPTY_REGEX.test(value)) {
       setCleanersCount(value);
-
-      if (value) {
-        setEstimate(
-          getEstimateInHoursMinutesFormat(initialEstimateWithOneCleaner / value)
-        );
-      }
     }
   };
 
@@ -226,12 +229,47 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
       setTotalPriceOriginal(value);
     } else {
       setTotalPriceOriginal(
-        getFloatOneDigit(totalPriceOriginalDifference + +value)
+        getFloatOneDigit(totalPriceOriginalDifference + +value),
       );
     }
 
     setPriceOriginal(value);
   };
+
+  const isPrivateHouse = order.address.includes("(Private house)");
+
+  useEffect(() => {
+    const subServicesOptions = getSubServiceListByMainService(
+      prices,
+      order.title,
+    ).map((item) => ({
+      ...item,
+      label: t(`${item.title}_summery`),
+      value: item.title,
+    }));
+    const subServicesList = getSelectedSubServices(
+      subService,
+      subServicesOptions,
+    );
+    const counterList = getFieldsFromCounter(counter).map(
+      ({ title, count }) => ({ value: count || title }),
+    );
+
+    const updatedEstimate = getServiceEstimate(
+      order.title,
+      counterList,
+      subServicesList,
+      order.manual_cleaners_count,
+      isPrivateHouse,
+    );
+
+    if (!isFirstRender) {
+      setEstimate(updatedEstimate.time);
+      setCleanersCount(updatedEstimate.cleanersCount);
+    }
+
+    //eslint-disable-next-line
+  }, [order.title, counter, subService, isPrivateHouse]);
 
   const isPricesLoaded = Object.keys(prices).length > 0;
   const discount = Math.round(100 - (order.price * 100) / order.price_original);
@@ -241,7 +279,9 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
       onClose={onClose}
       actionButtonText={t("admin_order_edit_update_order")}
       onActionButtonClick={onUpdateOrder}
-      isActionButtonDisabled={!isOrderValid || isUpdateLoading || isPricesLoading}
+      isActionButtonDisabled={
+        !isOrderValid || isUpdateLoading || isPricesLoading
+      }
       isLoading={isUpdateLoading}
       isInitialDataLoading={isPricesLoading}
     >
@@ -342,6 +382,7 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
             className="form-control"
             value={estimate}
             onChange={({ target: { value } }) => setEstimate(value)}
+            disabled={counterType !== COUNTER_TYPE.SQUARE_METERS}
           />
         </div>
         {counter && isPricesLoaded && (
@@ -354,13 +395,15 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
               t={t}
               cleanersCount={cleanersCount}
               manualCleanersCount={order.manual_cleaners_count}
-              isPrivateHouse={order.address.includes("(Private house)")}
+              isPrivateHouse={isPrivateHouse}
               setCounter={setCounter}
               discount={discount}
               orderPrice={order.price}
               orderPriceOriginal={order.price_original}
               onPriceChange={onPriceChange}
               onOriginalPriceChange={onOriginalPriceChange}
+              counterType={counterType}
+              setCounterType={setCounterType}
             />
           </div>
         )}
@@ -376,7 +419,7 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
               cleanersCount={cleanersCount}
               manualCleanersCount={order.manual_cleaners_count}
               discount={discount}
-              isPrivateHouse={order.address.includes("(Private house)")}
+              isPrivateHouse={isPrivateHouse}
               orderPrice={order.price}
               orderPriceOriginal={order.price_original}
               onPriceChange={onPriceChange}
@@ -425,7 +468,7 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
             className="form-control"
             value={cleanersCount}
             onChange={onCleanersCountChange}
-            disabled={order.manual_cleaners_count}
+            disabled={counterType !== COUNTER_TYPE.SQUARE_METERS}
           />
         </div>
         <div className="w-100 mb-3">

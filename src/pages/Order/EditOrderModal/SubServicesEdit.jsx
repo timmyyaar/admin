@@ -1,6 +1,8 @@
 import Select from "../../../components/common/Select/Select";
-import { getSubServiceListByMainService } from "./utils";
-import { BRACKETS_REGEX } from "../../../constants";
+import {
+  getSelectedSubServices,
+  getSubServiceListByMainService,
+} from "./utils";
 import { useEffect, useState } from "react";
 import {
   getRoundedServicePrice,
@@ -14,43 +16,11 @@ const SINGLE_SUB_SERVICES = [
   "Own_supplies_sub_service",
 ];
 
-const getSelectedSubServices = (subServices, subServicesOptions) => {
-  const splittedSubServices = subServices
-    .split(BRACKETS_REGEX)
-    .map((service) => service.trim())
-    .filter((item) => item);
-  const selectedSubServicesLabels = splittedSubServices.map((item) =>
-    item.replace("_summery", "")
-  );
-  const itemsCounts = subServices
-    .split(")")
-    .map((service) => service.trim())
-    .filter((item) => item)
-    .map((item) => item.slice(item.indexOf("(") + 1, item.length))
-    .map((item) => +item);
-
-  return selectedSubServicesLabels
-    .map((item, index) => ({
-      value: item,
-      count: itemsCounts[index],
-    }))
-    .map((item) => {
-      const existingSubService = subServicesOptions.find(
-        (subServiceOption) => subServiceOption.title === item.value
-      );
-
-      return {
-        ...item,
-        ...existingSubService,
-      };
-    });
-};
-
 const getSubServicesPrice = (
   subServices,
   isPrivateHouse,
   cleanersCount,
-  manualCleanersCount
+  manualCleanersCount,
 ) =>
   getServicePriceBasedOnManualCleaners(
     subServices.reduce(
@@ -64,10 +34,10 @@ const getSubServicesPrice = (
         ].includes(el.value) && isPrivateHouse
           ? el.originalPrice * el.count * 1.3
           : el.originalPrice * el.count),
-      0
+      0,
     ),
     cleanersCount - manualCleanersCount,
-    manualCleanersCount
+    manualCleanersCount,
   );
 
 function SubServiceEdit({
@@ -90,35 +60,35 @@ function SubServiceEdit({
       ...item,
       label: t(`${item.title}_summery`),
       value: item.title,
-    })
+    }),
   );
   const originalSubServices = getSelectedSubServices(
     subServices,
-    subServicesOptions
+    subServicesOptions,
   );
 
   const [selectedSubServices, setSelectedSubServices] = useState(
-    getSelectedSubServices(subServices, subServicesOptions)
+    getSelectedSubServices(subServices, subServicesOptions),
   );
 
   const originalSubServicesPrice = getSubServicesPrice(
     originalSubServices.filter(({ value }) => value !== OWN_SUPPLIES_SERVICE),
     isPrivateHouse,
     cleanersCount,
-    manualCleanersCount
+    manualCleanersCount,
   );
   const subServicesPrice = getSubServicesPrice(
     selectedSubServices.filter(({ value }) => value !== OWN_SUPPLIES_SERVICE),
     isPrivateHouse,
     cleanersCount,
-    manualCleanersCount
+    manualCleanersCount,
   );
 
   const wereOwnSuppliesInitiallySelected = originalSubServices.some(
-    ({ value }) => value === OWN_SUPPLIES_SERVICE
+    ({ value }) => value === OWN_SUPPLIES_SERVICE,
   );
   const areOwnSuppliesSelected = selectedSubServices.some(
-    ({ value }) => value === OWN_SUPPLIES_SERVICE
+    ({ value }) => value === OWN_SUPPLIES_SERVICE,
   );
 
   const needToRemoveOwnSupplies =
@@ -128,27 +98,27 @@ function SubServiceEdit({
   const ownSuppliesAdditionalPrice = needToRemoveOwnSupplies
     ? -prices.ownSupplies
     : needToAddOwnSupplies
-    ? prices.ownSupplies
-    : 0;
+      ? prices.ownSupplies
+      : 0;
 
   useEffect(() => {
     const subServicePriceDifference =
       subServicesPrice - originalSubServicesPrice;
     const subServicePriceDifferenceWithDiscount = discount
       ? getRoundedServicePrice(
-          subServicePriceDifference * ((100 - discount) / 100)
+          subServicePriceDifference * ((100 - discount) / 100),
         )
       : subServicePriceDifference;
 
     onPriceChange(
       orderPrice +
         subServicePriceDifferenceWithDiscount +
-        ownSuppliesAdditionalPrice
+        ownSuppliesAdditionalPrice,
     );
     onOriginalPriceChange(
       orderPriceOriginal +
         subServicePriceDifference +
-        ownSuppliesAdditionalPrice
+        ownSuppliesAdditionalPrice,
     );
 
     //eslint-disable-next-line
@@ -158,7 +128,7 @@ function SubServiceEdit({
     setSubServices(
       selectedSubServices
         .map((service) => `${service.value + "_summery"} (${service.count})`)
-        .join(" ")
+        .join(" "),
     );
 
     //eslint-disable-next-line
@@ -169,15 +139,15 @@ function SubServiceEdit({
 
     if (updatedCount === 0) {
       setSelectedSubServices(
-        selectedSubServices.filter(({ value }) => subService.value !== value)
+        selectedSubServices.filter(({ value }) => subService.value !== value),
       );
     } else {
       setSelectedSubServices(
         selectedSubServices.map((item) =>
           item.value === subService.value
             ? { ...item, count: updatedCount }
-            : item
-        )
+            : item,
+        ),
       );
     }
   };
@@ -196,8 +166,8 @@ function SubServiceEdit({
       selectedSubServices.map((item) =>
         item.value === subService.value
           ? { ...item, count: updatedCount }
-          : item
-      )
+          : item,
+      ),
     );
   };
 
@@ -213,7 +183,7 @@ function SubServiceEdit({
               options?.map((option) => ({
                 ...option,
                 count: option.count || 1,
-              })) || []
+              })) || [],
             )
           }
         />
