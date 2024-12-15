@@ -43,6 +43,8 @@ import ownSuppliesSvg from "./icons/own-supplies.svg";
 import wallStainRemovalSvg from "./icons/wall-stain.svg";
 import limescaleRemovalSvg from "./icons/lomescale-removal.svg";
 import moldRemovalSvg from "./icons/mold-removal.svg";
+import { BRACKETS_REGEX } from "../../../constants";
+import {FIELD_TYPE} from "./constants";
 
 const AGGREGATOR_SERVICES = [
   {
@@ -157,7 +159,7 @@ export const allServices = (prices, priceMultiplier = 1) => [
     icons: kitchenCabinets,
     originalPrice: prices.subServiceKitchenCabinets,
     price: getRoundedServicePrice(
-      priceMultiplier * prices.subServiceKitchenCabinets
+      priceMultiplier * prices.subServiceKitchenCabinets,
     ),
     oldPrice: priceMultiplier === 1 ? "" : prices.subServiceKitchenCabinets,
     time: 75,
@@ -175,7 +177,7 @@ export const allServices = (prices, priceMultiplier = 1) => [
     icons: hoursglassSvg,
     originalPrice: prices.subServiceExtraTasks,
     price: getRoundedServicePrice(
-      priceMultiplier * prices.subServiceExtraTasks
+      priceMultiplier * prices.subServiceExtraTasks,
     ),
     oldPrice: priceMultiplier === 1 ? "" : prices.subServiceExtraTasks,
     time: 60,
@@ -201,7 +203,7 @@ export const allServices = (prices, priceMultiplier = 1) => [
     icons: cleanClothesSvg,
     originalPrice: prices.subServiceSpaceOrganizer,
     price: getRoundedServicePrice(
-      priceMultiplier * prices.subServiceSpaceOrganizer
+      priceMultiplier * prices.subServiceSpaceOrganizer,
     ),
     oldPrice: priceMultiplier === 1 ? "" : prices.subServiceSpaceOrganizer,
     time: 60,
@@ -227,7 +229,7 @@ export const allServices = (prices, priceMultiplier = 1) => [
     icons: wateringPlantsSvg,
     originalPrice: prices.subServiceWaterPlants,
     price: getRoundedServicePrice(
-      priceMultiplier * prices.subServiceWaterPlants
+      priceMultiplier * prices.subServiceWaterPlants,
     ),
     oldPrice: priceMultiplier === 1 ? "" : prices.subServiceWaterPlants,
     time: 20,
@@ -253,7 +255,7 @@ export const allServices = (prices, priceMultiplier = 1) => [
     icons: petToiletTraySvg,
     originalPrice: prices.subServiceAnimalTray,
     price: getRoundedServicePrice(
-      priceMultiplier * prices.subServiceAnimalTray
+      priceMultiplier * prices.subServiceAnimalTray,
     ),
     oldPrice: priceMultiplier === 1 ? "" : prices.subServiceAnimalTray,
     time: 15,
@@ -271,7 +273,7 @@ export const allServices = (prices, priceMultiplier = 1) => [
     icons: SlowCooker,
     originalPrice: prices.subServiceSlowCooker,
     price: getRoundedServicePrice(
-      priceMultiplier * prices.subServiceSlowCooker
+      priceMultiplier * prices.subServiceSlowCooker,
     ),
     oldPrice: priceMultiplier === 1 ? "" : prices.subServiceSlowCooker,
     time: 15,
@@ -281,7 +283,7 @@ export const allServices = (prices, priceMultiplier = 1) => [
     icons: coffeeMachineSvg,
     originalPrice: prices.subServiceCoffeeMachine,
     price: getRoundedServicePrice(
-      priceMultiplier * prices.subServiceCoffeeMachine
+      priceMultiplier * prices.subServiceCoffeeMachine,
     ),
     oldPrice: priceMultiplier === 1 ? "" : prices.subServiceCoffeeMachine,
     time: 15,
@@ -291,7 +293,7 @@ export const allServices = (prices, priceMultiplier = 1) => [
     icons: twoSeaterSofaSvg,
     originalPrice: prices.subServiceTwoSeaterSofa,
     price: getRoundedServicePrice(
-      priceMultiplier * prices.subServiceTwoSeaterSofa
+      priceMultiplier * prices.subServiceTwoSeaterSofa,
     ),
     oldPrice: priceMultiplier === 1 ? "" : prices.subServiceTwoSeaterSofa,
     time: 60,
@@ -301,7 +303,7 @@ export const allServices = (prices, priceMultiplier = 1) => [
     icons: threeSeaterSofaSvg,
     originalPrice: prices.subServiceThreeSeaterSofa,
     price: getRoundedServicePrice(
-      priceMultiplier * prices.subServiceThreeSeaterSofa
+      priceMultiplier * prices.subServiceThreeSeaterSofa,
     ),
     oldPrice: priceMultiplier === 1 ? "" : prices.subServiceThreeSeaterSofa,
     time: 60,
@@ -311,7 +313,7 @@ export const allServices = (prices, priceMultiplier = 1) => [
     icons: fourSeaterSofaSvg,
     originalPrice: prices.subServiceFourSeaterSofa,
     price: getRoundedServicePrice(
-      priceMultiplier * prices.subServiceFourSeaterSofa
+      priceMultiplier * prices.subServiceFourSeaterSofa,
     ),
     oldPrice: priceMultiplier === 1 ? "" : prices.subServiceFourSeaterSofa,
     time: 60,
@@ -321,7 +323,7 @@ export const allServices = (prices, priceMultiplier = 1) => [
     icons: fiveSeaterSofaSvg,
     originalPrice: prices.subServiceFiveSeaterSofa,
     price: getRoundedServicePrice(
-      priceMultiplier * prices.subServiceFiveSeaterSofa
+      priceMultiplier * prices.subServiceFiveSeaterSofa,
     ),
     oldPrice: priceMultiplier === 1 ? "" : prices.subServiceFiveSeaterSofa,
     time: 60,
@@ -331,7 +333,7 @@ export const allServices = (prices, priceMultiplier = 1) => [
     icons: sixSeaterSofaSvg,
     originalPrice: prices.subServiceSixSeaterSofa,
     price: getRoundedServicePrice(
-      priceMultiplier * prices.subServiceSixSeaterSofa
+      priceMultiplier * prices.subServiceSixSeaterSofa,
     ),
     oldPrice: priceMultiplier === 1 ? "" : prices.subServiceSixSeaterSofa,
     time: 60,
@@ -341,7 +343,7 @@ export const allServices = (prices, priceMultiplier = 1) => [
     icons: bedSvg,
     originalPrice: prices.subServiceUpholsteredToBed,
     price: getRoundedServicePrice(
-      priceMultiplier * prices.subServiceUpholsteredToBed
+      priceMultiplier * prices.subServiceUpholsteredToBed,
     ),
     oldPrice: priceMultiplier === 1 ? "" : prices.subServiceUpholsteredToBed,
     time: 60,
@@ -359,7 +361,7 @@ export const allServices = (prices, priceMultiplier = 1) => [
     icons: mattressSvg,
     originalPrice: prices.subServiceSingleMattress,
     price: getRoundedServicePrice(
-      priceMultiplier * prices.subServiceSingleMattress
+      priceMultiplier * prices.subServiceSingleMattress,
     ),
     oldPrice: priceMultiplier === 1 ? "" : prices.subServiceSingleMattress,
     time: 60,
@@ -369,7 +371,7 @@ export const allServices = (prices, priceMultiplier = 1) => [
     icons: mattressSvg,
     originalPrice: prices.subServiceSingleMattressBothSides,
     price: getRoundedServicePrice(
-      priceMultiplier * prices.subServiceSingleMattressBothSides
+      priceMultiplier * prices.subServiceSingleMattressBothSides,
     ),
     oldPrice:
       priceMultiplier === 1 ? "" : prices.subServiceSingleMattressBothSides,
@@ -380,7 +382,7 @@ export const allServices = (prices, priceMultiplier = 1) => [
     icons: mattressDblSvg,
     originalPrice: prices.subServiceDoubleMattress,
     price: getRoundedServicePrice(
-      priceMultiplier * prices.subServiceDoubleMattress
+      priceMultiplier * prices.subServiceDoubleMattress,
     ),
     oldPrice: priceMultiplier === 1 ? "" : prices.subServiceDoubleMattress,
     time: 60,
@@ -390,7 +392,7 @@ export const allServices = (prices, priceMultiplier = 1) => [
     icons: mattressDblSvg,
     originalPrice: prices.subServiceDoubleMattressBothSides,
     price: getRoundedServicePrice(
-      priceMultiplier * prices.subServiceDoubleMattressBothSides
+      priceMultiplier * prices.subServiceDoubleMattressBothSides,
     ),
     oldPrice:
       priceMultiplier === 1 ? "" : prices.subServiceDoubleMattressBothSides,
@@ -417,7 +419,7 @@ export const allServices = (prices, priceMultiplier = 1) => [
     icons: officeChairSvg,
     originalPrice: prices.subServiceOfficeChair,
     price: getRoundedServicePrice(
-      priceMultiplier * prices.subServiceOfficeChair
+      priceMultiplier * prices.subServiceOfficeChair,
     ),
     oldPrice: priceMultiplier === 1 ? "" : prices.subServiceOfficeChair,
     time: 30,
@@ -427,7 +429,7 @@ export const allServices = (prices, priceMultiplier = 1) => [
     icons: babyStrollerSvg,
     originalPrice: prices.subServiceBabyStroller,
     price: getRoundedServicePrice(
-      priceMultiplier * prices.subServiceBabyStroller
+      priceMultiplier * prices.subServiceBabyStroller,
     ),
     oldPrice: priceMultiplier === 1 ? "" : prices.subServiceBabyStroller,
     time: 30,
@@ -454,7 +456,7 @@ export const allServices = (prices, priceMultiplier = 1) => [
 export const getSubServiceListByMainService = (
   prices,
   mainService,
-  priceMultiplier = 1
+  priceMultiplier = 1,
 ) => {
   switch (mainService) {
     case "After party":
@@ -533,10 +535,67 @@ export const getSubServiceListByMainService = (
 
     case "Custom cleaning":
       return allServices(prices, priceMultiplier).filter(
-        (el) => el.title !== "Office cleaning"
+        (el) => el.title !== "Office cleaning",
       );
 
     default:
       return [];
   }
+};
+
+const isExistOrZero = (item) => Boolean(item || item === 0);
+
+export const getFieldsFromCounter = (counter) => {
+  const splittedFields = counter
+    .split(BRACKETS_REGEX)
+    .filter((item) => item)
+    .map((service) => service.trim());
+  const itemsCounts = counter
+    .split(" ")
+    .filter((item) => item.includes("("))
+    .map((item) => item.slice(item.indexOf("("), item.length))
+    .map((item) => item.replaceAll(/[()]/g, ""))
+    .map((item) => +item);
+
+  return splittedFields.map((item, index) => ({
+    title: item,
+    type: isExistOrZero(itemsCounts[index])
+      ? FIELD_TYPE.COUNTER
+      : FIELD_TYPE.SWITCHER,
+    ...(isExistOrZero(itemsCounts[index]) && {
+      count: itemsCounts[index],
+    }),
+  }));
+};
+
+export const getSelectedSubServices = (subServices, subServicesOptions) => {
+  const splittedSubServices = subServices
+      .split(BRACKETS_REGEX)
+      .map((service) => service.trim())
+      .filter((item) => item);
+  const selectedSubServicesLabels = splittedSubServices.map((item) =>
+      item.replace("_summery", "")
+  );
+  const itemsCounts = subServices
+      .split(")")
+      .map((service) => service.trim())
+      .filter((item) => item)
+      .map((item) => item.slice(item.indexOf("(") + 1, item.length))
+      .map((item) => +item);
+
+  return selectedSubServicesLabels
+      .map((item, index) => ({
+        value: item,
+        count: itemsCounts[index],
+      }))
+      .map((item) => {
+        const existingSubService = subServicesOptions.find(
+            (subServiceOption) => subServiceOption.title === item.value
+        );
+
+        return {
+          ...item,
+          ...existingSubService,
+        };
+      });
 };

@@ -1,5 +1,5 @@
-import { COUNTER_TYPE } from "./CounterEdit";
 import { capitalizeFirstLetter } from "../../../utils";
+import {COUNTER_TYPE} from "./constants";
 
 function CounterType({ counterType, setCounterType, setFields, t }) {
   const onSelectDefaultFlow = () => {
