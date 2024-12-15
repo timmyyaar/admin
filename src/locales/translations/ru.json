@@ -383,5 +383,8 @@
   "City": "Город",
   "Krakow": "Краков",
   "Warsaw": "Варшава",
-  "admin_settings_header": "Настройки"
+  "admin_settings_header": "Настройки",
+  "reset_order": "Сбросить заказ",
+  "reset": "Сбросить",
+  "reset_order_confirmation_message": "Вы уверены, что хотите сбросить этот заказ? Сообщения Telegram будут отправлены снова!"
 }

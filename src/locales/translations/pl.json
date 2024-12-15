@@ -384,5 +384,8 @@
   "City": "Miasto",
   "Krakow": "Kraków",
   "Warsaw": "Warszawa",
-  "admin_settings_header": "Ustawienia"
+  "admin_settings_header": "Ustawienia",
+  "reset_order": "Zresetować zamówienie",
+  "reset": "Zresetować",
+  "reset_order_confirmation_message": "Czy na pewno chcesz zresetować to zamówienie? Wiadomości Telegram zostaną wysłane ponownie!"
 }
