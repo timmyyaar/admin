@@ -23,6 +23,9 @@ const AdminControls = ({
   const [isAssignLoading, setIsAssignOrderLoading] = useState([]);
   const [showProgressConfirmation, setShowProgressConfirmation] =
     useState(false);
+  const [isResetConfirmationOpened, setIsResetConfirmationOpened] =
+    useState(false);
+  const [isResetOrderLoading, setIsResetOrderLoading] = useState(false);
 
   useEffect(() => {
     const updatedAssignedValue = order.cleaner_id.map((id) => {
@@ -53,11 +56,11 @@ const AdminControls = ({
       setOrders((prevOrders) =>
         prevOrders.map((prev) => {
           const assignedOrder = assignedOrders.find(
-            (item) => item.id === prev.id
+            (item) => item.id === prev.id,
           );
 
           return assignedOrder || prev;
-        })
+        }),
       );
     } catch (error) {
       if (error.code === 422) {
@@ -68,7 +71,7 @@ const AdminControls = ({
       }
     } finally {
       setIsAssignOrderLoading((prevLoading) =>
-        prevLoading.filter((item) => item !== id)
+        prevLoading.filter((item) => item !== id),
       );
     }
   };
@@ -77,17 +80,17 @@ const AdminControls = ({
     cleaners.filter(({ role }) =>
       ["Dry cleaning", "Ozonation"].includes(order.title)
         ? role === ROLES.CLEANER_DRY
-        : role === ROLES.CLEANER
+        : role === ROLES.CLEANER,
     ),
     order,
-    schedule
+    schedule,
   ).map(({ first_name, last_name, id }) => ({
     value: id,
     label: `${first_name} ${last_name}`,
   }));
 
   const statusOptions = ORDER_STATUS_OPTIONS.filter(({ value }) =>
-    order.cleaner_id.length > 0 ? value !== ORDER_STATUS.CREATED.value : true
+    order.cleaner_id.length > 0 ? value !== ORDER_STATUS.CREATED.value : true,
   ).map(({ value, label }) => ({
     value,
     label: t(`admin_order_${label.toLowerCase().replaceAll(" ", "_")}_option`),
@@ -116,8 +119,26 @@ const AdminControls = ({
     }
   };
 
+  const onResetOrder = async () => {
+    setIsResetOrderLoading(true);
+
+    try {
+      const updatedOrder = await request({
+        url: `order/${order.id}/reset`,
+        method: "PUT",
+      });
+
+      setOrders((prevOrders) =>
+        prevOrders.map((prev) => (prev.id === order.id ? updatedOrder : prev)),
+      );
+    } finally {
+      setIsResetOrderLoading(false);
+      setIsResetConfirmationOpened(false);
+    }
+  };
+
   const orderStatusValue = ORDER_STATUS_OPTIONS.find(
-    ({ value }) => value === order.status
+    ({ value }) => value === order.status,
   );
   const translatedOrderStatusValue = orderStatusValue
     ? {
@@ -125,7 +146,7 @@ const AdminControls = ({
         label: t(
           `admin_order_${orderStatusValue.label
             .toLowerCase()
-            .replaceAll(" ", "_")}_option`
+            .replaceAll(" ", "_")}_option`,
         ),
       }
     : null;
@@ -150,22 +171,48 @@ const AdminControls = ({
       )}
       <div className="admin-controls _gap-4 _w-full">
         <span>{t("admin_assignee")}:</span>
-        <Select
-          placeholder={`${t("select_placeholder")}...`}
-          isMulti
-          isDisabled={isAssignLoading.includes(order.id)}
-          options={cleanersOptions}
-          value={assignedValue}
-          isClearable
-          onChange={(options) => {
-            if (options.length <= order.cleaners_count) {
-              onAssignOrder(
-                order.id,
-                options.map(({ value }) => value)
-              );
-            }
-          }}
-        />
+        <div className="d-flex _gap-2">
+          <Select
+            placeholder={`${t("select_placeholder")}...`}
+            isMulti
+            isDisabled={isAssignLoading.includes(order.id)}
+            options={cleanersOptions}
+            value={assignedValue}
+            isClearable
+            onChange={(options) => {
+              if (options.length <= order.cleaners_count) {
+                onAssignOrder(
+                  order.id,
+                  options.map(({ value }) => value),
+                );
+              }
+            }}
+          />
+          {order.status === ORDER_STATUS.APPROVED.value && (
+            <button
+              className="btn btn-outline-secondary"
+              title={t("reset_order")}
+              onClick={() => setIsResetConfirmationOpened(true)}
+            >
+              📲
+            </button>
+          )}
+          {isResetConfirmationOpened && (
+            <Modal
+              onClose={() => setIsResetConfirmationOpened(false)}
+              isLoading={isResetOrderLoading}
+              isActionButtonDisabled={isResetOrderLoading}
+              isActionButtonDanger
+              actionButtonText={t("reset")}
+              onActionButtonClick={onResetOrder}
+              minHeight={false}
+            >
+              <span className="_font-bold">
+                {t("reset_order_confirmation_message")}
+              </span>
+            </Modal>
+          )}
+        </div>
         <span>{t("admin_status")}:</span>
         <Select
           isDisabled={

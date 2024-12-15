@@ -384,5 +384,8 @@
   "City": "Місто",
   "Krakow": "Кракiв",
   "Warsaw": "Варшава",
-  "admin_settings_header": "Налаштування"
+  "admin_settings_header": "Налаштування",
+  "reset_order": "Скинути замовлення",
+  "reset": "Скинути",
+  "reset_order_confirmation_message": "Ви впевнені, що бажаєте скинути це замовлення? Повідомлення в Telegram будуть надсилатися знову!"
 }
