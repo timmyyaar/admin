@@ -383,5 +383,6 @@
   "City": "Город",
   "Krakow": "Краков",
   "Warsaw": "Варшава",
-  "admin_settings_header": "Настройки"
+  "admin_settings_header": "Настройки",
+  "final_price": "Окончательная цена"
 }

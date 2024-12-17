@@ -29,6 +29,7 @@ import {
 } from "./utils";
 import useFirstRender from "../../../hooks/useFirstRender";
 import { COUNTER_TYPE } from "./constants";
+import { getCleanerReward } from "../priceUtils";
 
 const ESTIMATE_REGEXP = /^[0-9]+h, [0-9]+m$/;
 
@@ -85,6 +86,7 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
   const [counter, setCounter] = useState(order.counter);
   const [subService, setSubService] = useState(order.subservice);
   const [note, setNote] = useState(order.note || "");
+  const [originalReward, setOriginalReward] = useState(order.reward_original);
   const [reward, setReward] = useState(order.reward || "");
   const [ownCheckList, setOwnCheckList] = useState(
     order.own_check_list || false,
@@ -177,6 +179,7 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
           ownCheckList,
           cleanersCount: +cleanersCount,
           aggregator: aggregator?.value || null,
+          reward_original: originalReward,
         },
       });
 
@@ -221,7 +224,7 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
       setTotalPrice(getFloatOneDigit(totalPriceDifference + +value));
     }
 
-    setPrice(value);
+    setPrice(Number(value));
   };
 
   const onOriginalPriceChange = (value) => {
@@ -233,7 +236,7 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
       );
     }
 
-    setPriceOriginal(value);
+    setPriceOriginal(Number(value));
   };
 
   const isPrivateHouse = order.address.includes("(Private house)");
@@ -265,11 +268,36 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
 
     if (!isFirstRender) {
       setEstimate(updatedEstimate.time);
-      setCleanersCount(updatedEstimate.cleanersCount);
+      setCleanersCount(
+        updatedEstimate.cleanersCount + order.manual_cleaners_count,
+      );
     }
 
     //eslint-disable-next-line
   }, [order.title, counter, subService, isPrivateHouse]);
+
+  useEffect(() => {
+    if (!isFirstRender) {
+      const cleanerReward = getCleanerReward({
+        title: order.title,
+        originalPrice: priceOriginal,
+        cleanersCount: cleanersCount + order.manual_cleaners_count,
+        estimate,
+        price,
+      });
+
+      setOriginalReward(cleanerReward);
+    }
+
+    //eslint-disable-next-line
+  }, [
+    order.title,
+    priceOriginal,
+    cleanersCount,
+    order.manual_cleaners_count,
+    estimate,
+    price,
+  ]);
 
   const isPricesLoaded = Object.keys(prices).length > 0;
   const discount = Math.round(100 - (order.price * 100) / order.price_original);
@@ -338,43 +366,52 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
             disabled
           />
         </div>
-        <div className="w-100 mb-3">
-          <label className="mb-2">
-            {t("admin_order_price_with_discount")}:
-          </label>
-          <input
-            className="form-control"
-            value={price}
-            onChange={({ target: { value } }) => {
-              if (NUMBER_FLOAT_EMPTY_REGEX.test(value)) {
-                onPriceChange(value);
-              }
-            }}
-            disabled={order.payment_intent}
-          />
+        <div className="lg:_flex lg:_gap-3 _items-end">
+          <div className="w-100 mb-3">
+            <label className="mb-2">
+              {t("admin_order_price_with_discount")}{" "}
+              <span className="text-warning">({t("final_price")})</span>:
+            </label>
+            <input
+              className="form-control"
+              value={price}
+              onChange={({ target: { value } }) => {
+                if (NUMBER_FLOAT_EMPTY_REGEX.test(value)) {
+                  onPriceChange(value);
+                }
+              }}
+              disabled={order.payment_intent}
+            />
+          </div>
+          <div className="w-100 mb-3">
+            <label className="mb-2">{t("admin_order_price")}:</label>
+            <input
+              className="form-control"
+              value={priceOriginal}
+              onChange={({ target: { value } }) => {
+                if (NUMBER_FLOAT_EMPTY_REGEX.test(value)) {
+                  onOriginalPriceChange(value);
+                }
+              }}
+              disabled={order.payment_intent}
+            />
+          </div>
         </div>
-        <div className="w-100 mb-3">
-          <label className="mb-2">{t("admin_order_price")}:</label>
-          <input
-            className="form-control"
-            value={priceOriginal}
-            onChange={({ target: { value } }) => {
-              if (NUMBER_FLOAT_EMPTY_REGEX.test(value)) {
-                onOriginalPriceChange(value);
-              }
-            }}
-            disabled={order.payment_intent}
-          />
-        </div>
-        <div className="w-100 mb-3">
-          <label className="mb-2">
-            {t("admin_order_total_price_with_discount")}:
-          </label>
-          <input className="form-control" value={totalPrice} disabled />
-        </div>
-        <div className="w-100 mb-3">
-          <label className="mb-2">{t("admin_order_total_price")}:</label>
-          <input className="form-control" value={totalPriceOriginal} disabled />
+        <div className="lg:_flex lg:_gap-3 _items-end">
+          <div className="w-100 mb-3">
+            <label className="mb-2">
+              {t("admin_order_total_price_with_discount")}:
+            </label>
+            <input className="form-control" value={totalPrice} disabled />
+          </div>
+          <div className="w-100 mb-3">
+            <label className="mb-2">{t("admin_order_total_price")}:</label>
+            <input
+              className="form-control"
+              value={totalPriceOriginal}
+              disabled
+            />
+          </div>
         </div>
         <div className="w-100 mb-3">
           <label className="mb-2">{t("admin_order_edit_estimate")}:</label>
@@ -435,23 +472,29 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
             onChange={({ target: { value } }) => setNote(value)}
           />
         </div>
-        <div className="w-100 mb-3">
-          <label className="mb-2">
-            {t("admin_order_reward")}{" "}
-            <span className="text-danger">
-              ({t("admin_order_this_will_override_reward")})
-            </span>
-            :
-          </label>
-          <input
-            className="form-control"
-            value={reward}
-            onChange={({ target: { value } }) => {
-              if (NUMBER_FLOAT_EMPTY_REGEX.test(value)) {
-                setReward(value.trim());
-              }
-            }}
-          />
+        <div className="lg:_flex lg:_gap-3 _items-end">
+          <div className="w-100 mb-3">
+            <label className="mb-2">{t("admin_order_original_reward")}:</label>
+            <input className="form-control" value={originalReward} disabled />
+          </div>
+          <div className="w-100 mb-3">
+            <label className="mb-2">
+              {t("admin_order_reward")}{" "}
+              <span className="text-danger">
+                ({t("admin_order_this_will_override_reward")})
+              </span>
+              :
+            </label>
+            <input
+              className="form-control"
+              value={reward}
+              onChange={({ target: { value } }) => {
+                if (NUMBER_FLOAT_EMPTY_REGEX.test(value)) {
+                  setReward(value.trim());
+                }
+              }}
+            />
+          </div>
         </div>
         <div className="w-100 mb-3">
           <label className="mb-2">
@@ -468,7 +511,10 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
             className="form-control"
             value={cleanersCount}
             onChange={onCleanersCountChange}
-            disabled={counterType !== COUNTER_TYPE.SQUARE_METERS}
+            disabled={
+              counterType !== COUNTER_TYPE.SQUARE_METERS ||
+              order.manual_cleaners_count
+            }
           />
         </div>
         <div className="w-100 mb-3">

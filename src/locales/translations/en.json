@@ -384,5 +384,6 @@
   "City": "City",
   "Krakow": "Krakow",
   "Warsaw": "Warsaw",
-  "admin_settings_header": "Settings"
+  "admin_settings_header": "Settings",
+  "final_price": "Final price"
 }

@@ -384,5 +384,6 @@
   "City": "Miasto",
   "Krakow": "Kraków",
   "Warsaw": "Warszawa",
-  "admin_settings_header": "Ustawienia"
+  "admin_settings_header": "Ustawienia",
+  "final_price": "Cena ostateczna"
 }
