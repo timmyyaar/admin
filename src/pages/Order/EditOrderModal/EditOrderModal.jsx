@@ -30,6 +30,11 @@ import {
 import useFirstRender from "../../../hooks/useFirstRender";
 import { COUNTER_TYPE } from "./constants";
 import { getCleanerReward } from "../priceUtils";
+import {
+  getEstimateInHoursMinutesFormat,
+  getEstimateInMinutes,
+} from "../utils";
+import usePrevious from "../../../hooks/usePrevious";
 
 const ESTIMATE_REGEXP = /^[0-9]+h, [0-9]+m$/;
 
@@ -207,6 +212,8 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
     order.total_service_price_original - order.price_original,
   );
 
+  const previousCleanersCount = usePrevious(cleanersCount);
+
   const onCleanersCountChange = ({ target: { value } }) => {
     if (order.manual_cleaners_count) {
       return;
@@ -214,6 +221,17 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
 
     if (POSITIVE_NUMBER_EMPTY_REGEX.test(value)) {
       setCleanersCount(value);
+
+      if (value) {
+        const oneCleanerEstimate =
+          getEstimateInMinutes(estimate) *
+          (cleanersCount || previousCleanersCount);
+        const updatedEstimate = getEstimateInHoursMinutesFormat(
+          oneCleanerEstimate / +value,
+        );
+
+        setEstimate(updatedEstimate);
+      }
     }
   };
 
@@ -281,7 +299,7 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
       const cleanerReward = getCleanerReward({
         title: order.title,
         originalPrice: priceOriginal,
-        cleanersCount: cleanersCount + order.manual_cleaners_count,
+        cleanersCount,
         estimate,
         price,
       });
@@ -290,14 +308,7 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
     }
 
     //eslint-disable-next-line
-  }, [
-    order.title,
-    priceOriginal,
-    cleanersCount,
-    order.manual_cleaners_count,
-    estimate,
-    price,
-  ]);
+  }, [order.title, priceOriginal, cleanersCount, estimate, price]);
 
   const isPricesLoaded = Object.keys(prices).length > 0;
   const discount = Math.round(100 - (order.price * 100) / order.price_original);
@@ -511,10 +522,7 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
             className="form-control"
             value={cleanersCount}
             onChange={onCleanersCountChange}
-            disabled={
-              counterType !== COUNTER_TYPE.SQUARE_METERS ||
-              order.manual_cleaners_count
-            }
+            disabled={order.manual_cleaners_count}
           />
         </div>
         <div className="w-100 mb-3">
