@@ -1,11 +1,12 @@
 import { capitalizeFirstLetter } from "../../utils";
+import { ORDER_TYPE as ORDER_TYPES } from "../../constants";
 
 export const getOzonationMultiplier = (prices, value) =>
   value > 120
     ? prices.ozonationBigArea
     : value > 50
-    ? prices.ozonationMediumArea
-    : prices.ozonationSmallArea;
+      ? prices.ozonationMediumArea
+      : prices.ozonationSmallArea;
 
 const getDefaultCounterPrice = (counter, prices, prefix) => {
   const bedroomPrice = prices[`${prefix}Bedroom`];
@@ -26,7 +27,7 @@ export const getPriceFromCounterByService = (
   prices,
   mainService,
   counter,
-  isSquareMetersCounter
+  isSquareMetersCounter,
 ) => {
   if (isSquareMetersCounter) {
     return counter[0].count * 3;
@@ -106,7 +107,7 @@ export const getPriceFromCounterByService = (
 export const getServicePriceBasedOnManualCleaners = (
   price,
   cleanersCount,
-  manualCleanersCount
+  manualCleanersCount,
 ) => {
   if (!manualCleanersCount) {
     return price;
@@ -122,3 +123,40 @@ export const getServicePriceBasedOnManualCleaners = (
 
 export const getRoundedServicePrice = (number) =>
   Number(parseFloat(number.toFixed(1)));
+
+const getFloatOneDigit = (number) => Number(number.toFixed(1));
+
+export const getCleanerReward = ({
+  title,
+  originalPrice,
+  cleanersCount,
+  estimate,
+  price,
+}) => {
+  const timeArray = estimate.split(", ");
+  const hours = +timeArray[0].slice(0, timeArray[0].indexOf("h"));
+  const minutes = +timeArray[1].slice(0, timeArray[1].indexOf("m"));
+  const minutesPercentage = Number(((minutes * 100) / 60).toFixed(0));
+  const numericEstimate = Number(`${hours}.${minutesPercentage}`);
+
+  if ([ORDER_TYPES.DRY, ORDER_TYPES.OZONATION].includes(title)) {
+    return getFloatOneDigit(price / 2 / cleanersCount);
+  } else {
+    if (originalPrice <= Number(process.env.REACT_APP_MIDDLE_ORDER_ESTIMATE)) {
+      return getFloatOneDigit(
+        numericEstimate * process.env.REACT_APP_DEFAULT_ORDER_PER_HOUR_PRICE,
+      );
+    } else if (
+      originalPrice > Number(process.env.REACT_APP_MIDDLE_ORDER_ESTIMATE) &&
+      originalPrice <= Number(process.env.REACT_APP_HIGH_ORDER_ESTIMATE)
+    ) {
+      return getFloatOneDigit(
+        numericEstimate * process.env.REACT_APP_MIDDLE_ORDER_PER_HOUR_PRICE,
+      );
+    } else {
+      return getFloatOneDigit(
+        numericEstimate * process.env.REACT_APP_HIGH_ORDER_PER_HOUR_PRICE,
+      );
+    }
+  }
+};

@@ -15,16 +15,26 @@ import {
   request,
 } from "../../../utils";
 import { LocaleContext } from "../../../contexts";
-import {
-  getEstimateInHoursMinutesFormat,
-  getEstimateInMinutes,
-} from "../utils";
 import DatePicker from "react-datepicker";
 import CounterEdit from "./CounterEdit";
 import SubServiceEdit from "./SubServicesEdit";
 import Select from "../../../components/common/Select/Select";
 import { AGGREGATOR_OPTIONS } from "../constants";
 import "./style.scss";
+import { getServiceEstimate } from "../estimateUtils";
+import {
+  getFieldsFromCounter,
+  getSelectedSubServices,
+  getSubServiceListByMainService,
+} from "./utils";
+import useFirstRender from "../../../hooks/useFirstRender";
+import { COUNTER_TYPE } from "./constants";
+import { getCleanerReward } from "../priceUtils";
+import {
+  getEstimateInHoursMinutesFormat,
+  getEstimateInMinutes,
+} from "../utils";
+import usePrevious from "../../../hooks/usePrevious";
 
 const ESTIMATE_REGEXP = /^[0-9]+h, [0-9]+m$/;
 
@@ -60,41 +70,51 @@ const AggregatorSingleValue = (props) => (
 
 const EditOrderModal = ({ onClose, order, setOrders }) => {
   const { t } = useContext(LocaleContext);
+  const isFirstRender = useFirstRender();
 
   const [name, setName] = useState(order.name);
   const [number, setNumber] = useState(order.number);
   const [email, setEmail] = useState(order.email);
   const [date, setDate] = useState(getDateTimeObjectFromString(order.date));
   const [dateCreated] = useState(
-    getDateTimeObjectFromString(order.creation_date)
+    getDateTimeObjectFromString(order.creation_date),
   );
   const [address, setAddress] = useState(order.address);
   const [price, setPrice] = useState(order.price);
   const [totalPrice, setTotalPrice] = useState(order.total_service_price);
   const [priceOriginal, setPriceOriginal] = useState(order.price_original);
   const [totalPriceOriginal, setTotalPriceOriginal] = useState(
-    order.total_service_price_original
+    order.total_service_price_original,
   );
   const [onlinePayment, setOnlinePayment] = useState(order.onlinepayment);
   const [estimate, setEstimate] = useState(order.estimate || "");
   const [counter, setCounter] = useState(order.counter);
   const [subService, setSubService] = useState(order.subservice);
   const [note, setNote] = useState(order.note || "");
+  const [originalReward, setOriginalReward] = useState(order.reward_original);
   const [reward, setReward] = useState(order.reward || "");
   const [ownCheckList, setOwnCheckList] = useState(
-    order.own_check_list || false
+    order.own_check_list || false,
   );
   const [cleanersCount, setCleanersCount] = useState(order.cleaners_count || 0);
   const [aggregator, setAggregator] = useState(
     order.aggregator
       ? AGGREGATOR_OPTIONS.find(({ value }) => order.aggregator === value)
-      : null
+      : null,
   );
   const [isUpdateLoading, setIsUpdateLoading] = useState(false);
   const [updateError, setUpdateError] = useState("");
 
   const [prices, setPrices] = useState({});
   const [isPricesLoading, setIsPricesLoading] = useState(false);
+
+  const isOriginalCounterSquareMeters = counter.includes("square_meters_total");
+
+  const [counterType, setCounterType] = useState(
+    isOriginalCounterSquareMeters
+      ? COUNTER_TYPE.SQUARE_METERS
+      : COUNTER_TYPE.DEFAULT,
+  );
 
   const getPrices = async () => {
     try {
@@ -105,8 +125,8 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
       setPrices(
         pricesResponse.reduce(
           (result, item) => ({ ...result, [item.key]: item.price }),
-          {}
-        )
+          {},
+        ),
       );
     } finally {
       setIsPricesLoading(false);
@@ -164,17 +184,18 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
           ownCheckList,
           cleanersCount: +cleanersCount,
           aggregator: aggregator?.value || null,
+          reward_original: originalReward,
         },
       });
 
       setOrders((prevOrders) =>
         prevOrders.map((prev) => {
           const updatedOrder = updatedOrders.find(
-            (item) => item.id === prev.id
+            (item) => item.id === prev.id,
           );
 
           return updatedOrder || prev;
-        })
+        }),
       );
       onClose();
     } catch (error) {
@@ -185,15 +206,13 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
   };
 
   const totalPriceDifference = getFloatOneDigit(
-    order.total_service_price - order.price
+    order.total_service_price - order.price,
   );
   const totalPriceOriginalDifference = getFloatOneDigit(
-    order.total_service_price_original - order.price_original
+    order.total_service_price_original - order.price_original,
   );
 
-  const initialEstimateInMinutes = getEstimateInMinutes(order.estimate);
-  const initialEstimateWithOneCleaner =
-    initialEstimateInMinutes * order.cleaners_count;
+  const previousCleanersCount = usePrevious(cleanersCount);
 
   const onCleanersCountChange = ({ target: { value } }) => {
     if (order.manual_cleaners_count) {
@@ -204,9 +223,14 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
       setCleanersCount(value);
 
       if (value) {
-        setEstimate(
-          getEstimateInHoursMinutesFormat(initialEstimateWithOneCleaner / value)
+        const oneCleanerEstimate =
+          getEstimateInMinutes(estimate) *
+          (cleanersCount || previousCleanersCount);
+        const updatedEstimate = getEstimateInHoursMinutesFormat(
+          oneCleanerEstimate / +value,
         );
+
+        setEstimate(updatedEstimate);
       }
     }
   };
@@ -218,7 +242,7 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
       setTotalPrice(getFloatOneDigit(totalPriceDifference + +value));
     }
 
-    setPrice(value);
+    setPrice(Number(value));
   };
 
   const onOriginalPriceChange = (value) => {
@@ -226,12 +250,65 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
       setTotalPriceOriginal(value);
     } else {
       setTotalPriceOriginal(
-        getFloatOneDigit(totalPriceOriginalDifference + +value)
+        getFloatOneDigit(totalPriceOriginalDifference + +value),
       );
     }
 
-    setPriceOriginal(value);
+    setPriceOriginal(Number(value));
   };
+
+  const isPrivateHouse = order.address.includes("(Private house)");
+
+  useEffect(() => {
+    const subServicesOptions = getSubServiceListByMainService(
+      prices,
+      order.title,
+    ).map((item) => ({
+      ...item,
+      label: t(`${item.title}_summery`),
+      value: item.title,
+    }));
+    const subServicesList = getSelectedSubServices(
+      subService,
+      subServicesOptions,
+    );
+    const counterList = getFieldsFromCounter(counter).map(
+      ({ title, count }) => ({ value: count || title }),
+    );
+
+    const updatedEstimate = getServiceEstimate(
+      order.title,
+      counterList,
+      subServicesList,
+      order.manual_cleaners_count,
+      isPrivateHouse,
+    );
+
+    if (!isFirstRender) {
+      setEstimate(updatedEstimate.time);
+      setCleanersCount(
+        updatedEstimate.cleanersCount + order.manual_cleaners_count,
+      );
+    }
+
+    //eslint-disable-next-line
+  }, [order.title, counter, subService, isPrivateHouse]);
+
+  useEffect(() => {
+    if (!isFirstRender) {
+      const cleanerReward = getCleanerReward({
+        title: order.title,
+        originalPrice: priceOriginal,
+        cleanersCount,
+        estimate,
+        price,
+      });
+
+      setOriginalReward(cleanerReward);
+    }
+
+    //eslint-disable-next-line
+  }, [order.title, priceOriginal, cleanersCount, estimate, price]);
 
   const isPricesLoaded = Object.keys(prices).length > 0;
   const discount = Math.round(100 - (order.price * 100) / order.price_original);
@@ -241,7 +318,9 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
       onClose={onClose}
       actionButtonText={t("admin_order_edit_update_order")}
       onActionButtonClick={onUpdateOrder}
-      isActionButtonDisabled={!isOrderValid || isUpdateLoading || isPricesLoading}
+      isActionButtonDisabled={
+        !isOrderValid || isUpdateLoading || isPricesLoading
+      }
       isLoading={isUpdateLoading}
       isInitialDataLoading={isPricesLoading}
     >
@@ -298,43 +377,52 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
             disabled
           />
         </div>
-        <div className="w-100 mb-3">
-          <label className="mb-2">
-            {t("admin_order_price_with_discount")}:
-          </label>
-          <input
-            className="form-control"
-            value={price}
-            onChange={({ target: { value } }) => {
-              if (NUMBER_FLOAT_EMPTY_REGEX.test(value)) {
-                onPriceChange(value);
-              }
-            }}
-            disabled={order.payment_intent}
-          />
+        <div className="lg:_flex lg:_gap-3 _items-end">
+          <div className="w-100 mb-3">
+            <label className="mb-2">
+              {t("admin_order_price_with_discount")}{" "}
+              <span className="text-warning">({t("final_price")})</span>:
+            </label>
+            <input
+              className="form-control"
+              value={price}
+              onChange={({ target: { value } }) => {
+                if (NUMBER_FLOAT_EMPTY_REGEX.test(value)) {
+                  onPriceChange(value);
+                }
+              }}
+              disabled={order.payment_intent}
+            />
+          </div>
+          <div className="w-100 mb-3">
+            <label className="mb-2">{t("admin_order_price")}:</label>
+            <input
+              className="form-control"
+              value={priceOriginal}
+              onChange={({ target: { value } }) => {
+                if (NUMBER_FLOAT_EMPTY_REGEX.test(value)) {
+                  onOriginalPriceChange(value);
+                }
+              }}
+              disabled={order.payment_intent}
+            />
+          </div>
         </div>
-        <div className="w-100 mb-3">
-          <label className="mb-2">{t("admin_order_price")}:</label>
-          <input
-            className="form-control"
-            value={priceOriginal}
-            onChange={({ target: { value } }) => {
-              if (NUMBER_FLOAT_EMPTY_REGEX.test(value)) {
-                onOriginalPriceChange(value);
-              }
-            }}
-            disabled={order.payment_intent}
-          />
-        </div>
-        <div className="w-100 mb-3">
-          <label className="mb-2">
-            {t("admin_order_total_price_with_discount")}:
-          </label>
-          <input className="form-control" value={totalPrice} disabled />
-        </div>
-        <div className="w-100 mb-3">
-          <label className="mb-2">{t("admin_order_total_price")}:</label>
-          <input className="form-control" value={totalPriceOriginal} disabled />
+        <div className="lg:_flex lg:_gap-3 _items-end">
+          <div className="w-100 mb-3">
+            <label className="mb-2">
+              {t("admin_order_total_price_with_discount")}:
+            </label>
+            <input className="form-control" value={totalPrice} disabled />
+          </div>
+          <div className="w-100 mb-3">
+            <label className="mb-2">{t("admin_order_total_price")}:</label>
+            <input
+              className="form-control"
+              value={totalPriceOriginal}
+              disabled
+            />
+          </div>
         </div>
         <div className="w-100 mb-3">
           <label className="mb-2">{t("admin_order_edit_estimate")}:</label>
@@ -342,6 +430,7 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
             className="form-control"
             value={estimate}
             onChange={({ target: { value } }) => setEstimate(value)}
+            disabled={counterType !== COUNTER_TYPE.SQUARE_METERS}
           />
         </div>
         {counter && isPricesLoaded && (
@@ -354,13 +443,15 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
               t={t}
               cleanersCount={cleanersCount}
               manualCleanersCount={order.manual_cleaners_count}
-              isPrivateHouse={order.address.includes("(Private house)")}
+              isPrivateHouse={isPrivateHouse}
               setCounter={setCounter}
               discount={discount}
               orderPrice={order.price}
               orderPriceOriginal={order.price_original}
               onPriceChange={onPriceChange}
               onOriginalPriceChange={onOriginalPriceChange}
+              counterType={counterType}
+              setCounterType={setCounterType}
             />
           </div>
         )}
@@ -376,7 +467,7 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
               cleanersCount={cleanersCount}
               manualCleanersCount={order.manual_cleaners_count}
               discount={discount}
-              isPrivateHouse={order.address.includes("(Private house)")}
+              isPrivateHouse={isPrivateHouse}
               orderPrice={order.price}
               orderPriceOriginal={order.price_original}
               onPriceChange={onPriceChange}
@@ -392,23 +483,29 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
             onChange={({ target: { value } }) => setNote(value)}
           />
         </div>
-        <div className="w-100 mb-3">
-          <label className="mb-2">
-            {t("admin_order_reward")}{" "}
-            <span className="text-danger">
-              ({t("admin_order_this_will_override_reward")})
-            </span>
-            :
-          </label>
-          <input
-            className="form-control"
-            value={reward}
-            onChange={({ target: { value } }) => {
-              if (NUMBER_FLOAT_EMPTY_REGEX.test(value)) {
-                setReward(value.trim());
-              }
-            }}
-          />
+        <div className="lg:_flex lg:_gap-3 _items-end">
+          <div className="w-100 mb-3">
+            <label className="mb-2">{t("admin_order_original_reward")}:</label>
+            <input className="form-control" value={originalReward} disabled />
+          </div>
+          <div className="w-100 mb-3">
+            <label className="mb-2">
+              {t("admin_order_reward")}{" "}
+              <span className="text-danger">
+                ({t("admin_order_this_will_override_reward")})
+              </span>
+              :
+            </label>
+            <input
+              className="form-control"
+              value={reward}
+              onChange={({ target: { value } }) => {
+                if (NUMBER_FLOAT_EMPTY_REGEX.test(value)) {
+                  setReward(value.trim());
+                }
+              }}
+            />
+          </div>
         </div>
         <div className="w-100 mb-3">
           <label className="mb-2">
