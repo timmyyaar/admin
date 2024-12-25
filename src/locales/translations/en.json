@@ -388,5 +388,6 @@
   "final_price": "Final price",
   "reset_order": "Reset order",
   "reset": "Reset",
-  "reset_order_confirmation_message": "Are you sure you want to reset this order? Telegram messages will be sent again!"
+  "reset_order_confirmation_message": "Are you sure you want to reset this order? Telegram messages will be sent again!",
+  "admin_services_header": "Services"
 }

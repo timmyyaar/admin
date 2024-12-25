@@ -5,9 +5,9 @@
 
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
-    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-    sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
+    "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
+    "Helvetica Neue", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   position: relative;
@@ -223,6 +223,10 @@ code {
   *:hover > td & {
     visibility: visible !important;
   }
+
+  @media screen and (max-width: 1024px) {
+    visibility: visible !important;
+  }
 }
 
 .visible-on-table-cell-hover {
@@ -311,4 +315,16 @@ code {
 
 ._text-primary {
   color: #2b8afc;
+}
+
+.grid-max-1fr {
+  grid-template-columns: max-content 1fr;
+}
+
+.rotate-90 {
+  transform: rotate(90deg);
+}
+
+.z-index-max {
+  z-index: 100000;
 }
