@@ -388,5 +388,6 @@
   "final_price": "Остаточна ціна",
   "reset_order": "Скинути замовлення",
   "reset": "Скинути",
-  "reset_order_confirmation_message": "Ви впевнені, що бажаєте скинути це замовлення? Повідомлення в Telegram будуть надсилатися знову!"
+  "reset_order_confirmation_message": "Ви впевнені, що бажаєте скинути це замовлення? Повідомлення в Telegram будуть надсилатися знову!",
+  "admin_services_header": "Послуги"
 }
