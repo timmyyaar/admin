@@ -134,8 +134,8 @@ export const getCleanerReward = ({
   price,
 }) => {
   const timeArray = estimate.split(", ");
-  const hours = +timeArray[0].slice(0, timeArray[0].indexOf("h"));
-  const minutes = +timeArray[1].slice(0, timeArray[1].indexOf("m"));
+  const hours = +timeArray[0]?.slice(0, timeArray[0].indexOf("h")) || 0;
+  const minutes = +timeArray[1]?.slice(0, timeArray[1].indexOf("m")) || 0;
   const minutesPercentage = Number(((minutes * 100) / 60).toFixed(0));
   const numericEstimate = Number(`${hours}.${minutesPercentage}`);
 
