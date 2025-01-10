@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { request } from "../../utils";
 import { ROLES } from "../../constants";
 import Select from "../../components/common/Select/Select";
 import DocumentItem from "./DocumentItem";
+import UploadImage from "./UploadImage";
 
 function DocumentsAdmin({ t }) {
   const [isUsersLoading, setIsUsersLoading] = useState(false);
@@ -18,6 +19,18 @@ function DocumentsAdmin({ t }) {
   const [attachmentTwo, setAttachmentTwo] = useState(null);
   const [attachmentTwoError, setAttachmentTwoError] = useState(false);
   const [attachmentTwoLoading, setAttachmentTwoLoading] = useState(false);
+  const [statement, setStatement] = useState(null);
+  const [isStatementLoading, setIsStatementLoading] = useState(false);
+  const [statementError, setStatementError] = useState(false);
+
+  const [idCardFirstSide, setIdCardFirstSide] = useState(null);
+  const [isIdCardFirstSideLoading, setIsIdCardFirstSideLoading] =
+    useState(false);
+  const [isIdCardFirstSideError, setIsIdCardFirstSideError] = useState(false);
+  const [idCardSecondSide, setIdCardSecondSide] = useState(null);
+  const [isIdCardSecondSideLoading, setIsIdCardSecondSideLoading] =
+    useState(false);
+  const [isIdCardSecondSideError, setIsIdCardSecondSideError] = useState(false);
 
   const getMethodsById = (id) => {
     if (id === "contract") {
@@ -38,6 +51,24 @@ function DocumentsAdmin({ t }) {
         setLoading: setAttachmentTwoLoading,
         setDocument: setAttachmentTwo,
       };
+    } else if (id === "statement") {
+      return {
+        setError: setStatementError,
+        setLoading: setIsStatementLoading,
+        setDocument: setStatement,
+      };
+    } else if (id === "idCardFirstSide") {
+      return {
+        setError: setIsIdCardFirstSideError,
+        setLoading: setIsIdCardFirstSideLoading,
+        setDocument: setIdCardFirstSide,
+      };
+    } else if (id === "idCardSecondSide") {
+      return {
+        setError: setIsIdCardSecondSideError,
+        setLoading: setIsIdCardSecondSideLoading,
+        setDocument: setIdCardSecondSide,
+      };
     }
   };
 
@@ -50,9 +81,9 @@ function DocumentsAdmin({ t }) {
       setUsers(
         usersResponse
           .filter(({ role }) =>
-            [ROLES.CLEANER_DRY, ROLES.CLEANER].includes(role)
+            [ROLES.CLEANER_DRY, ROLES.CLEANER].includes(role),
           )
-          .map(({ id, email }) => ({ value: id, label: email }))
+          .map(({ id, email }) => ({ value: id, label: email })),
       );
     } finally {
       setIsUsersLoading(false);
@@ -72,13 +103,22 @@ function DocumentsAdmin({ t }) {
       });
 
       const contract = documentsResponse.find(
-        ({ name }) => name === "contract"
+        ({ name }) => name === "contract",
       );
       const attachmentOne = documentsResponse.find(
-        ({ name }) => name === "attachmentOne"
+        ({ name }) => name === "attachmentOne",
       );
       const attachmentTwo = documentsResponse.find(
-        ({ name }) => name === "attachmentTwo"
+        ({ name }) => name === "attachmentTwo",
+      );
+      const statement = documentsResponse.find(
+        ({ name }) => name === "statement",
+      );
+      const passportFirstSide = documentsResponse.find(
+        ({ name }) => name === "idCardFirstSide",
+      );
+      const passportSecondSide = documentsResponse.find(
+        ({ name }) => name === "idCardSecondSide",
       );
 
       if (contract) {
@@ -104,6 +144,30 @@ function DocumentsAdmin({ t }) {
       } else {
         setAttachmentTwo(null);
       }
+
+      if (statement) {
+        setStatement({ url: statement.link, pathname: statement.file_name });
+      } else {
+        setStatement(null);
+      }
+
+      if (passportFirstSide) {
+        setIdCardFirstSide({
+          url: passportFirstSide.link,
+          pathname: passportFirstSide.file_name,
+        });
+      } else {
+        setIdCardFirstSide(null);
+      }
+
+      if (passportSecondSide) {
+        setIdCardSecondSide({
+          url: passportSecondSide.link,
+          pathname: passportSecondSide.file_name,
+        });
+      } else {
+        setIdCardSecondSide(null);
+      }
     } finally {
       setIsDocumentsLoading(false);
     }
@@ -119,8 +183,15 @@ function DocumentsAdmin({ t }) {
   return (
     <div className="pt-4">
       {contractError && <div className="mb-3 text-danger">{contractError}</div>}
-      {attachmentOneError && <div className="mb-3 text-danger">{attachmentOneError}</div>}
-      {attachmentTwoError && <div className="mb-3 text-danger">{attachmentTwoError}</div>}
+      {attachmentOneError && (
+        <div className="mb-3 text-danger">{attachmentOneError}</div>
+      )}
+      {attachmentTwoError && (
+        <div className="mb-3 text-danger">{attachmentTwoError}</div>
+      )}
+      {statementError && (
+        <div className="mb-3 text-danger">{statementError}</div>
+      )}
       <div className="d-flex align-items-center mb-4">
         <label className="_mr-3">{t("user")}:</label>
         <Select
@@ -184,6 +255,54 @@ function DocumentsAdmin({ t }) {
             2
           </div>
         )}
+        {Boolean(statement) ? (
+          <DocumentItem
+            item={statement}
+            isUploaded
+            methods={getMethodsById("statement")}
+            id="statement"
+            isLoading={
+              isStatementLoading || isUsersLoading || isDocumentsLoading
+            }
+            deleteConfirmation
+            userId={selectedUser?.value}
+          />
+        ) : (
+          <div className="pdf-preview d-flex align-items-center justify-content-center font-weight-semi-bold text-danger py-2 px-3 bg-white">
+            {t("admin_documents_no_document")} {t("admin_documents_statement")}
+          </div>
+        )}
+      </div>
+      <div className="mt-4">
+        <span className="font-weight-semi-bold documents-title">
+          {t("admin_documents_id_card_description")}:
+        </span>
+        <div className="_flex lg:_flex-row _flex-col _gap-8 _my-2">
+          <div className="_flex _flex-col _gap-2">
+            {t('admin_documents_first_image')}
+            <UploadImage
+              id="idCardFirstSide"
+              image={idCardFirstSide}
+              isInitLoading={isDocumentsLoading}
+              isLoading={isIdCardFirstSideLoading || isDocumentsLoading}
+              isError={isIdCardFirstSideError}
+              setIsError={setIsIdCardFirstSideError}
+              isAdmin
+            />
+          </div>
+          <div className="_flex _flex-col _gap-2">
+            {t('admin_documents_second_image')}
+            <UploadImage
+              id="idCardSecondSide"
+              image={idCardSecondSide}
+              isInitLoading={isDocumentsLoading}
+              isLoading={isIdCardSecondSideLoading || isDocumentsLoading}
+              isError={isIdCardSecondSideError}
+              setIsError={setIsIdCardSecondSideError}
+              isAdmin
+            />
+          </div>
+        </div>
       </div>
     </div>
   );
