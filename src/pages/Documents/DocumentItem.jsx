@@ -50,6 +50,7 @@ function DocumentItem({
           isActionButtonDanger
           onActionButtonClick={() => deleteDocument(id, item.url)}
           actionButtonText="Delete"
+          minHeight={false}
         >
           {t("admin_documents_delete_confirmation")} ({item.pathname})
         </Modal>

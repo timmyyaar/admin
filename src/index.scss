@@ -317,6 +317,14 @@ code {
   color: #2b8afc;
 }
 
+.background-shadow {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+._z-max {
+  z-index: 9999;
+}
+
 .grid-max-1fr {
   grid-template-columns: max-content 1fr;
 }
