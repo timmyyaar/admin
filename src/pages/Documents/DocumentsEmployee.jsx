@@ -1,17 +1,15 @@
 import { request } from "../../utils";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import DocumentItem from "./DocumentItem";
 import UploadItem from "./UploadItem";
-import UploadImage from "./UploadImage";
 
 export const PDF_TYPE = "application/pdf";
 
 const DEFAULT_DOCUMENTS = [
-  { pathname: "Umowa dla partnerów.pdf", url: "/contract.pdf" },
-  { pathname: "Załącznik 1 (WZÓR).pdf", url: "/attachment1.pdf" },
-  { pathname: "Załącznik 2 RODO (WZÓR).pdf", url: "/attachment2.pdf" },
-  { pathname: "Oświadczenie", url: "/statement.pdf" },
+  { pathname: "Umowa dla partnerów.pdf", url: "/umowa.pdf" },
+  { pathname: "Załącznik 1 (WZÓR).pdf", url: "/zalacznik1.pdf" },
+  { pathname: "Załącznik 2 RODO (WZÓR).pdf", url: "/zalacznik2.pdf" },
 ];
 
 function DocumentsEmployee({ t }) {
@@ -25,17 +23,6 @@ function DocumentsEmployee({ t }) {
   const [zalacznik2, setZalacznik2] = useState(null);
   const [isZal2Loading, setIsZal2Loading] = useState(false);
   const [isZal2Error, setIsZal2Error] = useState(false);
-  const [statement, setStatement] = useState(null);
-  const [isStatementLoading, setIsStatementLoading] = useState(false);
-  const [isStatementError, setIsStatementError] = useState(false);
-  const [idCardFirstSide, setIdCardFirstSide] = useState(null);
-  const [isIdCardFirstSideLoading, setIsIdCardFirstSideLoading] =
-    useState(false);
-  const [isIdCardFirstSideError, setIsIdCardFirstSideError] = useState(false);
-  const [idCardSecondSide, setIdCardSecondSide] = useState(null);
-  const [isIdCardSecondSideLoading, setIsIdCardSecondSideLoading] =
-    useState(false);
-  const [isIdCardSecondSideError, setIsIdCardSecondSideError] = useState(false);
 
   const getMethodsById = (id) => {
     if (id === "contract") {
@@ -56,28 +43,10 @@ function DocumentsEmployee({ t }) {
         setLoading: setIsZal2Loading,
         setDocument: setZalacznik2,
       };
-    } else if (id === "statement") {
-      return {
-        setError: setIsStatementError,
-        setLoading: setIsStatementLoading,
-        setDocument: setStatement,
-      };
-    } else if (id === "idCardFirstSide") {
-      return {
-        setError: setIsIdCardFirstSideError,
-        setLoading: setIsIdCardFirstSideLoading,
-        setDocument: setIdCardFirstSide,
-      };
-    } else if (id === "idCardSecondSide") {
-      return {
-        setError: setIsIdCardSecondSideError,
-        setLoading: setIsIdCardSecondSideLoading,
-        setDocument: setIdCardSecondSide,
-      };
     }
   };
 
-  const onChange = async ({ target: { files } }, id, isImage) => {
+  const onChange = async ({ target: { files } }, id) => {
     const { setError, setLoading, setDocument } = getMethodsById(id);
 
     const file = files[0];
@@ -86,10 +55,7 @@ function DocumentsEmployee({ t }) {
       return;
     }
 
-    if (
-      (!isImage && file.type !== PDF_TYPE) ||
-      (isImage && !file.type.startsWith("image/"))
-    ) {
+    if (file.type !== PDF_TYPE) {
       setError(true);
 
       return;
@@ -121,22 +87,13 @@ function DocumentsEmployee({ t }) {
       const documentsResponse = await request({ url: "documents" });
 
       const contract = documentsResponse.find(
-        ({ name }) => name === "contract",
+        ({ name }) => name === "contract"
       );
       const attachmentOne = documentsResponse.find(
-        ({ name }) => name === "attachmentOne",
+        ({ name }) => name === "attachmentOne"
       );
       const attachmentTwo = documentsResponse.find(
-        ({ name }) => name === "attachmentTwo",
-      );
-      const statement = documentsResponse.find(
-        ({ name }) => name === "statement",
-      );
-      const passportFirstSide = documentsResponse.find(
-        ({ name }) => name === "idCardFirstSide",
-      );
-      const passportSecondSide = documentsResponse.find(
-        ({ name }) => name === "idCardSecondSide",
+        ({ name }) => name === "attachmentTwo"
       );
 
       if (contract) {
@@ -154,27 +111,6 @@ function DocumentsEmployee({ t }) {
         setZalacznik2({
           url: attachmentTwo.link,
           pathname: attachmentTwo.file_name,
-        });
-      }
-
-      if (statement) {
-        setStatement({
-          url: statement.link,
-          pathname: statement.file_name,
-        });
-      }
-
-      if (passportFirstSide) {
-        setIdCardFirstSide({
-          url: passportFirstSide.link,
-          pathname: passportFirstSide.file_name,
-        });
-      }
-
-      if (passportSecondSide) {
-        setIdCardSecondSide({
-          url: passportSecondSide.link,
-          pathname: passportSecondSide.file_name,
         });
       }
     } finally {
@@ -252,54 +188,6 @@ function DocumentsEmployee({ t }) {
               isError={isZal2Error}
             />
           )}
-          {statement ? (
-            <DocumentItem
-              item={statement}
-              isUploaded
-              methods={getMethodsById("statement")}
-              id="statement"
-              isLoading={isStatementLoading}
-            />
-          ) : (
-            <UploadItem
-              title={t("admin_documents_statement")}
-              id="statement"
-              onChange={onChange}
-              isLoading={isStatementLoading || isDocumentsLoading}
-              isError={isStatementError}
-            />
-          )}
-        </div>
-      </div>
-      <div className="mt-4">
-        <span className="font-weight-semi-bold documents-title">
-          {t("admin_documents_id_card_description")}:
-        </span>
-        <div className="_flex lg:_flex-row _flex-col _gap-8 _my-2">
-          <div className="_flex _flex-col _gap-2">
-            {t("admin_documents_first_image")}:
-            <UploadImage
-              id="idCardFirstSide"
-              onChange={onChange}
-              image={idCardFirstSide}
-              isInitLoading={isDocumentsLoading}
-              isLoading={isIdCardFirstSideLoading || isDocumentsLoading}
-              isError={isIdCardFirstSideError}
-              setIsError={setIsIdCardFirstSideError}
-            />
-          </div>
-          <div className="_flex _flex-col _gap-2">
-            {t("admin_documents_second_image")}:
-            <UploadImage
-              id="idCardSecondSide"
-              onChange={onChange}
-              image={idCardSecondSide}
-              isInitLoading={isDocumentsLoading}
-              isLoading={isIdCardSecondSideLoading || isDocumentsLoading}
-              isError={isIdCardSecondSideError}
-              setIsError={setIsIdCardSecondSideError}
-            />
-          </div>
         </div>
       </div>
     </div>
