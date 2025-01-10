@@ -81,6 +81,10 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
   );
   const [address, setAddress] = useState(order.address);
   const [price, setPrice] = useState(order.price);
+  const [mainServices, setMainServices] = useState([]);
+  const [subServices, setSubServices] = useState([]);
+  const [isMainServicesLoading, setIsMainServicesLoading] = useState(false);
+  const [isSubServicesLoading, setIsSubServicesLoading] = useState(false);
   const [totalPrice, setTotalPrice] = useState(order.total_service_price);
   const [priceOriginal, setPriceOriginal] = useState(order.price_original);
   const [totalPriceOriginal, setTotalPriceOriginal] = useState(
@@ -116,18 +120,47 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
       : COUNTER_TYPE.DEFAULT,
   );
 
+  const getMainServices = async () => {
+    try {
+      setIsMainServicesLoading(true);
+
+      const response = await request({ url: "main-services" });
+
+      setMainServices(response);
+    } finally {
+      setIsMainServicesLoading(false);
+    }
+  };
+
+  const getSubServices = async () => {
+    try {
+      setIsSubServicesLoading(true);
+
+      const response = await request({ url: "sub-services" });
+
+      setSubServices(response);
+    } finally {
+      setIsSubServicesLoading(false);
+    }
+  };
+
   const getPrices = async () => {
     try {
       setIsPricesLoading(true);
 
       const pricesResponse = await request({ url: "prices" });
 
-      setPrices(
-        pricesResponse.reduce(
+      const currentCityPrices = pricesResponse
+        .filter(({ city }) => city === order.city)
+        .reduce((result, item) => ({ ...result, [item.key]: item.price }), {});
+
+      setPrices({
+        ...pricesResponse.reduce(
           (result, item) => ({ ...result, [item.key]: item.price }),
           {},
         ),
-      );
+        ...currentCityPrices,
+      });
     } finally {
       setIsPricesLoading(false);
     }
@@ -135,6 +168,10 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
 
   useEffect(() => {
     getPrices();
+    getMainServices();
+    getSubServices();
+
+    //eslint-disable-next-line
   }, []);
 
   const isEmailValid = EMAIL_REGEX.test(email);
@@ -263,6 +300,8 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
     const subServicesOptions = getSubServiceListByMainService(
       prices,
       order.title,
+      mainServices,
+      subServices,
     ).map((item) => ({
       ...item,
       label: t(`${item.title}_summery`),
@@ -311,6 +350,7 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
   }, [order.title, priceOriginal, cleanersCount, estimate, price]);
 
   const isPricesLoaded = Object.keys(prices).length > 0;
+  const isServicesLoaded = mainServices.length > 0 && subServices.length > 0;
   const discount = Math.round(100 - (order.price * 100) / order.price_original);
 
   return (
@@ -322,7 +362,9 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
         !isOrderValid || isUpdateLoading || isPricesLoading
       }
       isLoading={isUpdateLoading}
-      isInitialDataLoading={isPricesLoading}
+      isInitialDataLoading={
+        isPricesLoading || isMainServicesLoading || isSubServicesLoading
+      }
     >
       <div>
         <div className="w-100 mb-3">
@@ -433,7 +475,7 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
             disabled={counterType !== COUNTER_TYPE.SQUARE_METERS}
           />
         </div>
-        {counter && isPricesLoaded && (
+        {counter && isPricesLoaded && isServicesLoaded && (
           <div className="w-100 mb-3">
             <label className="mb-2">{t("admin_order_edit_counter")}:</label>
             <CounterEdit
@@ -455,7 +497,7 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
             />
           </div>
         )}
-        {isPricesLoaded && (
+        {isPricesLoaded && isServicesLoaded && (
           <div className="w-100 mb-3">
             <label className="mb-2">{t("admin_order_edit_services")}:</label>
             <SubServiceEdit
@@ -472,6 +514,8 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
               orderPriceOriginal={order.price_original}
               onPriceChange={onPriceChange}
               onOriginalPriceChange={onOriginalPriceChange}
+              mainServicesResponse={mainServices}
+              subServicesResponse={subServices}
             />
           </div>
         )}

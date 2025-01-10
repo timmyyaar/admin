@@ -400,5 +400,6 @@
   "final_price": "Окончательная цена",
   "reset_order": "Сбросить заказ",
   "reset": "Сбросить",
-  "reset_order_confirmation_message": "Вы уверены, что хотите сбросить этот заказ? Сообщения Telegram будут отправлены снова!"
+  "reset_order_confirmation_message": "Вы уверены, что хотите сбросить этот заказ? Сообщения Telegram будут отправлены снова!",
+  "admin_services_header": "Услуги"
 }

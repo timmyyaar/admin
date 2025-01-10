@@ -223,6 +223,10 @@ code {
   *:hover > td & {
     visibility: visible !important;
   }
+
+  @media screen and (max-width: 1024px) {
+    visibility: visible !important;
+  }
 }
 
 .visible-on-table-cell-hover {
@@ -319,4 +323,16 @@ code {
 
 ._z-max {
   z-index: 9999;
+}
+
+.grid-max-1fr {
+  grid-template-columns: max-content 1fr;
+}
+
+.rotate-90 {
+  transform: rotate(90deg);
+}
+
+.z-index-max {
+  z-index: 100000;
 }
