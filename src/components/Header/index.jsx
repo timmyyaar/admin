@@ -29,7 +29,6 @@ const ADMIN_NAVIGATION = [
 
 const SUPERVISOR_NAVIGATION = [
   { to: "/prices", title: "Prices" },
-  { to: "/services", title: "Services" },
   { to: "/orders-summary", title: "Orders summary" },
   { to: "/incomes", title: "Incomes" },
   { to: "/statistics", title: "Statistics" },

@@ -353,6 +353,7 @@
   "Wall stain removal_summery": "Видалення плям на стінах",
   "Limescale removal_summery": "Видалення вапняного нальоту",
   "Mold removal_summery": "Видалення цвілі",
+  "Provide supplies_summery": "Забезпечити засоби для збирання",
   "Cleaning bath or shower cubicle_summery": "Чищення ванни або душової кабіни",
   "aggregator": "агрегатор",
   "Airbnb": "Airbnb",
@@ -401,6 +402,5 @@
   "final_price": "Остаточна ціна",
   "reset_order": "Скинути замовлення",
   "reset": "Скинути",
-  "reset_order_confirmation_message": "Ви впевнені, що бажаєте скинути це замовлення? Повідомлення в Telegram будуть надсилатися знову!",
-  "admin_services_header": "Послуги"
+  "reset_order_confirmation_message": "Ви впевнені, що бажаєте скинути це замовлення? Повідомлення в Telegram будуть надсилатися знову!"
 }

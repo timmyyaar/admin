@@ -349,6 +349,7 @@
   "Wall stain removal_summery": "Удаление пятен со стен",
   "Limescale removal_summery": "Удаление камня",
   "Mold removal_summery": "Удаление плесени",
+  "Provide supplies_summery": "Обеспечить средства для уборки",
   "Cleaning bath or shower cubicle_summery": "Чистка ванны или душевой кабины",
   "aggregator": "агрегатор",
   "default": "стандартный",
@@ -400,6 +401,5 @@
   "final_price": "Окончательная цена",
   "reset_order": "Сбросить заказ",
   "reset": "Сбросить",
-  "reset_order_confirmation_message": "Вы уверены, что хотите сбросить этот заказ? Сообщения Telegram будут отправлены снова!",
-  "admin_services_header": "Услуги"
+  "reset_order_confirmation_message": "Вы уверены, что хотите сбросить этот заказ? Сообщения Telegram будут отправлены снова!"
 }
