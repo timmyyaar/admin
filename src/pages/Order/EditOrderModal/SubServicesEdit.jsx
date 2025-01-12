@@ -9,8 +9,6 @@ import {
   getServicePriceBasedOnManualCleaners,
 } from "../priceUtils";
 
-const OWN_SUPPLIES_SERVICE = "Own_supplies_sub_service";
-
 const SINGLE_SUB_SERVICES = [
   "Vacuum_cleaner_sub_service",
   "Own_supplies_sub_service",
@@ -21,24 +19,42 @@ const getSubServicesPrice = (
   isPrivateHouse,
   cleanersCount,
   manualCleanersCount,
-) =>
-  getServicePriceBasedOnManualCleaners(
-    subServices.reduce(
+  discount,
+) => {
+  const subServicesWithoutDiscount = subServices.filter(
+    ({ isDiscountExcluded }) => isDiscountExcluded,
+  );
+  const subServicesWithDiscount = subServices.filter(
+    ({ isDiscountExcluded }) => !isDiscountExcluded,
+  );
+
+  const subServicesWithoutDiscountPrice = subServicesWithoutDiscount.reduce(
+    (acc, el) => acc + el.originalPrice * el.count,
+    0,
+  );
+  const priceBasedOnManualCleaners = getServicePriceBasedOnManualCleaners(
+    subServicesWithDiscount.reduce(
       (acc, el) =>
-        acc +
-        ([
-          "Clean the room",
-          "Clean the bathroom",
-          "Clean the kitchen",
-          "Clean the corridor",
-        ].includes(el.value) && isPrivateHouse
+        acc + el.countInPrivateHouse && isPrivateHouse
           ? el.originalPrice * el.count * 1.3
-          : el.originalPrice * el.count),
+          : el.originalPrice * el.count,
       0,
     ),
     cleanersCount - manualCleanersCount,
     manualCleanersCount,
   );
+
+  return {
+    priceWithDiscount: discount
+      ? getRoundedServicePrice(
+          priceBasedOnManualCleaners * ((100 - discount) / 100) +
+            subServicesWithoutDiscountPrice,
+        )
+      : priceBasedOnManualCleaners + subServicesWithoutDiscountPrice,
+    priceWithoutDiscount:
+      priceBasedOnManualCleaners + subServicesWithoutDiscountPrice,
+  };
+};
 
 function SubServiceEdit({
   prices,
@@ -54,14 +70,19 @@ function SubServiceEdit({
   orderPriceOriginal,
   onPriceChange,
   onOriginalPriceChange,
+  mainServicesResponse,
+  subServicesResponse,
 }) {
-  const subServicesOptions = getSubServiceListByMainService(prices, title).map(
-    (item) => ({
-      ...item,
-      label: t(`${item.title}_summery`),
-      value: item.title,
-    }),
-  );
+  const subServicesOptions = getSubServiceListByMainService(
+    prices,
+    title,
+    mainServicesResponse,
+    subServicesResponse,
+  ).map((item) => ({
+    ...item,
+    label: t(`${item.title}_summery`),
+    value: item.title,
+  }));
   const originalSubServices = getSelectedSubServices(
     subServices,
     subServicesOptions,
@@ -71,58 +92,43 @@ function SubServiceEdit({
     getSelectedSubServices(subServices, subServicesOptions),
   );
 
-  const originalSubServicesPrice = getSubServicesPrice(
-    originalSubServices.filter(({ value }) => value !== OWN_SUPPLIES_SERVICE),
+  const {
+    priceWithDiscount: originalSubServicesPriceWithDiscount,
+    priceWithoutDiscount: originalSubServicePrice,
+  } = getSubServicesPrice(
+    originalSubServices,
     isPrivateHouse,
     cleanersCount,
     manualCleanersCount,
+    discount,
   );
-  const subServicesPrice = getSubServicesPrice(
-    selectedSubServices.filter(({ value }) => value !== OWN_SUPPLIES_SERVICE),
+  const {
+    priceWithDiscount: subServicesPriceWithDiscount,
+    priceWithoutDiscount: subServicesPrice,
+  } = getSubServicesPrice(
+    selectedSubServices,
     isPrivateHouse,
     cleanersCount,
     manualCleanersCount,
+    discount,
   );
-
-  const wereOwnSuppliesInitiallySelected = originalSubServices.some(
-    ({ value }) => value === OWN_SUPPLIES_SERVICE,
-  );
-  const areOwnSuppliesSelected = selectedSubServices.some(
-    ({ value }) => value === OWN_SUPPLIES_SERVICE,
-  );
-
-  const needToRemoveOwnSupplies =
-    wereOwnSuppliesInitiallySelected && !areOwnSuppliesSelected;
-  const needToAddOwnSupplies =
-    !wereOwnSuppliesInitiallySelected && areOwnSuppliesSelected;
-  const ownSuppliesAdditionalPrice = needToRemoveOwnSupplies
-    ? -prices.ownSupplies
-    : needToAddOwnSupplies
-      ? prices.ownSupplies
-      : 0;
 
   useEffect(() => {
+    const subServicePriceDifferenceWithDiscount =
+      subServicesPriceWithDiscount - originalSubServicesPriceWithDiscount;
     const subServicePriceDifference =
-      subServicesPrice - originalSubServicesPrice;
-    const subServicePriceDifferenceWithDiscount = discount
-      ? getRoundedServicePrice(
-          subServicePriceDifference * ((100 - discount) / 100),
-        )
-      : subServicePriceDifference;
+      subServicesPrice - originalSubServicePrice;
 
-    onPriceChange(
-      orderPrice +
-        subServicePriceDifferenceWithDiscount +
-        ownSuppliesAdditionalPrice,
-    );
-    onOriginalPriceChange(
-      orderPriceOriginal +
-        subServicePriceDifference +
-        ownSuppliesAdditionalPrice,
-    );
+    onPriceChange(orderPrice + subServicePriceDifferenceWithDiscount);
+    onOriginalPriceChange(orderPriceOriginal + subServicePriceDifference);
 
     //eslint-disable-next-line
-  }, [subServicesPrice, ownSuppliesAdditionalPrice, originalSubServicesPrice]);
+  }, [
+    subServicesPrice,
+    originalSubServicePrice,
+    subServicesPriceWithDiscount,
+    originalSubServicesPriceWithDiscount,
+  ]);
 
   useEffect(() => {
     setSubServices(

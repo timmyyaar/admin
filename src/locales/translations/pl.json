@@ -403,5 +403,6 @@
   "reset_order": "Zresetować zamówienie",
   "reset": "Zresetować",
   "reset_order_confirmation_message": "Czy na pewno chcesz zresetować to zamówienie? Wiadomości Telegram zostaną wysłane ponownie!",
+  "admin_services_header": "Usługi",
   "admin_order_request_previous_cleaner": "Poproś o poprzedniego sprzątacza"
 }

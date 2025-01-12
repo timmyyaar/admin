@@ -403,5 +403,6 @@
   "reset_order": "Скинути замовлення",
   "reset": "Скинути",
   "reset_order_confirmation_message": "Ви впевнені, що бажаєте скинути це замовлення? Повідомлення в Telegram будуть надсилатися знову!",
+  "admin_services_header": "Послуги",
   "admin_order_request_previous_cleaner": "Запит попереднього прибиральника"
 }
