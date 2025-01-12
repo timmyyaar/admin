@@ -328,3 +328,11 @@ code {
 .z-index-max {
   z-index: 100000;
 }
+
+.background-shadow {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+._z-max {
+  z-index: 9999;
+}

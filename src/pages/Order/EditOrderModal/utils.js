@@ -43,7 +43,7 @@ import ownSuppliesSvg from "./icons/own-supplies.svg";
 import wallStainRemovalSvg from "./icons/wall-stain.svg";
 import limescaleRemovalSvg from "./icons/lomescale-removal.svg";
 import moldRemovalSvg from "./icons/mold-removal.svg";
-import {BRACKETS_REGEX, ORDER_TYPE} from "../../../constants";
+import { BRACKETS_REGEX, ORDER_TYPE } from "../../../constants";
 import { FIELD_TYPE } from "./constants";
 
 const AGGREGATOR_SERVICES = [
@@ -66,6 +66,14 @@ const AGGREGATOR_SERVICES = [
   {
     title: "Mold removal",
     icons: moldRemovalSvg,
+    originalPrice: 1,
+    price: 1,
+    oldPrice: 1,
+    time: 1,
+  },
+  {
+    title: "Provide supplies",
+    icons: ownSuppliesSvg,
     originalPrice: 1,
     price: 1,
     oldPrice: 1,

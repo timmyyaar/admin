@@ -111,6 +111,9 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
 
   const [prices, setPrices] = useState({});
   const [isPricesLoading, setIsPricesLoading] = useState(false);
+  const [requestPreviousCleaner, setRequestPreviousCleaner] = useState(
+    order.requestpreviouscleaner || false,
+  );
 
   const isOriginalCounterSquareMeters = counter.includes("square_meters_total");
 
@@ -222,6 +225,7 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
           cleanersCount: +cleanersCount,
           aggregator: aggregator?.value || null,
           reward_original: originalReward,
+          requestPreviousCleaner,
         },
       });
 
@@ -605,6 +609,23 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
           />
         </div>
         {updateError && <div className="mt-3 text-danger">{updateError}</div>}
+      </div>
+      <div className="w-100 mb-3">
+        <div className="form-check">
+          <input
+            id="request-previous-cleaner"
+            className="form-check-input _cursor-pointer"
+            type="checkbox"
+            checked={Boolean(requestPreviousCleaner)}
+            onClick={() => setRequestPreviousCleaner(!requestPreviousCleaner)}
+          />
+          <label
+            htmlFor="request-previous-cleaner"
+            className="form-check-label _cursor-pointer"
+          >
+            {t("admin_order_request_previous_cleaner")}
+          </label>
+        </div>
       </div>
       {order.title === ORDER_TYPE_ADDITIONAL.OFFICE && !order.is_confirmed && (
         <div className="w-100 mb-3">
