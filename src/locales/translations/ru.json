@@ -170,7 +170,7 @@
   "Balcony_summery": "Балкон",
   "Clean the mirror_summery": "Помыть зеркало",
   "Cleaners": "Клинеры",
-  "Own_supplies_sub_service_summery": "Свои средства для уборки",
+  "Own_supplies_sub_service_summery": "Клиент предоставит свои средства для уборки",
   "Vacuum_cleaner_sub_service_summery": "Пылесос",
   "admin_orders_header": "Заказы",
   "admin_locales_header": "Локали",
@@ -349,6 +349,7 @@
   "Wall stain removal_summery": "Удаление пятен со стен",
   "Limescale removal_summery": "Удаление камня",
   "Mold removal_summery": "Удаление плесени",
+  "Provide supplies_summery": "Обеспечить средства для уборки",
   "Cleaning bath or shower cubicle_summery": "Чистка ванны или душевой кабины",
   "aggregator": "агрегатор",
   "default": "стандартный",
@@ -400,5 +401,6 @@
   "final_price": "Окончательная цена",
   "reset_order": "Сбросить заказ",
   "reset": "Сбросить",
-  "reset_order_confirmation_message": "Вы уверены, что хотите сбросить этот заказ? Сообщения Telegram будут отправлены снова!"
+  "reset_order_confirmation_message": "Вы уверены, что хотите сбросить этот заказ? Сообщения Telegram будут отправлены снова!",
+  "admin_order_request_previous_cleaner": "Запросить предыдущего клинера"
 }

@@ -44,7 +44,7 @@ import wallStainRemovalSvg from "./icons/wall-stain.svg";
 import limescaleRemovalSvg from "./icons/lomescale-removal.svg";
 import moldRemovalSvg from "./icons/mold-removal.svg";
 import { BRACKETS_REGEX } from "../../../constants";
-import {FIELD_TYPE} from "./constants";
+import { FIELD_TYPE } from "./constants";
 
 const AGGREGATOR_SERVICES = [
   {
@@ -66,6 +66,14 @@ const AGGREGATOR_SERVICES = [
   {
     title: "Mold removal",
     icons: moldRemovalSvg,
+    originalPrice: 1,
+    price: 1,
+    oldPrice: 1,
+    time: 1,
+  },
+  {
+    title: "Provide supplies",
+    icons: ownSuppliesSvg,
     originalPrice: 1,
     price: 1,
     oldPrice: 1,
@@ -570,32 +578,32 @@ export const getFieldsFromCounter = (counter) => {
 
 export const getSelectedSubServices = (subServices, subServicesOptions) => {
   const splittedSubServices = subServices
-      .split(BRACKETS_REGEX)
-      .map((service) => service.trim())
-      .filter((item) => item);
+    .split(BRACKETS_REGEX)
+    .map((service) => service.trim())
+    .filter((item) => item);
   const selectedSubServicesLabels = splittedSubServices.map((item) =>
-      item.replace("_summery", "")
+    item.replace("_summery", ""),
   );
   const itemsCounts = subServices
-      .split(")")
-      .map((service) => service.trim())
-      .filter((item) => item)
-      .map((item) => item.slice(item.indexOf("(") + 1, item.length))
-      .map((item) => +item);
+    .split(")")
+    .map((service) => service.trim())
+    .filter((item) => item)
+    .map((item) => item.slice(item.indexOf("(") + 1, item.length))
+    .map((item) => +item);
 
   return selectedSubServicesLabels
-      .map((item, index) => ({
-        value: item,
-        count: itemsCounts[index],
-      }))
-      .map((item) => {
-        const existingSubService = subServicesOptions.find(
-            (subServiceOption) => subServiceOption.title === item.value
-        );
+    .map((item, index) => ({
+      value: item,
+      count: itemsCounts[index],
+    }))
+    .map((item) => {
+      const existingSubService = subServicesOptions.find(
+        (subServiceOption) => subServiceOption.title === item.value,
+      );
 
-        return {
-          ...item,
-          ...existingSubService,
-        };
-      });
+      return {
+        ...item,
+        ...existingSubService,
+      };
+    });
 };

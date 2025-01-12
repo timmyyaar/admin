@@ -218,7 +218,7 @@
   "admin_order_cash": "Готівка",
   "admin_order_previous_cleaner": "Попередній прибиральник",
   "Cleaners": "Клінери",
-  "Own_supplies_sub_service_summery": "Свої засоби для прибирання",
+  "Own_supplies_sub_service_summery": "Клієнт надасть свої кошти для збирання",
   "Vacuum_cleaner_sub_service_summery": "Пилосос",
   "admin_orders_header": "Замовлення",
   "admin_locales_header": "Локалі",
@@ -353,6 +353,7 @@
   "Wall stain removal_summery": "Видалення плям на стінах",
   "Limescale removal_summery": "Видалення вапняного нальоту",
   "Mold removal_summery": "Видалення цвілі",
+  "Provide supplies_summery": "Забезпечити засоби для збирання",
   "Cleaning bath or shower cubicle_summery": "Чищення ванни або душової кабіни",
   "aggregator": "агрегатор",
   "Airbnb": "Airbnb",
@@ -401,5 +402,6 @@
   "final_price": "Остаточна ціна",
   "reset_order": "Скинути замовлення",
   "reset": "Скинути",
-  "reset_order_confirmation_message": "Ви впевнені, що бажаєте скинути це замовлення? Повідомлення в Telegram будуть надсилатися знову!"
+  "reset_order_confirmation_message": "Ви впевнені, що бажаєте скинути це замовлення? Повідомлення в Telegram будуть надсилатися знову!",
+  "admin_order_request_previous_cleaner": "Запит попереднього прибиральника"
 }

@@ -169,7 +169,7 @@
   "Clean the fridge_summery": "Czyszczenie lodówki",
   "Clean the mirror_summery": "Mycie lustra",
   "Cleaners": "Osoby sprzątające",
-  "Own_supplies_sub_service_summery": "Własne środki czystości",
+  "Own_supplies_sub_service_summery": "Klient zapewnia własne środki czystości",
   "Vacuum_cleaner_sub_service_summery": "Odkurzacz",
   "admin_orders_header": "Zamówienia",
   "admin_locales_header": "Lokalizacje",
@@ -352,6 +352,7 @@
   "Wall stain removal_summery": "Usuwanie plam ze ścian",
   "Limescale removal_summery": "Usuwanie kamienia",
   "Mold removal_summery": "Usuwanie pleśni",
+  "Provide supplies_summery": "Zapewnij środki czystości",
   "Cleaning bath or shower cubicle_summery": "Mycie wanny lub kabiny prysznicowej",
   "aggregator": "agregator",
   "Airbnb": "Airbnb",
@@ -401,5 +402,6 @@
   "final_price": "Cena ostateczna",
   "reset_order": "Zresetować zamówienie",
   "reset": "Zresetować",
-  "reset_order_confirmation_message": "Czy na pewno chcesz zresetować to zamówienie? Wiadomości Telegram zostaną wysłane ponownie!"
+  "reset_order_confirmation_message": "Czy na pewno chcesz zresetować to zamówienie? Wiadomości Telegram zostaną wysłane ponownie!",
+  "admin_order_request_previous_cleaner": "Poproś o poprzedniego sprzątacza"
 }
