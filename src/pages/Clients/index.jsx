@@ -34,8 +34,22 @@ function Clients() {
 
   const toggleOrderRow = (id) => {
     setExpandedOrderRows((prev) =>
-      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
+      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id],
     );
+  };
+
+  const downloadClientsEmails = async () => {
+    const emails = await request({ url: "clients/emails" });
+
+    const element = document.createElement("a");
+    const file = new Blob([emails.join("\n")], {
+      type: "text/plain",
+    });
+
+    element.href = URL.createObjectURL(file);
+    element.download = "clients_emails.txt";
+    document.body.appendChild(element);
+    element.click();
   };
 
   return (
@@ -58,14 +72,22 @@ function Clients() {
           setClients={setClients}
         />
       )}
-      <div className="_flex _items-center _mb-3 _gap-4">
+      <div className="_flex _mb-3 _gap-4 lg:_flex-row _flex-col">
+        <div className="_flex _items-center _gap-4">
+          <button
+            className="btn btn-sm btn-primary"
+            onClick={() => setIsModalOpened(true)}
+          >
+            Add new client
+          </button>
+          <span>Total clients count: {clients.length}</span>
+        </div>
         <button
-          className="btn btn-sm btn-primary"
-          onClick={() => setIsModalOpened(true)}
+          className="btn btn-sm btn-warning lg:_ml-auto"
+          onClick={downloadClientsEmails}
         >
-          Add new client
+          Download clients emails
         </button>
-        <span>Total clients count: {clients.length}</span>
       </div>
       <div className="overflow-x-auto custom-scroll">
         <table className="table table-dark table-hover">
