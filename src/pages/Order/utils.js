@@ -191,9 +191,15 @@ export const getTranslatedServices = (t, services, title, aggregator) => {
 
   //TODO: this is crutch for one and only one aggregator, remove this code!
   if (aggregator === AGGREGATORS.SPIC_AND_SPAN) {
+    const washTheWindowRegex = /Wash the window_summery \([^()]*\)/;
+
+    const isThereAnySubServicesExceptWindow = Boolean(
+      transformedServicesString.replace(washTheWindowRegex, ""),
+    );
+
     transformedServicesString = transformedServicesString.replace(
-      /Wash the window_summery \([^()]*\)/,
-      "Wash the windows,",
+      washTheWindowRegex,
+      `Wash the windows${isThereAnySubServicesExceptWindow ? "," : ""}`,
     );
   }
 
