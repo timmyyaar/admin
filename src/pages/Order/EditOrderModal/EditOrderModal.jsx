@@ -1,5 +1,4 @@
 import React, { useContext, useEffect, useState } from "react";
-import { components } from "react-select";
 import Modal from "../../../components/common/Modal";
 import {
   EMAIL_REGEX,
