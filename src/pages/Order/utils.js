@@ -193,7 +193,7 @@ export const getTranslatedServices = (t, services, title, aggregator) => {
   if (aggregator === AGGREGATORS.SPIC_AND_SPAN) {
     transformedServicesString = transformedServicesString.replace(
       /Wash the window_summery \([^()]*\)/,
-      "Wash the windows",
+      "Wash the windows,",
     );
   }
 
