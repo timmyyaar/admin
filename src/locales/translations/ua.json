@@ -406,5 +406,8 @@
   "reset": "Скинути",
   "reset_order_confirmation_message": "Ви впевнені, що бажаєте скинути це замовлення? Повідомлення в Telegram будуть надсилатися знову!",
   "admin_services_header": "Послуги",
-  "admin_order_request_previous_cleaner": "Запит попереднього прибиральника"
+  "admin_order_request_previous_cleaner": "Запит попереднього прибиральника",
+  "sorting": "сортування",
+  "order_filter_date_oldest_to_newest": "Дата (найстаріший до найновішого)",
+  "order_filter_date_newest_to_oldest": "Дата (найновіший до найстарішого)"
 }

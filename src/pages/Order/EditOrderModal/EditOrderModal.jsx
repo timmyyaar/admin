@@ -35,38 +35,9 @@ import {
   getEstimateInMinutes,
 } from "../utils";
 import usePrevious from "../../../hooks/usePrevious";
+import { OptionWithIcon, SingleValueWithIcon } from "../select-components";
 
 const ESTIMATE_REGEXP = /^[0-9]+h, [0-9]+m$/;
-
-const AggregatorOption = (props) => (
-  <components.Option {...props}>
-    <div className="d-flex align-items-center">
-      <img
-        className="_mr-2"
-        src={props.data.icon}
-        alt={props.label}
-        width="24"
-        height="24"
-      />
-      {props.label}
-    </div>
-  </components.Option>
-);
-
-const AggregatorSingleValue = (props) => (
-  <components.SingleValue {...props}>
-    <div className="d-flex align-items-center">
-      <img
-        className="_mr-2"
-        src={props.data.icon}
-        alt={props.data.label}
-        width="24"
-        height="24"
-      />
-      {props.data.label}
-    </div>
-  </components.SingleValue>
-);
 
 const EditOrderModal = ({ onClose, order, setOrders }) => {
   const { t } = useContext(LocaleContext);
@@ -601,8 +572,8 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
             onChange={setAggregator}
             value={aggregator}
             components={{
-              Option: AggregatorOption,
-              SingleValue: AggregatorSingleValue,
+              Option: OptionWithIcon,
+              SingleValue: SingleValueWithIcon,
             }}
             menuPlacement="top"
             isClearable
