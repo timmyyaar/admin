@@ -4,16 +4,17 @@ import {
   getTimeUnitWithPrefix,
 } from "../../utils";
 import { BRACKETS_REGEX, ORDER_STATUS, PAYMENT_STATUS } from "../../constants";
+import { AGGREGATORS } from "./constants";
 
 export const getEstimateInTimeFormat = (estimate) => {
   const estimateArray = estimate.split(", ");
   const estimateHours = +estimateArray[0].slice(
     0,
-    estimateArray[0].indexOf("h")
+    estimateArray[0].indexOf("h"),
   );
   const estimateMinutes = +estimateArray[1].slice(
     0,
-    estimateArray[1].indexOf("m")
+    estimateArray[1].indexOf("m"),
   );
 
   const estimateHoursWithPrefix = getTimeUnitWithPrefix(estimateHours);
@@ -26,11 +27,11 @@ export const getEstimateInMinutes = (estimate) => {
   const estimateArray = estimate.split(", ");
   const estimateHours = +estimateArray[0].slice(
     0,
-    estimateArray[0].indexOf("h")
+    estimateArray[0].indexOf("h"),
   );
   const estimateMinutes = +estimateArray[1].slice(
     0,
-    estimateArray[1].indexOf("m")
+    estimateArray[1].indexOf("m"),
   );
 
   return estimateHours * 60 + estimateMinutes;
@@ -61,7 +62,7 @@ export const getOrderTimeSlot = (
   startTime,
   endTime,
   startTimeOfSlot,
-  endTimeOfSlot
+  endTimeOfSlot,
 ) => {
   const startTimeNumeric = Number(startTime.split(":").join("."));
   const endTimeNumeric = Number(endTime.split(":").join("."));
@@ -105,14 +106,14 @@ export const getFilteredCleanersForOrder = (cleaners, order, schedule) => {
       const timeSlotSplit = timeSlot.split(" - ");
       const schedulePeriodSplit = periodAdditional.split(" - ");
       const startTimeSlotNumeric = Number(
-        timeSlotSplit[0].split(":").join(".")
+        timeSlotSplit[0].split(":").join("."),
       );
       const endTimeSlotNumeric = Number(timeSlotSplit[1].split(":").join("."));
       const startTimeScheduleNumeric = Number(
-        schedulePeriodSplit[0].split(":").join(".")
+        schedulePeriodSplit[0].split(":").join("."),
       );
       const endTimeScheduleNumeric = Number(
-        schedulePeriodSplit[1].split(":").join(".")
+        schedulePeriodSplit[1].split(":").join("."),
       );
 
       if (startTimeSlotNumeric <= startTimeScheduleNumeric) {
@@ -127,7 +128,7 @@ export const getFilteredCleanersForOrder = (cleaners, order, schedule) => {
     const cleanerSchedule = schedule.find(
       ({ employeeId, date }) =>
         employeeId === id &&
-        date === getDateString(getDateTimeObjectFromString(order.date))
+        date === getDateString(getDateTimeObjectFromString(order.date)),
     );
 
     if (!cleanerSchedule) {
@@ -140,28 +141,28 @@ export const getFilteredCleanersForOrder = (cleaners, order, schedule) => {
     if (firstTimeSlot && !cleanerSchedule.firstPeriod) {
       return getAdditionalPeriodFilter(
         firstTimeSlot,
-        cleanerSchedule.firstPeriodAdditional
+        cleanerSchedule.firstPeriodAdditional,
       );
     }
 
     if (secondTimeSlot && !cleanerSchedule.secondPeriod) {
       return getAdditionalPeriodFilter(
         secondTimeSlot,
-        cleanerSchedule.secondPeriodAdditional
+        cleanerSchedule.secondPeriodAdditional,
       );
     }
 
     if (thirdTimeSlot && !cleanerSchedule.thirdPeriod) {
       return getAdditionalPeriodFilter(
         thirdTimeSlot,
-        cleanerSchedule.thirdPeriodAdditional
+        cleanerSchedule.thirdPeriodAdditional,
       );
     }
 
     if (fourthTimeSlot && !cleanerSchedule.fourthPeriod) {
       return getAdditionalPeriodFilter(
         fourthTimeSlot,
-        cleanerSchedule.fourthPeriodAdditional
+        cleanerSchedule.fourthPeriodAdditional,
       );
     }
 
@@ -179,13 +180,21 @@ const SHOW_CORRIDOR_TITLES = [
   "Airbnb",
 ];
 
-export const getTranslatedServices = (t, services, title) => {
+export const getTranslatedServices = (t, services, title, aggregator) => {
   let transformedServicesString = services;
 
   if (SHOW_CORRIDOR_TITLES.includes(title)) {
     transformedServicesString = `${transformedServicesString}, ${t(
-      "Corridor"
+      "Corridor",
     )} (1)`;
+  }
+
+  //TODO: this is crutch for one and only one aggregator, remove this code!
+  if (aggregator === AGGREGATORS.SPIC_AND_SPAN) {
+    transformedServicesString = transformedServicesString.replace(
+      /Wash the window_summery \([^()]*\)/,
+      "Wash the windows,",
+    );
   }
 
   services
@@ -194,7 +203,7 @@ export const getTranslatedServices = (t, services, title) => {
     .forEach((service) => {
       transformedServicesString = transformedServicesString.replace(
         service,
-        t(service)
+        t(service),
       );
     });
 
@@ -211,7 +220,7 @@ export const getSubServiceWithBalcony = (subService) => {
   const metersSquare = balconyMatch.match(/\d+/);
   const balconyWithMetersSquare = balconyMatch.replace(
     metersSquare,
-    `${metersSquare}m2`
+    `${metersSquare}m2`,
   );
 
   return subService.replace(balconyMatch, balconyWithMetersSquare);
@@ -219,7 +228,7 @@ export const getSubServiceWithBalcony = (subService) => {
 
 export const getSubServiceWithCarpet = (subService) => {
   const carpetMatch = subService.match(
-    /Carpet\sdry\scleaning_summery\s+\(\d+\)/
+    /Carpet\sdry\scleaning_summery\s+\(\d+\)/,
   )?.[0];
 
   if (!carpetMatch) {
@@ -229,7 +238,7 @@ export const getSubServiceWithCarpet = (subService) => {
   const metersSquare = carpetMatch.match(/\d+/);
   const carpetWithMetersSquare = carpetMatch.replace(
     metersSquare,
-    `${metersSquare}m2`
+    `${metersSquare}m2`,
   );
 
   return subService.replace(carpetMatch, carpetWithMetersSquare);
