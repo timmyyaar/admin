@@ -405,5 +405,8 @@
   "reset": "Сбросить",
   "reset_order_confirmation_message": "Вы уверены, что хотите сбросить этот заказ? Сообщения Telegram будут отправлены снова!",
   "admin_services_header": "Услуги",
-  "admin_order_request_previous_cleaner": "Запросить предыдущего клинера"
+  "admin_order_request_previous_cleaner": "Запросить предыдущего клинера",
+  "sorting": "сортировка",
+  "order_filter_date_oldest_to_newest": "Дата (от самого старого к самому новому)",
+  "order_filter_date_newest_to_oldest": "Дата (от самого нового к самому старому)"
 }

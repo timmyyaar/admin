@@ -42,6 +42,7 @@ import { ReactComponent as HandDrawIcon } from "../../assets/icons/hand-draw.svg
 import { ReactComponent as BroomIcon } from "../../assets/icons/broom.svg";
 import { ReactComponent as CommentIcon } from "../../assets/icons/comment-dots.svg";
 import { ReactComponent as FeedbackIcon } from "../../assets/icons/feedback.svg";
+import { SORTING } from "./constants";
 
 export const ORDER_STATUS_OPTIONS = Object.values(ORDER_STATUS);
 
@@ -82,6 +83,8 @@ export const OrderPage = ({ subscription = false }) => {
     toDate: null,
   });
   const [citiesFilter, setCitiesFilter] = useState([]);
+  const [aggregatorFilter, setAggregatorFilter] = useState(null);
+  const [sorting, setSorting] = useState(null);
   const [showCheckListId, setShowCheckListId] = useState(null);
   const [showCheckListEditId, setShowCheckListEditId] = useState(null);
   const [isScheduleLoading, setIsScheduleLoading] = useState(false);
@@ -290,6 +293,31 @@ export const OrderPage = ({ subscription = false }) => {
     return isAdmin ? true : userCities.includes(main_city);
   });
 
+  const filteredOrdersByAggregator = filteredOrdersByCity.filter(
+    ({ aggregator }) => {
+      if (aggregatorFilter) {
+        if (aggregatorFilter.value === "Take Your Time") {
+          return !aggregator;
+        }
+
+        return aggregator === aggregatorFilter.value;
+      }
+
+      return true;
+    },
+  );
+
+  const sortedOrders = sorting
+    ? filteredOrdersByAggregator.toSorted((prev, next) => {
+        const dateObjectNext = getDateTimeObjectFromString(next.date);
+        const dateObjectPrev = getDateTimeObjectFromString(prev.date);
+
+        return sorting.value === SORTING.DATE_NEW_TO_OLD.value
+          ? dateObjectNext - dateObjectPrev
+          : dateObjectPrev - dateObjectNext;
+      })
+    : filteredOrdersByAggregator;
+
   return (
     <div className="order-page">
       <Louder visible={loading || isUsersLoading || isScheduleLoading} />
@@ -305,10 +333,14 @@ export const OrderPage = ({ subscription = false }) => {
         setDateFilter={setDateFilter}
         citiesFilter={citiesFilter}
         setCitiesFilter={setCitiesFilter}
+        aggregatorFilter={aggregatorFilter}
+        setAggregatorFilter={setAggregatorFilter}
+        sorting={sorting}
+        setSorting={setSorting}
       />
       <div className="_mt-8">
-        {filteredOrdersByCity.length > 0
-          ? filteredOrdersByCity.map((el) => (
+        {sortedOrders.length > 0
+          ? sortedOrders.map((el) => (
               <div className="card _mb-3" key={el.id}>
                 {el.id === showCheckListId && (
                   <CheckListModal

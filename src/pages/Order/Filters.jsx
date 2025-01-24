@@ -1,4 +1,4 @@
-import { getDateString } from "../../utils";
+import { capitalizeFirstLetter, getDateString } from "../../utils";
 import React, { useContext } from "react";
 import DatePicker from "react-datepicker";
 import {
@@ -9,6 +9,9 @@ import {
 } from "../../constants";
 import { AppContext, LocaleContext } from "../../contexts";
 import Select from "../../components/common/Select/Select";
+import tytIcon from "../../assets/icons/aggregators/take-your-time.svg";
+import { AGGREGATOR_OPTIONS, SORTING } from "./constants";
+import { OptionWithIcon, SingleValueWithIcon } from "./select-components";
 
 const CLEANER_STATUS_FILTER_OPTIONS = [
   { value: ORDER_STATUS.APPROVED.value, label: "Available orders" },
@@ -27,6 +30,12 @@ const ADMIN_STATUS_FILTER_OPTIONS = [
 
 const ORDER_TYPE_OPTIONS = Object.values(ORDER_TYPE);
 
+const TYT_OPTION = {
+  label: "Take Your Time",
+  value: "Take Your Time",
+  icon: tytIcon,
+};
+
 const Filters = ({
   statusFilter,
   setStatusFilter,
@@ -39,6 +48,10 @@ const Filters = ({
   setDateFilter,
   citiesFilter,
   setCitiesFilter,
+  aggregatorFilter,
+  setAggregatorFilter,
+  sorting,
+  setSorting,
 }) => {
   const {
     userData: { role, cities },
@@ -46,6 +59,13 @@ const Filters = ({
   const isAdmin = [ROLES.ADMIN, ROLES.SUPERVISOR].includes(role);
 
   const { t } = useContext(LocaleContext);
+
+  const SORTING_OPTIONS = Object.values(SORTING).map(
+    ({ translation, value }) => ({
+      label: t(translation),
+      value,
+    }),
+  );
 
   const statusFilterOptions = isAdmin
     ? ADMIN_STATUS_FILTER_OPTIONS
@@ -96,7 +116,7 @@ const Filters = ({
   }));
 
   return (
-    <div className="_items-center _gap-4 _mt-2 filters-wrapper">
+    <div className="_items-center _gap-4 _mt-2 order-filters-wrapper">
       <label>{t("admin_order_status_filter_title")}:</label>
       <select
         value={statusFilter}
@@ -162,13 +182,25 @@ const Filters = ({
               </option>
             ))}
           </select>
+          <span>{capitalizeFirstLetter(t("aggregator"))}:</span>
+          <Select
+            isClearable
+            placeholder={`${t("select_placeholder")}...`}
+            value={aggregatorFilter}
+            options={[TYT_OPTION, ...AGGREGATOR_OPTIONS]}
+            onChange={(value) => setAggregatorFilter(value)}
+            components={{
+              Option: OptionWithIcon,
+              SingleValue: SingleValueWithIcon,
+            }}
+          />
         </>
       )}
       {(isAdmin || userCities.length > 1) && (
         <>
           <span>{t("admin_cities_filter_title")}:</span>
           <Select
-            placeholder={t("select_placeholder")}
+            placeholder={`${t("select_placeholder")}...`}
             isMulti
             options={
               isAdmin
@@ -212,6 +244,16 @@ const Filters = ({
           filterTime={filterPassedTimeToDate}
           startDate={dateFilter.fromDate}
           endDate={dateFilter.toDate}
+        />
+      </div>
+      <span>{capitalizeFirstLetter(t("sorting"))}:</span>
+      <div>
+        <Select
+          isClearable
+          placeholder={`${t("select_placeholder")}...`}
+          options={SORTING_OPTIONS}
+          value={sorting}
+          onChange={(value) => setSorting(value)}
         />
       </div>
     </div>
