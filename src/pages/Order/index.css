@@ -2,7 +2,7 @@
   width: 75%;
 }
 
-.filters-wrapper {
+.order-filters-wrapper {
   width: 100%;
   display: inline-grid;
   grid-template-columns: max-content 1fr max-content 1fr max-content 1fr;
@@ -19,7 +19,7 @@
 }
 
 @media screen and (max-width: 950px) {
-  .filters-wrapper {
+  .order-filters-wrapper {
     display: grid;
     grid-template-columns: max-content auto;
   }

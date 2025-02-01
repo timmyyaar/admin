@@ -406,5 +406,8 @@
   "reset": "Zresetować",
   "reset_order_confirmation_message": "Czy na pewno chcesz zresetować to zamówienie? Wiadomości Telegram zostaną wysłane ponownie!",
   "admin_services_header": "Usługi",
-  "admin_order_request_previous_cleaner": "Poproś o poprzedniego sprzątacza"
+  "admin_order_request_previous_cleaner": "Poproś o poprzedniego sprzątacza",
+  "sorting": "sortowanie",
+  "order_filter_date_oldest_to_newest": "Data (od najstarszego do najnowszego)",
+  "order_filter_date_newest_to_oldest": "Data (od najnowszego do najstarszego)"
 }
