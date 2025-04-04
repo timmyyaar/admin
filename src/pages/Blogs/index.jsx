@@ -4,14 +4,9 @@ import AddOrEditBlogModal from "./AddOrEditBlogModal";
 
 import "./style.scss";
 
-import { ReactComponent as CalendarIcon } from "./icons/calendar.svg";
-import { ReactComponent as TimeIcon } from "./icons/time.svg";
-import reactStringReplace from "react-string-replace";
 import DeleteModal from "./DeleteModal";
-import Controls from "./Controls";
 import { Louder } from "../../components/Louder";
-
-const TITLE_REGEXP = /{([^}]*)}/g;
+import Blog from "./blog/Blog";
 
 function Blogs() {
   const [blogs, setBlogs] = useState([]);
@@ -64,67 +59,12 @@ function Blogs() {
       )}
       {blogs.length > 0 ? (
         blogs.map((blog) => (
-          <div className="p-4 border border-secondary border-rounded mb-5">
-            <div className="w-100 mb-4 mobile-only">
-              <Controls
-                setIsAddNewBlogModalOpened={setIsAddNewBlogModalOpened}
-                setEditingBlog={setEditingBlog}
-                setDeleteId={setDeleteId}
-                blog={blog}
-              />
-            </div>
-            <div className="d-flex">
-              <div className="card blog main mb-4">
-                <div className="card-body">
-                  <div className="d-flex">
-                    <img src={blog.main_image} alt="" />
-                    <div className="d-flex flex-column _ml-2">
-                      <div className="font-weight-semi-bold sliced-title text-black">
-                        {blog.title}
-                      </div>
-                      <div className="mt-auto category width-max-content">
-                        {blog.category}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="w-50 mobile-none">
-                <Controls
-                  setIsAddNewBlogModalOpened={setIsAddNewBlogModalOpened}
-                  setEditingBlog={setEditingBlog}
-                  setDeleteId={setDeleteId}
-                  blog={blog}
-                />
-              </div>
-            </div>
-            <div className="card blog">
-              <div className="card-body">
-                <div className="title text-center mb-4">{blog.title}</div>
-                <div className="d-flex justify-content-center gap-4 mb-4">
-                  <img src={blog.blog_image_one} alt="" className="image" />
-                  <img src={blog.blog_image_two} alt="" className="image" />
-                </div>
-                <div className="text-wrapper">
-                  <div className="mb-4 gap-3 d-flex text-black font-weight-semi-bold">
-                    <div className="d-flex align-items-center">
-                      <CalendarIcon className="_mr-2" />
-                      {blog.date}
-                    </div>
-                    <div className="d-flex align-items-center">
-                      <TimeIcon className="_mr-2" />
-                      {blog.read_time}
-                    </div>
-                  </div>
-                  <div className="text-black white-space-pre-wrap">
-                    {reactStringReplace(blog.text, TITLE_REGEXP, (match) => (
-                      <span className="font-weight-semi-bold">{match}</span>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          <Blog
+            blog={blog}
+            setIsAddNewBlogModalOpened={setIsAddNewBlogModalOpened}
+            setEditingBlog={setEditingBlog}
+            setDeleteId={setDeleteId}
+          />
         ))
       ) : (
         <div className="text-warning font-weight-semi-bold">
