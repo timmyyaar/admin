@@ -126,7 +126,7 @@ function AddOrEditBlogModal({ onClose, setBlogs, blog }) {
             }
           }}
         />
-        <label className="_mr-2">Text {`{Title like this}`}:</label>
+        <label className="_mr-2">Text:</label>
         <textarea
           className="form-control"
           rows={100}
