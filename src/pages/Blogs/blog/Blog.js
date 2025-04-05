@@ -115,26 +115,26 @@ function Blog({
         </div>
       </div>
       <div className="blog-content _rounded-2xl _gap-6">
-        <div className="_flex _flex-col _gap-3 blog-titles-wrapper">
-          <Titles
-            titles={getBlogTitles(blog.title, blog.text)}
-            mainTitleRef={mainTitleRef}
-            titlesRefs={titlesRefs}
-          />
-          <div className="_flex _gap-3">
-            <div className="_p-5 _bg-white _rounded-full _w-full _flex _items-center _justify-center _whitespace-nowrap text-gray">
+        <Titles
+          titles={getBlogTitles(blog.title, blog.text)}
+          mainTitleRef={mainTitleRef}
+          titlesRefs={titlesRefs}
+        />
+        <div className="text-black white-space-pre-wrap">
+          <div
+            className="font-weight-semi-bold _text-2xl _mb-3"
+            ref={mainTitleRef}
+          >
+            {blog.title}
+          </div>
+          <div className="_flex _gap-3 _mb-5">
+            <div className="_p-3 _bg-white _rounded-full _flex _items-center _justify-center _whitespace-nowrap text-gray _text-sm">
               <CalendarIcon className="_mr-1" /> {blog.date}
             </div>
-            <div className="_p-5 _bg-white _rounded-full _w-full _flex _items-center _justify-center _whitespace-nowrap text-gray">
+            <div className="_p-3 _bg-white _rounded-full _flex _items-center _justify-center _whitespace-nowrap text-gray _text-sm">
               <TimeIcon className="_mr-1" /> {blog.read_time} minutes
             </div>
           </div>
-        </div>
-        <div className="text-black white-space-pre-wrap">
-          <div className="font-weight-semi-bold _text-2xl" ref={mainTitleRef}>
-            {blog.title}
-          </div>
-          <br />
           <img
             alt=""
             src={blog.main_image}
