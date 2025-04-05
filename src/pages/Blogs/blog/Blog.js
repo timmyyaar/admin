@@ -115,34 +115,32 @@ function Blog({
         </div>
       </div>
       <div className="blog-content _rounded-2xl _gap-6">
-        <Titles
-          titles={getBlogTitles(blog.title, blog.text)}
-          mainTitleRef={mainTitleRef}
-          titlesRefs={titlesRefs}
-        />
-        <div>
-          <div className="mb-4 gap-3 d-flex text-black font-weight-semi-bold">
-            <div className="d-flex align-items-center">
-              <CalendarIcon className="_mr-2" />
-              {blog.date}
+        <div className="_flex _flex-col _gap-3 blog-titles-wrapper">
+          <Titles
+            titles={getBlogTitles(blog.title, blog.text)}
+            mainTitleRef={mainTitleRef}
+            titlesRefs={titlesRefs}
+          />
+          <div className="_flex _gap-3">
+            <div className="_p-5 _bg-white _rounded-full _w-full _flex _items-center _justify-center _whitespace-nowrap text-gray">
+              <CalendarIcon className="_mr-1" /> {blog.date}
             </div>
-            <div className="d-flex align-items-center">
-              <TimeIcon className="_mr-2" />
-              {blog.read_time}
+            <div className="_p-5 _bg-white _rounded-full _w-full _flex _items-center _justify-center _whitespace-nowrap text-gray">
+              <TimeIcon className="_mr-1" /> {blog.read_time} minutes
             </div>
           </div>
-          <div className="text-black white-space-pre-wrap">
-            <div className="font-weight-semi-bold _text-2xl" ref={mainTitleRef}>
-              {blog.title}
-            </div>
-            <br />
-            <img
-              alt=""
-              src={blog.main_image}
-              className="_w-full _rounded-3xl _mb-6"
-            />
-            {getReplacedText(blog.text)}
+        </div>
+        <div className="text-black white-space-pre-wrap">
+          <div className="font-weight-semi-bold _text-2xl" ref={mainTitleRef}>
+            {blog.title}
           </div>
+          <br />
+          <img
+            alt=""
+            src={blog.main_image}
+            className="_w-full _rounded-3xl _mb-6"
+          />
+          {getReplacedText(blog.text)}
         </div>
       </div>
     </div>
