@@ -12,12 +12,11 @@ function AddOrEditBlogModal({ onClose, setBlogs, blog }) {
   const [title, setTitle] = useState(blog?.title || "");
   const [category, setCategory] = useState(blog?.category || "");
   const [date, setDate] = useState(
-    blog?.date ? getDateObjectFromString(blog.date) : null
+    blog?.date ? getDateObjectFromString(blog.date) : null,
   );
-  const [imageOne, setImageOne] = useState(blog?.blog_image_one || null);
-  const [imageTwo, setImageTwo] = useState(blog?.blog_image_two || null);
   const [readTime, setReadTime] = useState(blog?.read_time || "");
   const [text, setText] = useState(blog?.text || "");
+  const [key, setKey] = useState(blog?.key || "");
   const [isBlogLoading, setIsBlogLoading] = useState(false);
   const [blogError, setBlogError] = useState("");
 
@@ -26,26 +25,8 @@ function AddOrEditBlogModal({ onClose, setBlogs, blog }) {
       ? mainImage
       : URL.createObjectURL(mainImage)
     : null;
-  const imageOneSrc = imageOne
-    ? typeof imageOne === "string"
-      ? imageOne
-      : URL.createObjectURL(imageOne)
-    : null;
-  const imageTwoSrc = imageTwo
-    ? typeof imageTwo === "string"
-      ? imageTwo
-      : URL.createObjectURL(imageTwo)
-    : null;
 
-  const isValid =
-    mainImage &&
-    title &&
-    category &&
-    date &&
-    imageOne &&
-    imageTwo &&
-    readTime &&
-    text;
+  const isValid = mainImage && title && category && date && readTime && text;
 
   const addOrEditBlog = async () => {
     try {
@@ -58,8 +39,7 @@ function AddOrEditBlogModal({ onClose, setBlogs, blog }) {
       formData.append("readTime", +readTime);
       formData.append("text", text);
       formData.append("image", mainImage);
-      formData.append("imageOne", imageOne);
-      formData.append("imageTwo", imageTwo);
+      formData.append("key", key);
 
       const newOrUpdatedBlog = await request({
         url: `blogs${blog ? `/${blog.id}` : ""}`,
@@ -70,7 +50,7 @@ function AddOrEditBlogModal({ onClose, setBlogs, blog }) {
       setBlogs((prev) =>
         blog
           ? prev.map((item) => (item.id === blog.id ? newOrUpdatedBlog : item))
-          : [...prev, newOrUpdatedBlog]
+          : [...prev, newOrUpdatedBlog],
       );
 
       onClose();
@@ -98,6 +78,12 @@ function AddOrEditBlogModal({ onClose, setBlogs, blog }) {
           value={title}
           onChange={({ target: { value } }) => setTitle(value)}
         />
+        <label className="_mr-2">Key:</label>
+        <input
+          className="form-control"
+          value={key}
+          onChange={({ target: { value } }) => setKey(value)}
+        />
         <label className="_mr-2">Main image:</label>
         <input
           className="form-control"
@@ -113,7 +99,7 @@ function AddOrEditBlogModal({ onClose, setBlogs, blog }) {
         {mainImageSrc && (
           <>
             <label className="_mr-2">Image preview:</label>
-            <img src={mainImageSrc} alt="" />
+            <img src={mainImageSrc} alt="" width={300} />
           </>
         )}
         <label className="_mr-2">Category:</label>
@@ -130,42 +116,6 @@ function AddOrEditBlogModal({ onClose, setBlogs, blog }) {
             dateFormat="d/MM/yyyy"
           />
         </div>
-        <label className="_mr-2">Blog image one:</label>
-        <input
-          className="form-control"
-          type="file"
-          onChange={({ target: { files } }) => {
-            if (files[0]?.type === PNG_TYPE) {
-              setImageOne(files[0]);
-            } else {
-              setImageOne(null);
-            }
-          }}
-        />
-        {imageOneSrc && (
-          <>
-            <label className="_mr-2">Blog 1 preview:</label>
-            <img src={imageOneSrc} alt="" />
-          </>
-        )}
-        <label className="_mr-2">Blog image two:</label>
-        <input
-          className="form-control"
-          type="file"
-          onChange={({ target: { files } }) => {
-            if (files[0]?.type === PNG_TYPE) {
-              setImageTwo(files[0]);
-            } else {
-              setImageTwo(null);
-            }
-          }}
-        />
-        {imageTwoSrc && (
-          <>
-            <label className="_mr-2">Blog 2 preview:</label>
-            <img src={imageTwoSrc} alt="" />
-          </>
-        )}
         <label className="_mr-2">Read time:</label>
         <input
           className="form-control"
@@ -176,9 +126,10 @@ function AddOrEditBlogModal({ onClose, setBlogs, blog }) {
             }
           }}
         />
-        <label className="_mr-2">Text {`{Title like this}`}:</label>
+        <label className="_mr-2">Text:</label>
         <textarea
           className="form-control"
+          rows={100}
           value={text}
           onChange={({ target: { value } }) => setText(value)}
         />
