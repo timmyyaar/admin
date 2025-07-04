@@ -47,7 +47,7 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
   const [email, setEmail] = useState(order.email);
   const [date, setDate] = useState(getDateTimeObjectFromString(order.date));
   const [dateCreated] = useState(
-    getDateTimeObjectFromString(order.creation_date),
+    getDateTimeObjectFromString(order.creation_date)
   );
   const [address, setAddress] = useState(order.address);
   const [price, setPrice] = useState(order.price);
@@ -58,7 +58,7 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
   const [totalPrice, setTotalPrice] = useState(order.total_service_price);
   const [priceOriginal, setPriceOriginal] = useState(order.price_original);
   const [totalPriceOriginal, setTotalPriceOriginal] = useState(
-    order.total_service_price_original,
+    order.total_service_price_original
   );
   const [onlinePayment, setOnlinePayment] = useState(order.onlinepayment);
   const [estimate, setEstimate] = useState(order.estimate || "");
@@ -68,13 +68,13 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
   const [originalReward, setOriginalReward] = useState(order.reward_original);
   const [reward, setReward] = useState(order.reward || "");
   const [ownCheckList, setOwnCheckList] = useState(
-    order.own_check_list || false,
+    order.own_check_list || false
   );
   const [cleanersCount, setCleanersCount] = useState(order.cleaners_count || 0);
   const [aggregator, setAggregator] = useState(
     order.aggregator
       ? AGGREGATOR_OPTIONS.find(({ value }) => order.aggregator === value)
-      : null,
+      : null
   );
   const [isUpdateLoading, setIsUpdateLoading] = useState(false);
   const [updateError, setUpdateError] = useState("");
@@ -82,7 +82,7 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
   const [prices, setPrices] = useState({});
   const [isPricesLoading, setIsPricesLoading] = useState(false);
   const [requestPreviousCleaner, setRequestPreviousCleaner] = useState(
-    order.requestpreviouscleaner || false,
+    order.requestpreviouscleaner || false
   );
 
   const isOriginalCounterSquareMeters = counter.includes("square_meters_total");
@@ -90,7 +90,7 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
   const [counterType, setCounterType] = useState(
     isOriginalCounterSquareMeters
       ? COUNTER_TYPE.SQUARE_METERS
-      : COUNTER_TYPE.DEFAULT,
+      : COUNTER_TYPE.DEFAULT
   );
 
   const getMainServices = async () => {
@@ -130,7 +130,7 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
       setPrices({
         ...pricesResponse.reduce(
           (result, item) => ({ ...result, [item.key]: item.price }),
-          {},
+          {}
         ),
         ...currentCityPrices,
       });
@@ -202,11 +202,11 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
       setOrders((prevOrders) =>
         prevOrders.map((prev) => {
           const updatedOrder = updatedOrders.find(
-            (item) => item.id === prev.id,
+            (item) => item.id === prev.id
           );
 
           return updatedOrder || prev;
-        }),
+        })
       );
       onClose();
     } catch (error) {
@@ -217,10 +217,10 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
   };
 
   const totalPriceDifference = getFloatOneDigit(
-    order.total_service_price - order.price,
+    order.total_service_price - order.price
   );
   const totalPriceOriginalDifference = getFloatOneDigit(
-    order.total_service_price_original - order.price_original,
+    order.total_service_price_original - order.price_original
   );
 
   const previousCleanersCount = usePrevious(cleanersCount);
@@ -238,7 +238,7 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
           getEstimateInMinutes(estimate) *
           (cleanersCount || previousCleanersCount);
         const updatedEstimate = getEstimateInHoursMinutesFormat(
-          oneCleanerEstimate / +value,
+          oneCleanerEstimate / +value
         );
 
         setEstimate(updatedEstimate);
@@ -261,7 +261,7 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
       setTotalPriceOriginal(value);
     } else {
       setTotalPriceOriginal(
-        getFloatOneDigit(totalPriceOriginalDifference + +value),
+        getFloatOneDigit(totalPriceOriginalDifference + +value)
       );
     }
 
@@ -275,7 +275,7 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
       prices,
       order.title,
       mainServices,
-      subServices,
+      subServices
     ).map((item) => ({
       ...item,
       label: t(`${item.title}_summery`),
@@ -283,10 +283,12 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
     }));
     const subServicesList = getSelectedSubServices(
       subService,
-      subServicesOptions,
+      subServicesOptions
     );
     const counterList = getFieldsFromCounter(counter).map(
-      ({ title, count }) => ({ value: count || title }),
+      ({ title, count }) => ({
+        value: count || count === 0 ? count : title,
+      })
     );
 
     const updatedEstimate = getServiceEstimate(
@@ -294,13 +296,13 @@ const EditOrderModal = ({ onClose, order, setOrders }) => {
       counterList,
       subServicesList,
       order.manual_cleaners_count,
-      isPrivateHouse,
+      isPrivateHouse
     );
 
     if (!isFirstRender) {
       setEstimate(updatedEstimate.time);
       setCleanersCount(
-        updatedEstimate.cleanersCount + order.manual_cleaners_count,
+        updatedEstimate.cleanersCount + order.manual_cleaners_count
       );
     }
 

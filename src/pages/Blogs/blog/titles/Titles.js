@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 
 function Titles({ titles, mainTitleRef, titlesRefs }) {
-  const [activeTitle, setActiveTitle] = useState(null);
+  const [activeTitle, setActiveTitle] = useState(titles[0]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -70,11 +70,10 @@ function Titles({ titles, mainTitleRef, titlesRefs }) {
               }
             }}
           >
-            <span className="blog-title-number">{index + 1}.</span>{" "}
             <span
               className={`blog-title-text ${activeTitle === title ? "active" : ""}`}
             >
-              {title}
+              {index + 1}. {title}
             </span>
           </div>
         ))}
