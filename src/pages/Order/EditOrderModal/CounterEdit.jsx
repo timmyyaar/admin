@@ -53,31 +53,31 @@ function CounterEdit({
       prices,
       title,
       originalCounter,
-      isOriginalCounterSquareMeters,
+      isOriginalCounterSquareMeters
     ) * (isPrivateHouse ? 1.3 : 1),
     cleanersCount - manualCleanersCount,
-    manualCleanersCount,
+    manualCleanersCount
   );
   const counterPrice = getServicePriceBasedOnManualCleaners(
     getPriceFromCounterByService(prices, title, fields, isSquareMetersCounter) *
       (isPrivateHouse ? 1.3 : 1),
     cleanersCount - manualCleanersCount,
-    manualCleanersCount,
+    manualCleanersCount
   );
 
   useEffect(() => {
     const counterPriceDifference = counterPrice - originalCounterPrice;
     const counterPriceDifferenceWithDiscount = discount
       ? getRoundedServicePrice(
-          counterPriceDifference * ((100 - discount) / 100),
+          counterPriceDifference * ((100 - discount) / 100)
         )
       : counterPriceDifference;
 
     onPriceChange(
-      getRoundedServicePrice(orderPrice + counterPriceDifferenceWithDiscount),
+      getRoundedServicePrice(orderPrice + counterPriceDifferenceWithDiscount)
     );
     onOriginalPriceChange(
-      getRoundedServicePrice(orderPriceOriginal + counterPriceDifference),
+      getRoundedServicePrice(orderPriceOriginal + counterPriceDifference)
     );
 
     //eslint-disable-next-line
@@ -86,8 +86,10 @@ function CounterEdit({
   useEffect(() => {
     setCounter(
       fields
-        .map(({ title, count }) => (count ? title + "(" + count + ")" : title))
-        .join(" "),
+        .map(({ title, count }) =>
+          count || count === 0 ? title + "(" + count + ")" : title
+        )
+        .join(" ")
     );
 
     //eslint-disable-next-line
@@ -124,8 +126,8 @@ function CounterEdit({
                     fields.map((field) =>
                       field.type === FIELD_TYPE.SWITCHER
                         ? { ...field, title: KITCHEN_RADIOS.KITCHEN }
-                        : field,
-                    ),
+                        : field
+                    )
                   )
                 }
               />
@@ -147,8 +149,8 @@ function CounterEdit({
                     fields.map((field) =>
                       field.type === FIELD_TYPE.SWITCHER
                         ? { ...field, title: KITCHEN_RADIOS.KITCHENETTE }
-                        : field,
-                    ),
+                        : field
+                    )
                   )
                 }
               />
@@ -160,7 +162,7 @@ function CounterEdit({
               </label>
             </div>
           </div>
-        ),
+        )
       )}
     </div>
   );
