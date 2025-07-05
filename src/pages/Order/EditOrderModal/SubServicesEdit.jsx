@@ -19,36 +19,38 @@ const getSubServicesPrice = (
   isPrivateHouse,
   cleanersCount,
   manualCleanersCount,
-  discount,
+  discount
 ) => {
   const subServicesWithoutDiscount = subServices.filter(
-    ({ isDiscountExcluded }) => isDiscountExcluded,
+    ({ isDiscountExcluded }) => isDiscountExcluded
   );
   const subServicesWithDiscount = subServices.filter(
-    ({ isDiscountExcluded }) => !isDiscountExcluded,
+    ({ isDiscountExcluded }) => !isDiscountExcluded
   );
 
   const subServicesWithoutDiscountPrice = subServicesWithoutDiscount.reduce(
     (acc, el) => acc + el.originalPrice * el.count,
-    0,
+    0
   );
+
   const priceBasedOnManualCleaners = getServicePriceBasedOnManualCleaners(
     subServicesWithDiscount.reduce(
       (acc, el) =>
-        acc + el.countInPrivateHouse && isPrivateHouse
+        acc +
+        (el.countInPrivateHouse && isPrivateHouse
           ? el.originalPrice * el.count * 1.3
-          : el.originalPrice * el.count,
-      0,
+          : el.originalPrice * el.count),
+      0
     ),
     cleanersCount - manualCleanersCount,
-    manualCleanersCount,
+    manualCleanersCount
   );
 
   return {
     priceWithDiscount: discount
       ? getRoundedServicePrice(
           priceBasedOnManualCleaners * ((100 - discount) / 100) +
-            subServicesWithoutDiscountPrice,
+            subServicesWithoutDiscountPrice
         )
       : priceBasedOnManualCleaners + subServicesWithoutDiscountPrice,
     priceWithoutDiscount:
@@ -77,7 +79,7 @@ function SubServiceEdit({
     prices,
     title,
     mainServicesResponse,
-    subServicesResponse,
+    subServicesResponse
   ).map((item) => ({
     ...item,
     label: t(`${item.title}_summery`),
@@ -85,11 +87,11 @@ function SubServiceEdit({
   }));
   const originalSubServices = getSelectedSubServices(
     subServices,
-    subServicesOptions,
+    subServicesOptions
   );
 
   const [selectedSubServices, setSelectedSubServices] = useState(
-    getSelectedSubServices(subServices, subServicesOptions),
+    getSelectedSubServices(subServices, subServicesOptions)
   );
 
   const {
@@ -100,7 +102,7 @@ function SubServiceEdit({
     isPrivateHouse,
     cleanersCount,
     manualCleanersCount,
-    discount,
+    discount
   );
   const {
     priceWithDiscount: subServicesPriceWithDiscount,
@@ -110,7 +112,7 @@ function SubServiceEdit({
     isPrivateHouse,
     cleanersCount,
     manualCleanersCount,
-    discount,
+    discount
   );
 
   useEffect(() => {
@@ -134,7 +136,7 @@ function SubServiceEdit({
     setSubServices(
       selectedSubServices
         .map((service) => `${service.value + "_summery"} (${service.count})`)
-        .join(" "),
+        .join(" ")
     );
 
     //eslint-disable-next-line
@@ -145,15 +147,15 @@ function SubServiceEdit({
 
     if (updatedCount === 0) {
       setSelectedSubServices(
-        selectedSubServices.filter(({ value }) => subService.value !== value),
+        selectedSubServices.filter(({ value }) => subService.value !== value)
       );
     } else {
       setSelectedSubServices(
         selectedSubServices.map((item) =>
           item.value === subService.value
             ? { ...item, count: updatedCount }
-            : item,
-        ),
+            : item
+        )
       );
     }
   };
@@ -172,8 +174,8 @@ function SubServiceEdit({
       selectedSubServices.map((item) =>
         item.value === subService.value
           ? { ...item, count: updatedCount }
-          : item,
-      ),
+          : item
+      )
     );
   };
 
@@ -189,7 +191,7 @@ function SubServiceEdit({
               options?.map((option) => ({
                 ...option,
                 count: option.count || 1,
-              })) || [],
+              })) || []
             )
           }
         />
